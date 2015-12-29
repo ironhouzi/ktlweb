@@ -14,4 +14,4 @@ export SECRET_KEY="$(gpass.sh ktlweb_secret_key 2>&1)"
 export DB=ktlweb_db
 export DATABASE_URL="postgres://postgres:$(gpass.sh ktlweb_db 2>&1)@localhost:$(docker port $DB | cut -d : -f2)/$DB"
 unset DB
-"$@"
+./manage.py "$@"
