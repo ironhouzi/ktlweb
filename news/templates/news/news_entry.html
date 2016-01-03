@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags %}
+
+{% block body_class %}template-newsentry{% endblock %}
+
+{% block content %}
+  <bold>NYHET</bold>
+  <p>Beskrivelse: <br>{{ page.description }}</p>
+  <p>Detaljer: <br>{{ page.details|richtext }}</p>
+{% endblock %}
+

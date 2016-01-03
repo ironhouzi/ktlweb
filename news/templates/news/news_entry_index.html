@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block body_class %}template-newsentry{% endblock %}
+
+{% block content %}
+  <div class="list-group">
+      {# Uses serve method defined in models.py - allows for paging if required #}
+      {# See also standard index for creating a listing with a tag #}
+      {% for entry in news_entries %}
+          {# {% include "news/includes/news_list_item.html" %} #}
+          <a href="{{ entry.url }}">{{ entry.title }}</a>
+      {% empty %}
+        <p>Ingen nyheter funnet.</p>
+      {% endfor %}
+  </div>
+
+  {# Pagination - uses django.core.paginator #}
+  {# Append any other url query string variables to the next and previous links - allows tag to be passed through #}
+  <div class="row">
+    <div class="col-sm-4 previous">
+      {% if news_entries.has_previous %}
+        <a href="?page={{ news_entries.previous_page_number }}{% for key,value in request.GET.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">Forrige</a>
+      {% endif %}
+    </div>
+    <div class="col-sm-4 pages">
+      Side {{ news_entries.number }} av {{ news_entries.paginator.num_pages }}
+    </div>
+    <div class="col-sm-4 next">
+      {% if news_entries.has_next %}
+        <a href="?page={{ news_entries.next_page_number }}{% for key,value in request.GET.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">Neste</a>
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}
+
+

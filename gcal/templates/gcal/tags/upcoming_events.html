@@ -1,0 +1,9 @@
+<ul>
+{% for event in events %}
+  <li> "{{ event.summary }}"
+    {{ event.start }} - {{ event.end }}
+    {% if event.full_day %} FULL DAY! {% endif %}
+    @ {{ event.calendar.centre.code }}
+  </li>
+{% endfor %}
+</ul>

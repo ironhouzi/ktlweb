@@ -1,0 +1,20 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{# Individual news entries in a list - used on news index and home page #}
+<a class="list-group-item" href="{% pageurl news %}">
+  <div class="media">
+    {% if news.feed_image %}
+      <div class="media-left">
+        {% image news.feed_image width-200 as img %}
+        <img class="media-object" src="{{ img.url }}" />
+      </div>
+    {% endif %}
+    <div class="media-body">
+      <h4 class="media-heading">{{ news.title }}</h4>
+      <p><strong>{{ news.date }}</strong></p>
+      {% if news.search_description %}
+        <p>{{ news.search_description }}</p>
+      {% endif %}
+    </div>
+  </div>
+</a>
