@@ -1,0 +1,125 @@
+@charset "UTF-8";
+/*
+Template Name: Book Of Wisdom
+Template URI: http://www.os-templates.com/
+Description: Designed and Built by <a href="http://www.os-templates.com/">OS Templates</a>. This modern template is adaptable, lightweight and fully customisable. The template is easy to use, enabling you to create your site within minutes.
+Version: 1.0.1
+Author: OS-Templates.com
+Author URI: http://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Single Site
+Licence URI: http://www.os-templates.com/template-terms
+File: Navigation CSS
+*/
+
+/*
+	TOC - Table Of Contents
+	
+	1 => Header Quicklinks
+	2 => Main Top Navigation
+	3 => Page Breadcrumb
+	4 => Sidebar Navigation
+	5 => Pagination
+	6 => Scroll To Top
+*/
+
+/* Header Quicklinks
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#header nav li{margin-right:6px; padding-right:10px; border-right:1px solid;}
+#header nav li:last-child{margin-right:0; padding-right:0; border:none;}
+
+
+/* Top Navigation
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#topnav{position:relative; margin:0; padding:0; word-wrap:normal; white-space:normal; clear:both;}
+#topnav ul:first-child{float:left; margin-top:-3px;}
+#topnav ul{margin:0; padding:0; list-style:none; text-transform:uppercase; box-sizing:border-box;}
+#topnav ul ul{z-index:99999; position:absolute; width:190px; border:solid; border-width:0 0 0 0;}
+#topnav ul ul ul, #topnav ul ul ul ul{left:190px; top:0;}
+#topnav ul:first-child li:last-child > ul{right:0;}
+#topnav ul:first-child > li:last-child li > ul{left:-190px;}
+#topnav li{display:block; position:relative; float:left; margin:0; padding:0;}
+#topnav li:first-child{}
+#topnav ul:first-child li:last-child{margin-right:0;}
+#topnav li li{width:100%; margin:0; text-transform:capitalize; border:solid; border-width:0 0 1px 0;}
+#topnav li li:last-child{border-width:0;}
+#topnav li a{display:block; padding:27px 25px; border-top:3px solid transparent;}
+#topnav li li a{display:block; margin:0; padding:10px 15px; border-top:none;}
+#topnav a{}
+#topnav li li a, #topnav li.active li a{}
+#topnav li.active a, #topnav a:hover, #topnav ul li li:hover > a, #topnav ul li.active ul .active > a{}
+#topnav li a.drop, #topnav li.active a.drop{}
+#topnav li a.drop::before, #topnav li.active a.drop::before{position:absolute; top:36px; left:14px; width:0; height:0; border:solid; border-width:5px 3px 3px 3px; border-color:transparent; content:"";}
+#topnav li li a.drop::before, #topnav li.active li a.drop::before{top:16px; left:5px;}
+#topnav ul ul{display:block; height:0; opacity:0; overflow:hidden; white-space:normal; word-wrap:break-word;}
+#topnav ul li:hover > ul{height:auto; opacity:1; overflow:visible;}
+
+/* Topnav with Transitions - Modern browsers only, includes IE10+ */
+
+#topnav ul li li:hover > a, #topnav ul li.active ul .active > a{transition:background-color .2s ease-in-out;}
+#topnav ul ul{transition:all .5s ease-in-out;}
+
+/* Top navigation for smaller resolutions */
+
+#topnav form{display:block; margin:0 auto; padding:30px 0;}
+#topnav form select{display:block; width:100%; padding:8px; border:1px solid; cursor:pointer; outline:none;}
+#topnav form select option{display:block; margin:10px; padding:0; cursor:pointer; outline:none; border:none;}
+
+
+/* Page Breadcrumb
+---------------------------------------------------------------------------------------------------------------------------------------*/
+.breadcrumb{float:right; font-size:12px;}
+.breadcrumb ul{margin:0; padding:0; list-style:none;}
+.breadcrumb li{display:inline; margin-right:10px; text-transform:uppercase;}
+.breadcrumb li:last-child{margin-right:0;}
+.breadcrumb a{display:inline-block; position:relative; padding:0 15px 0 0;}
+.breadcrumb a::before{position:absolute; top:0; right:0; content:"/";}
+.breadcrumb li:last-child a{padding:0;}
+.breadcrumb li:last-child a::before{content:"";}
+
+
+/* Sidebar Navigation
+---------------------------------------------------------------------------------------------------------------------------------------*/
+.sidebar aside nav{display:block; width:100%;}
+.sidebar aside nav ul{margin:0; padding:0; list-style:none;}
+.sidebar aside nav li{margin:0 0 5px 0; padding:0;}
+.sidebar aside nav a{display:block; position:relative; margin:0; padding:5px 10px 8px 15px; text-decoration:none; border-bottom:1px solid;}
+.sidebar aside nav a::before{position:absolute; top:5px; left:5px; font-family:"FontAwesome"; font-size:9px; content:"\f0da";}
+.sidebar aside nav a:hover{}
+.sidebar aside nav ul ul a{padding-left:35px;}
+.sidebar aside nav ul ul a::before{left:25px;}
+.sidebar aside nav ul ul ul a{padding-left:45px;}
+.sidebar aside nav ul ul ul a::before{left:35px;}
+.sidebar aside nav ul ul ul ul a{padding-left:55px;}
+.sidebar aside nav ul ul ul ul a::before{left:45px;}
+.sidebar aside nav ul ul ul ul ul a{padding-left:65px;}
+.sidebar aside nav ul ul ul ul ul a::before{left:55px;}
+
+
+/* Pagination
+---------------------------------------------------------------------------------------------------------------------------------------*/
+.pagination{display:block; width:100%; clear:both; line-height:normal;}
+.pagination ul{margin:0; padding:0; list-style:none;}
+.pagination li{display:inline;}
+.pagination strong{font-weight:normal;}
+.pagination .next{margin:0;}
+.pagination a, .pagination .current strong, .pagination .splitter strong{display:inline-block; padding:8px 12px; margin:1px 5px;}
+.pagination a:first-child{margin-left:0;}
+.pagination a{border:1px solid;}
+
+
+/* Previou Next
+---------------------------------------------------------------------------------------------------------------------------------------*/
+.prevnext{display:block; width:100%; clear:both; line-height:normal;}
+.prevnext ul{margin:0; padding:5px 10px; list-style:none;}
+.prevnext li{float:right;}
+.prevnext li:first-child{float:left;}
+
+
+/* Scroll To Top
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#scrolltotop{z-index:999999; visibility:hidden; opacity:0.2; position:fixed; bottom:60px; right:5px; padding:8px 10px 5px; line-height:normal; border-radius:8px;}
+#scrolltotop.visible{visibility:visible; opacity:0.5;}
+#scrolltotop.visible{transition:all .8s ease-in-out;}
+#scrolltotop:hover{opacity:1;}
+#scrolltotop span{border-top:5px solid #FFFFFF;}

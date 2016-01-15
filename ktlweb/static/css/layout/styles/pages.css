@@ -1,0 +1,209 @@
+@charset "UTF-8";
+/*
+Template Name: Book Of Wisdom
+Template URI: http://www.os-templates.com/
+Description: Designed and Built by <a href="http://www.os-templates.com/">OS Templates</a>. This modern template is adaptable, lightweight and fully customisable. The template is easy to use, enabling you to create your site within minutes.
+Version: 1.0.1
+Author: OS-Templates.com
+Author URI: http://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Single Site
+Licence URI: http://www.os-templates.com/template-terms
+File: Pages CSS
+*/
+
+/*
+	TOC - Table Of Contents
+	
+	1 => Site Wide Shared Classes
+	2 => Homepage
+	3 => Blog Overview
+	4 => Blog Post Single
+	5 => Portfolio Overview
+	6 => Gallery
+	7 => Coming Soon
+	8 => 404
+	9 => About Us
+*/
+
+
+/* Site Wide Shared Classes
+---------------------------------------------------------------------------------------------------------------------------------------*/
+.post-image{margin-bottom:40px;}
+
+.blog-post-title{margin-bottom:10px;}
+.blog-post-title a{}
+.blog-post-title a:hover{}
+
+.blog-post-meta{font-size:.8em;}
+.blog-post-meta ul{margin:0 0 30px 0; padding:0; list-style:none;}
+.blog-post-meta ul li{display:inline; margin-right:10px;}
+.blog-post-meta ul li:first-child{}
+.blog-post-meta ul li:last-child{margin-right:0;}
+
+.blog-post-meta ul li.blog-post-author{} /* Author Name */
+.blog-post-meta ul li.blog-post-date{} /* Date */
+.blog-post-meta ul li.blog-post-cats{} /* Post Categories - comma delimiter */
+.blog-post-meta ul li.blog-post-comcnt{} /* Comment Count */
+
+.blog-post-meta ul li.blog-post-author, .blog-post-meta ul li.blog-post-date, .blog-post-meta ul li.blog-post-cats, .blog-post-meta ul li.blog-post-comcnt{position:relative; padding-left:14px;}
+
+.blog-post-meta ul li.blog-post-author::before, .blog-post-meta ul li.blog-post-date::before, .blog-post-meta ul li.blog-post-cats::before, .blog-post-meta ul li.blog-post-comcnt::before{position:absolute; top:0; left:0; font-family:"FontAwesome";}
+.blog-post-meta ul li.blog-post-author::before{content:"\f040";}
+.blog-post-meta ul li.blog-post-date::before{content:"\f073";} 
+.blog-post-meta ul li.blog-post-cats::before{content:"\f00b";}
+.blog-post-meta ul li.blog-post-comcnt::before{content:"\f086";}
+
+/* Homepage
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#homepage{}
+#intro ul{display:table; width:100%; border-collapse:collapse;}
+#intro li{display:table-cell; width:20%; height:100%; border:solid; border-width:0 1px; border-color:inherit; text-align:center; vertical-align:top; box-sizing:border-box;}
+#intro li a{background-color:inherit; padding:50px 10px;}
+
+
+/* Edu Specific
+---------------------------------------------------------------------------------------------------------------------------------------*/
+button.button.block{display:block; width:100%; padding:8px 10px; font-size:16px; text-transform:uppercase; box-sizing:border-box;}
+
+
+/* Blog Overview
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#blog-posts #blog-overview{display:block; width:100%;}
+
+#blog-posts #blog-overview .blog-post-excerpt{margin-bottom:50px; padding-bottom:50px; border-bottom:1px solid;}
+
+#blog-posts #blog-overview .blog-post-excerpt .post-content{}
+#blog-posts #blog-overview .blog-post-excerpt .post-content .post-image{}
+#blog-posts #blog-overview .blog-post-excerpt .post-content .blog-post-title{}
+#blog-posts #blog-overview .blog-post-excerpt .post-content .blog-post-title a{}
+#blog-posts #blog-overview .blog-post-excerpt .post-content .blog-post-title a:hover{}
+#blog-posts #blog-overview .blog-post-excerpt .post-content .read-more{}
+
+#blog-posts #blog-overview .blog-post-excerpt .blog-post-meta{}
+#blog-posts #blog-overview .blog-post-excerpt .blog-post-meta ul{}
+#blog-posts #blog-overview .blog-post-excerpt .blog-post-meta ul li{}
+#blog-posts #blog-overview .blog-post-excerpt .blog-post-meta ul li:first-child{}
+#blog-posts #blog-overview .blog-post-excerpt .blog-post-meta ul li.blog-post-author{} /* Author Name */
+#blog-posts #blog-overview .blog-post-excerpt .blog-post-meta ul li.blog-post-date{} /* Date */
+#blog-posts #blog-overview .blog-post-excerpt .blog-post-meta ul li.blog-post-cats{} /* Post Categories - comma delimiter */
+#blog-posts #blog-overview .blog-post-excerpt .blog-post-meta ul li.blog-post-comcnt{} /* Comment Count */
+
+
+/* Blog Post Single
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#blog-post{}
+#blog-post .post-content-wrapper{margin-bottom:50px;}
+#blog-post .post-content-wrapper .post-content{margin-bottom:30px;}
+#blog-post .post-content-wrapper .post-content .post-image{}
+#blog-post .post-content-wrapper .post-content .post-image img{}
+#blog-post .post-content-wrapper .post-content .blog-post-title{}
+
+#blog-post .post-content-wrapper .post-content .blog-post-meta{}
+#blog-post .post-content-wrapper .post-content .blog-post-meta ul{}
+#blog-post .post-content-wrapper .post-content .blog-post-meta ul li{}
+#blog-post .post-content-wrapper .post-content .blog-post-meta ul li:first-child{}
+#blog-post .post-content-wrapper .post-content .blog-post-meta ul li.blog-post-author{} /* Author Name */
+#blog-post .post-content-wrapper .post-content .blog-post-meta ul li.blog-post-date{} /* Date */
+#blog-post .post-content-wrapper .post-content .blog-post-meta ul li.blog-post-cats{} /* Post Categories - comma delimiter */
+#blog-post .post-content-wrapper .post-content .blog-post-meta ul li.blog-post-comcnt{} /* Comment Count */
+
+#blog-post .post-content-wrapper .blog-post-tags{}
+#blog-post .post-content-wrapper .blog-post-tags li{}
+#blog-post .post-content-wrapper .blog-post-tags li:last-child{}
+#blog-post .post-content-wrapper .blog-post-tags li a{}
+
+#blog-post .post-author-bio{margin-bottom:50px; padding:30px 0; border:solid; border-width:1px 0;}
+#blog-post .post-author-bio .post-author-image{float:left; margin-right:15px;}
+#blog-post .post-author-bio .post-author-about{line-height:1.6em;}
+#blog-post .post-author-bio .post-author-about span{display:block; margin-bottom:8px; text-transform:uppercase;}
+
+#blog-post .blog-post-related{margin-bottom:50px;}
+#blog-post .blog-post-related sup{vertical-align:baseline;}
+#blog-post .blog-post-related ul{margin:0; padding:0;}
+#blog-post .blog-post-related ul li{margin-bottom:0;}
+#blog-post .blog-post-related ul.nospace.spacing li{margin-bottom:25px;}
+#blog-post .blog-post-related ul.nospace.spacing li:last-child{margin-bottom:0;}
+#blog-post .blog-post-related ul.related li{margin-top:15px;}
+#blog-post .blog-post-related ul.related li:first-child{margin-top:0;}
+#blog-post .blog-post-related ul.related li img{float:left; max-width:52px; max-height:52px; margin:0 10px 0 0; padding:2px; border:1px solid;}
+
+#blog-post #comment-count{display:block; margin:0 0 50px 0;}
+#blog-post #comment-count .fl_left{font-weight:bold;}
+
+#blog-post #comment-list{}
+#blog-post #comment-list ul{list-style:none;}
+#blog-post #comment-list ul:first-child{margin-bottom:50px;}
+#blog-post #comment-list ul:first-child li > ul{margin-top:25px; margin-bottom:25px;}
+#blog-post #comment-list .comment-wrapper{display:block; width:100%;}
+#blog-post #comment-list .comment-wrapper .comment-meta div{}
+#blog-post #comment-list .comment-wrapper .comment-meta div:last-child{}
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-avatar{margin-right:20px;}
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-avatar img{padding:2px; border:1px solid;}
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-author{}
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-author address{}
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-author .comment-date{font-size:11px;}
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-author .comment-date time{float:left; margin-right:10px;}
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-author .comment-date time sup{}
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-author .comment-date .comment-reply{float:left; margin:3px 0 0 0; padding:0 0 0 10px; border:solid; border-width:0 0 0 1px; text-transform:uppercase;}
+
+#blog-post #comment-list .comment-wrapper .comment-content{padding-bottom:10px; border-bottom:1px solid;}
+
+
+
+/* Portfolio Overview
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#portfolio ul{margin:0; padding:0; list-style:none;}
+#portfolio ul li{}
+#portfolio ul li article{margin-bottom:50px; padding-bottom:50px; border-bottom:1px solid;}
+#portfolio ul li article figure{}
+#portfolio ul li article header{}
+#portfolio ul li article header h2{}
+#portfolio ul li article header .blog-post-meta{}
+#portfolio ul li article header .blog-post-meta ul{}
+#portfolio ul li article header .blog-post-meta ul li{}
+#portfolio ul li article header .blog-post-meta ul li.blog-post-date{}
+#portfolio ul li article header .blog-post-meta ul li.blog-post-cats{}
+#portfolio ul li article p{}
+#portfolio ul li article footer{}
+#portfolio ul li article .read-more{}
+
+
+/* Gallery
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#gallery section{}
+#gallery section figure{}
+#gallery section figure h2{}
+#gallery section figure ul{margin:0; padding:0; list-style:none;}
+#gallery section figure ul li{margin-bottom:30px;}
+#gallery section figure ul li a{display:block; position:relative;}
+#gallery section figure ul li a::before{display:block; position:absolute; top:0; left:0; width:100%; height:100%; content:""; background-color:rgba(0,0,0,.6);}
+#gallery section figure ul li a::after{display:table-cell; text-align:center; vertical-align:middle; position:absolute; top:50%; left:50%; width:50px; height:50px; margin:-25px 0 0 -25px; padding:5px 0 0 0; border-radius:50%; box-sizing:border-box; font-family:"FontAwesome"; content:"\f065"; font-size:36px; line-height:36px;}
+#gallery section figure ul li a::before, #gallery section figure ul li a::after{opacity:0;}
+#gallery section figure ul li a:hover::before, #gallery section figure ul li a:hover::after{opacity:1;}
+
+
+/* 404
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#fof{display:block; margin:0; padding:100px 0 0 0; text-align:center;}
+#fof h1, #fof h2{margin:0; padding:0;}
+#fof h1{margin-top:-150px; font-size:13em;}
+#fof h2{margin-bottom:30px; font-size:32px; text-transform:uppercase;}
+#fof p{}
+#fof p.notice{font-size:32px; line-height:34px;}
+#fof p.clear{}
+
+#fof form, #fof form input{display:inline-block;}
+#fof form input{width:auto; min-width:200px;}
+#fof form button[type="submit"]{width:auto;}
+
+
+/* About Us
+---------------------------------------------------------------------------------------------------------------------------------------*/
+figure.team-member{}
+figure.team-member img{}
+figure.team-member figcaption{}
+figure.team-member figcaption p{margin:15px 0 0 0; padding:0;}
+figure.team-member figcaption .team-name{font-weight:bold;}
+figure.team-member figcaption .team-title{margin:0 0 15px 0; font-size:11px; line-height:normal;}
+figure.team-member figcaption .team-description{margin:0; padding-top:15px; border-top:1px solid;}

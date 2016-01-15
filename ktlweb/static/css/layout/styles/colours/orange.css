@@ -1,0 +1,117 @@
+@charset "UTF-8";
+/*
+Template Name: Book Of Wisdom
+Template URI: http://www.os-templates.com/
+Description: Designed and Built by <a href="http://www.os-templates.com/">OS Templates</a>. This modern template is adaptable, lightweight and fully customisable. The template is easy to use, enabling you to create your site within minutes.
+Version: 1.0.1
+Author: OS-Templates.com
+Author URI: http://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Single Site
+Licence URI: http://www.os-templates.com/template-terms
+File: Orange CSS
+*/
+
+/* Base Colour: #FDA46A */
+a{color:#FDA46A;}
+
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------------Colour Coding for layout.css-----------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+/* Generalise */
+h1 span::after, h2 span::after, h3 span::after, h4 span::after, h5 span::after, h6 span::after{background-color:#F47646;}
+
+#intro .cc.circle{color:#FDA46A; background-color:#FFFFFF;}
+#intro a:hover .cc.circle{color:#FFFFFF; background-color:#FDA46A;}
+
+#p-footer .cc.circle{background-color:#F47646;}
+
+.date-icon{color:#FFFFFF; background-color:#F47646;}
+.date-icon em{color:inherit; background-color:#FDA46A;}
+
+/* Link Block */
+.linkblock .title{border-color:#FDA46A;}
+
+
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------------Colour Coding for navigation.css-------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+/* Top Navigation */
+#topnav li.active a, #topnav a:hover, #topnav li:hover > a, #topnav ul li li:hover > a, #topnav ul li.active ul .active > a{color:#FFFFFF; background-color:#F47646;}
+#topnav li.active a, #topnav li:hover a{border-top-color:#6F2306;}
+
+/* Page Breadcrumb */
+.breadcrumb li:last-child a{color:#FDA46A;}
+
+/* Sidebar Navigation */
+.container .sidebar aside nav a:hover, .container .sidebar aside nav .active > a{color:#FDA46A; background-color:inherit;}
+
+/* Scroll To Top */
+#scrolltotop{color:#FFFFFF; background-color:#FDA46A;}
+
+
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------------Colour Coding for elements.css---------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+/* To completely override all the pre-defined button colours uncomment the following */
+
+/*.button.blue, .button.green, .button.grey, .button.maroon, .button.orange, .button.purple, .button.red, .button.yellow, .button.black, .button.white{
+	color:#FFFFFF; background-color:#FDA46A;}
+
+.button.blue:hover, .button.green:hover, .button.grey:hover, .button.maroon:hover, .button.orange:hover, .button.purple:hover, .button.red:hover, .button.yellow:hover, .button.black:hover, .button.white:hover{
+	color:#FFFFFF; background-color:#A66000;}*/
+
+/* Lists - For ul + ol */
+.list.tagcloud li a:hover, .list.posttags li a:hover{color:#FFFFFF; background-color:#FDA46A;}
+.list.posttags li a:hover::before{border-right-color:#FDA46A;}
+
+/* Call To Action - Best used as a full width banner */
+.calltoaction.opt1, .calltoaction.opt2, .calltoaction.opt3{border-color:#FDA46A;}
+
+/* Jquery Tabs */
+.tab-wrapper .tab-nav li.ui-tabs-active a{border-top-color:#FDA46A;}
+
+/* Jquery Accordion + Jquery Toggle */
+.accordion-title:hover, .toggle-title:hover, .accordion-wrapper .accordion-title.active, .toggle-wrapper .toggle-title.active{color:#FFFFFF; background-color:#FDA46A;}
+
+
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------------Colour Coding for pages.css------------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+/* Site Wide Shared Classes */
+.blog-post-title a:hover{color:#FDA46A; background-color:inherit;}
+
+/* Homepage */
+#intro ul{border-color:#FDA46A;}
+
+/* Gallery */
+#gallery section figure ul li a:hover::after{color:#FDA46A;}
+
+
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------------Colour Coding for layout.css------------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+.row0{background-color:#F47646; border-color:#FDA46A;}
+.row0 a{background-color:#FDA46A;}
+.row1, .row1 a{}
+.row2{}
+.row3{background-color:#6F2306;}
+.row4{border-color:#F47646;}
+.row5, .row5 a{color:#FFFFFF; background-color:#F47646;}
+.row6, #copyright a, body{color:#FFFFFF; background-color:#6F2306;}
+
+/* Topbar */
+#topbar form input{background-color:#FDA46A;}
+#topbar form button[type="submit"]{color:inherit; background-color:#FFC097;}
+
+/* Footer */
+#p-footer form input{background-color:#F47646;}
+#p-footer form input[type="submit"]{color:inherit; background-color:#FDA46A;}
+
+/* Copyright */
+#copyright{border-color:#F47646;}

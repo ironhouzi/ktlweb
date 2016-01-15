@@ -1,15 +1,45 @@
 {% extends "base.html" %}
 
-{% load upcoming_events %}
-
 {% block body_class %}template-homepage{% endblock %}
 
 {% block content %}
-  {% show_upcoming_events 3 %}
 
-  {% if self.body %}
-    <div class="body-content">
-      {% include "home/includes/streamfield.html" with content=self.body %}
+{% include "home/includes/image_slider.html" with slider_items=self.image_slider.all only %}
+{% include "home/includes/intro_boxes.html" with intro_box_items=self.intro_boxes.all only %}
+
+{% if not self.image_slider.all or not self.intro_boxes.all %}
+<div class="wrapper row3">
+  <div id="pageintro" class="clear">
+    <div class="fl_left">
+      <h2 class="nospace">{{ self.title }}</h2>
     </div>
-  {% endif %}
-{% endblock %}
+    {# <nav class="fl_right breadcrumb"> #}
+    {#   <ul> #}
+    {#     <li><a href="../index.html" title="Home">Home</a></li> #}
+    {#     <li><a href="#" title="Pages">Pages</a></li> #}
+    {#     <li><a href="sidebar-right.html" title="Sidebar Right">Sidebar Right</a></li> #}
+    {#   </ul> #}
+    {# </nav> #}
+  </div>
+</div>
+{% endif %}
+
+<div class="wrapper row4">
+  <div role="main" class="container">
+    <div id="homepage">
+      <div class="col-3-4 first">
+        {% include "home/includes/streamfield_body.html" with content=self.body %}
+      </div>
+      <div id="sidebar_1" class="sidebar col-1-4">
+        <aside>
+        {% include "home/includes/streamfield_side.html" with content=self.sidepanel %}
+        </aside>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <!-- Ensure That Everything Has Been Cleared -->
+  </div>
+  <!-- End class=container -->
+</div>
+<!-- End wrapper row4 -->
+{% endblock content %}

@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'storages',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -75,6 +77,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(PROJECT_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'home', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -124,13 +127,19 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
 
+# compressor settings
+COMPRESS_ENABLED = False
 
 # Wagtail settings
 
-WAGTAIL_SITE_NAME = "ktlweb"
+WAGTAIL_SITE_NAME = 'Karma Tashi Ling buddhistsamfunn'
+
+# TODO: to be removed when email is configured correctly
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 DATABASES['default'] = dj_database_url.config()

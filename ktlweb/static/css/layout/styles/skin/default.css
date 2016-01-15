@@ -1,0 +1,141 @@
+@charset "UTF-8";
+/*
+Template Name: Book Of Wisdom
+Template URI: http://www.os-templates.com/
+Description: Designed and Built by <a href="http://www.os-templates.com/">OS Templates</a>. This modern template is adaptable, lightweight and fully customisable. The template is easy to use, enabling you to create your site within minutes.
+Version: 1.0.1
+Author: OS-Templates.com
+Author URI: http://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Single Site
+Licence URI: http://www.os-templates.com/template-terms
+File: Default Skin CSS
+*/
+
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------------Colour Coding for navigation.css-------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+/* Top Navigation */
+#topnav li a{color:#686868;}
+#topnav ul ul, #topnav li li{border-color:#333333;}
+#topnav li li a, #topnav li.active li a{color:#FFFFFF; background-color:rgba(0,0,0,.6);}
+#topnav li a.drop::before{border-top-color:#686868;}
+#topnav li:hover a.drop::before, #topnav li.active a.drop::before{border-top-color:#FFFFFF;}
+
+/* Top navigation for smaller resolutions */
+#topnav form select{color:inherit; background:#EDEDED; border-color:#E1E1E1;}
+
+/* Sidebar Navigation */
+.sidebar aside nav a{color:#666666; background-color:inherit; border-bottom-color:#E1E0DF;}
+
+/* Pagination */
+.pagination a{border-color:#DFDFDF;}
+
+
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------------Colour Coding for elements.css---------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+/* Call To Action - Best used as a full width banner */
+.calltoaction{color:#000000; background-color:#EFEFEF;}
+
+/* Lists - For ul + ol */
+.list.block li > ul, .list.block li > ol{border-color:#E1E0DF;}
+.list.underline li{border-bottom-color:#E1E0DF;}
+.list.tagcloud li a, .list.posttags li a{color:#686868; background-color:#F1F1F1;}
+.list.posttags li a::before{border-right-color:#F1F1F1;}
+
+/* Dividers */
+hr{background-color:#E1E0DF;}
+.divider1, .divider2, .divider3{border-top-color:#E1E0DF;}
+
+/* Blockquotes / Quotes
+---------------------------------------------------------------------------------------------------------------------------------------*/
+blockquote, q{color:inherit; background-color:#F1F1F1; border-color:#E1E0DF;}
+.testimonial blockquote{color:inherit; background-color:inherit;}
+
+/* Alert Messages */
+.alert-msg{color:inherit;}
+
+/* Pricing Tables */
+.pricingtable-wrapper, .pricingtable-wrapper .pricingtable .pricingtable-list ul li{border-color:#E1E0DF;}
+.pricingtable-wrapper .pricingtable .pricingtable-title, .pricingtable-wrapper .pricingtable .pricingtable-price{color:inherit; background-color:#F1F1F1;}
+
+/* Jquery Tabs */
+.tab-wrapper .tab-nav li a{border-color:#E1E0DF;}
+.tab-wrapper .tab-nav li.ui-tabs-active a{border-bottom-color:#FFFFFF;}
+.tab-wrapper .tab-container{border-color:#E1E0DF;}
+
+/* Jquery Accordion + Jquery Toggle */
+.accordion-wrapper .accordion-title, .accordion-wrapper .accordion-title.active, .toggle-wrapper .toggle-title, .toggle-wrapper .toggle-title.active,
+.accordion-wrapper .accordion-title span, .accordion-wrapper .accordion-title.active span, .toggle-wrapper .toggle-title span, .toggle-wrapper .toggle-title.active span,
+.accordion-wrapper .accordion-content, .toggle-wrapper .toggle-content{border-color:#E1E0DF;}
+
+/* Forms */
+form input, form select, form textarea{color:inherit; background-color:inherit; border-color:#E1E0DF;}
+form input[type="submit"], form input[type="reset"]{color:inherit; background-color:inherit;}
+
+/* Tables */
+table, table td, .table, .table .t-cell{border-color:#E1E0DF;}
+table thead th, .table .t-header .t-cell{color:#686868; background-color:#E1E0DF; border-color:#E1E0DF;}
+table tr, .table .t-row{color:inherit; background-color:inherit;}
+table tr:hover, .table .t-row:hover{color:inherit; background-color:#F1F1F1;}
+
+.table.calendar .t-cell{border-color:;}
+.table.calendar .t-header .t-cell{color:; background-color:;}
+.table.calendar .t-body .t-cell:hover, .table.calendar .t-body .t-cell:empty{background-color:#F1F1F1;}
+.table.calendar .t-row:hover{color:inherit; background:inherit;}
+
+/* Social Icons */
+.social a, .social.coloured a:hover{color:#FFFFFF; background-color:#666666;}
+.social a:hover, .social.coloured a{color:#FFFFFF;}
+
+/* Skillset */
+.skillset span{color:inherit; background-color:#F1F1F1;}
+
+
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------------Colour Coding for pages.css------------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+/* Blog Overview */
+#blog-posts #blog-overview .blog-post-excerpt{border-color:#E1E0DF;}
+
+/* Blog Post Single */
+#blog-post .post-author-bio, 
+#blog-post .post-content-wrapper .post-content .blog-post-meta, 
+#blog-post .blog-post-related ul.related li img, 
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-author .comment-date .comment-reply, 
+#blog-post #comment-list .comment-wrapper .comment-meta .comment-avatar img, 
+#blog-post #comment-list .comment-wrapper .comment-content{border-color:#E1E0DF;}
+
+/* Portfolio Overview */
+#portfolio ul li article{border-color:#E1E0DF;}
+
+/* About Us */
+figure.team-member figcaption .team-description{border-color:#E1E0DF;}
+
+
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------------Colour Coding for layout.css------------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+html.boxed body{color:#919191; background-color:#000000;}
+.boxholder{border-color:#E1E0DF;}
+
+/* Row Styling */
+.row0, .row0 a{color:#FFFFFF;}
+.row1, .row1 a{color:#686868; background-color:#FFFFFF;}
+.row2{color:#686868; background-color:#F1F1F1; border-color:#E1E0DF;}
+.row3, .row3 a{color:#FFFFFF;}
+.row4{color:#686868; background-color:#FFFFFF;}
+.row5{border-color:#FFFFFF;}
+.row6{border-color:#FFFFFF;}
+
+/* Generalise */
+h1 span, h2 span, h3 span, h4 span, h5 span, h6 span{border-color:#E1E0DF;}
+
+/* Main Container => Content + Sidebar */
+.sidebar aside .sbtitle span{color:#E1E0DF; background-color:inherit;}
+.sidebar aside .latest-comments li{border-color:#E1E0DF;}

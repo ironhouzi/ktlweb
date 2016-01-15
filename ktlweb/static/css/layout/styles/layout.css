@@ -1,0 +1,159 @@
+@charset "UTF-8";
+/*
+Template Name: Book Of Wisdom
+Template URI: http://www.os-templates.com/
+Description: Designed and Built by <a href="http://www.os-templates.com/">OS Templates</a>. This modern template is adaptable, lightweight and fully customisable. The template is easy to use, enabling you to create your site within minutes.
+Version: 1.0.1
+Author: OS-Templates.com
+Author URI: http://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Single Site
+Licence URI: http://www.os-templates.com/template-terms
+File: Layout CSS
+*/
+
+/*
+	TOC - Table Of Contents
+	
+	1 => Default Fonts
+	2 => Row Styling
+	3 => Generalise
+	4 => Topbar
+	5 => Header
+	6 => Page Intro
+	7 => Main Container
+	8 => Link Block
+	9 => Footer
+	10 => Copyright
+*/
+
+html{overflow-y:scroll;}
+body{margin:0; padding:0; font-size:13px; text-align:left;}
+
+
+/* Default Fonts
+---------------------------------------------------------------------------------------------------------------------------------------*/
+body{font-family:'OpenSansRegular', Arial, Helvetica, sans-serif;}
+strong, .bold{}
+h1, h2, h3, h4, h5, h6, .times{font-family:"Times New Roman", Times, serif;}
+
+
+/* Row Styling
+---------------------------------------------------------------------------------------------------------------------------------------*/
+.row0{border-bottom:2px solid;}
+.row1, .row1 a{}
+.row2{border-top:3px solid;}
+.row3{}
+.row4{border-bottom:1px solid;}
+.row5{border-top:1px solid;}
+.row6{border-top:1px solid;}
+
+
+/* Generalise
+---------------------------------------------------------------------------------------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6{margin:0 0 30px 0; padding:0; font-weight:normal; line-height:normal;}
+
+h1{font-size:32px;}
+h2{font-size:22px;}
+h3{font-size:18px;}
+h4{font-size:16px;}
+h5{font-size:14px;}
+h6{font-size:14px; text-transform:uppercase; font-weight:bold;}
+
+address{margin:10px 0; font-style:normal;}
+
+#topbar, #header, #topnav, #pageintro, #intro, .container, .linkblock, #p-footer, #copyright{}
+
+.cc.circle{display:inline-block; width:48px; height:48px; margin:0; padding:15px 0 0 0; font-size:18px; line-height:18px; box-sizing:border-box;}
+
+.date-icon{display:table; position:relative; float:left; margin-right:10px; padding:21px 2px 2px 2px; width:59px; height:63px; text-align:center;}
+.date-icon, .date-icon em{border-radius:12%; box-sizing:border-box;}
+.date-icon strong, .date-icon em{font-weight:normal; font-style:normal;}
+.date-icon strong{display:block; position:absolute; top:0; left:0; width:100%; text-transform:uppercase;}
+.date-icon em{display:table-cell; vertical-align:middle; font-size:22px;}
+
+
+/* Topbar
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#topbar{position:relative;}
+
+#topbar form input, #topbar form button{float:left; height:40px; border:none;}
+#topbar form input{width:auto;}
+#topbar form button[type="submit"]{width:40px; margin-left:1px; padding:0;}
+#topbar form button span{margin:0; padding:0; font-size:20px; line-height:20px;}
+
+#topbar .social li{float:left; margin-right:1px;}
+#topbar [class^="socico-"], #topbar [class*=" socico-"]{font-size:1.6em; width:40px; height:40px;}
+
+#slidepanel{display:none; position:relative; width:100%; padding:20px 0; overflow:hidden;}
+#openpanel{display:block; position:absolute; top:100%; left:50%; margin-left:-29px; width:58px; height:24px; overflow:hidden;}
+#openpanel a{display:block; width:58px; height:58px; margin-top:-34px; padding:34px 0 0 21px; font-size:16px; line-height:16px; border-radius:100%; box-sizing:border-box;}
+
+
+/* Header
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#header{padding:30px 0 35px;}
+
+#header .fl_left{margin-top:-3px;}
+#header .fl_left h1, #header .fl_left p{margin:0; font-weight:normal; text-transform:none;}
+#header .fl_left h1{font-size:32px; font-variant:small-caps;}
+#header .fl_left p{font-size:16px; text-transform:capitalize;}
+
+#header .fl_right{padding-top:2px;}
+#header .fl_right ul.meta{margin-bottom:17px;}
+#header .fl_right ul.meta li{margin-left:20px;}
+#header .fl_right ul.meta li:first-child{margin-left:0;}
+#header .fl_right ul.meta li span{margin-right:8px;}
+
+
+/* Page Intro
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#pageintro{padding:30px 0;}
+
+
+/* Main Container => Content + Sidebar
+---------------------------------------------------------------------------------------------------------------------------------------*/
+.container{padding:80px 0; clear:both; font-size:1em; line-height:1.6em;}
+.container section{margin-bottom:50px;}
+.container section:last-child, .container section.last, .container section.nospace{margin-bottom:0;}
+
+.emphasise, .container .emphasise{font-size:2.8em; line-height:1.4em;}
+
+.font-xsmall, .container .font-xsmall{font-size:.8em;}
+.font-small, .container .font-small{font-size:1em;}
+.font-medium, .container .font-medium{font-size:1.2em;}
+.font-large, .container .font-large{font-size:1.4em;}
+.font-xl, .container .xl-large{font-size:4em; line-height:1.2em;}
+.font-xxl, .container .xxl-large{font-size:6em; font-weight:normal; line-height:1.2em;}
+
+/* Sidebar */
+
+.sidebar aside{}
+.sidebar aside .sbtitle{margin:0 0 30px 0; padding:0; font-size:22px; font-family:"Times New Roman", Times, serif;}
+.sidebar aside .sbtitle span{margin:0 10px 0 0; padding:0;}
+
+.sidebar aside .latest-comments li{margin:20px 0 0 0; padding:0 0 20px 0; line-height:normal; border-bottom:1px solid;}
+.sidebar aside .latest-comments li:first-child{margin-top:0;}
+.sidebar aside .latest-comments li img{float:left; margin-right:10px;}
+.sidebar aside .latest-comments li p{margin:0; padding:0;}
+
+
+/* Link Block
+---------------------------------------------------------------------------------------------------------------------------------------*/
+.linkblock{padding:80px 0;}
+.linkblock .title{margin:0 0 50px 0; padding:0 0 10px 0; text-transform:uppercase; text-align:center; border-bottom:1px solid;}
+.linkblock ul{margin:0; padding:0; list-style:none;}
+.linkblock ul li{margin:0 0 8px 0;}
+
+
+/* Footer
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#p-footer{padding:80px 0;}
+
+#p-footer form input{float:left; width:64%; height:30px; border:none; box-sizing:border-box;}
+#p-footer form input[type="submit"]{width:35%; margin-left:1px; padding:0 5px; text-transform:uppercase; font-weight:bold;}
+
+
+/* Copyright
+---------------------------------------------------------------------------------------------------------------------------------------*/
+#copyright{padding:50px 0 45px 0; border-top:1px solid;}

@@ -1,0 +1,181 @@
+@charset "UTF-8";
+/*
+Template Name: Book Of Wisdom
+Template URI: http://www.os-templates.com/
+Description: Designed and Built by <a href="http://www.os-templates.com/">OS Templates</a>. This modern template is adaptable, lightweight and fully customisable. The template is easy to use, enabling you to create your site within minutes.
+Version: 1.0.1
+Author: OS-Templates.com
+Author URI: http://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Single Site
+Licence URI: http://www.os-templates.com/template-terms
+File: Framework CSS
+*/
+
+/*
+	TOC - Table Of Contents
+	
+	1 => HTML 5 Overrides
+	2 => General Classes
+	3 => Grid Layout
+	4 => General Sizing / Spacing
+*/
+
+
+/* HTML 5 Overrides
+---------------------------------------------------------------------------------------------------------------------------------------*/
+address, article, aside, figcaption, figure, footer, header, nav, section{display:block; margin:0; padding:0;}
+
+
+/* General Classes
+---------------------------------------------------------------------------------------------------------------------------------------*/
+.justify{text-align:justify;}
+.bold{font-weight:bold;}
+.center{text-align:center;}
+.right, .read-more{text-align:right;}
+.uppercase{text-transform:uppercase;}
+.normal{font-style:normal;}
+.hidden{display:none;}
+.nospace{margin:0; padding:0;}
+.block{display:block; width:100%; box-sizing:border-box;}
+.iblock{display:inline-block;}
+
+.clear{display:block; clear:both;}
+.clear::after{display:block; visibility:hidden; height:0; clear:both; font-size:0; content:"";}
+
+a, :focus, :active{text-decoration:none; outline:none;}
+
+.fl_left{float:left;}
+.fl_right{float:right;}
+
+img{width:auto; max-width:100%; height:auto; margin:0; padding:0; border:none; line-height:normal; vertical-align:middle;}
+.imgl{float:left; margin:0 15px 10px 0; clear:left;}
+.imgr{float:right; margin:0 0 10px 15px; clear:right;}
+
+nav ul, nav ol{margin:0; padding:0; list-style:none;}
+
+.boxholder{padding:4px; border:1px solid; box-sizing:border-box;}
+
+
+/* Grid Layout - Based on 1140px & uses 48px gutter => 12*51 + 11*48 = 1140px
+---------------------------------------------------------------------------------------------------------------------------------------*/
+[class^="col-"], [class*=" col-"]{position:relative; display:inline; float:left; margin:0 0 0 4.21052631578947%; list-style:none; box-sizing:border-box;}
+[class^="col-"]:first-child, [class*=" col-"]:first-child, .nogutter{margin-left:0;}
+
+.first{margin-left:0; clear:left;}
+
+.full_width{display:block; width:100%; clear:both; box-sizing:border-box;}
+
+body .wrapper{display:block; width:100%; margin:0; padding:0; word-wrap:break-word;}
+html.boxed .wrapper{max-width:90%; margin:0 auto;}
+
+/* Half */
+.col-1-2{width:47.89473684210526%;}
+.col-1-2.nogutter{width:50%;}
+
+/* Third */
+.col-1-3{width:30.52631578947368%;}
+.col-2-3{width:65.26315789473685%;}
+.col-1-3.nogutter{width:33.33333333333333%;}
+.col-2-3.nogutter{width:66.66666666666666%;}
+
+/* Quarter */
+.col-1-4{width:21.8421052631579%;}
+.col-2-4{width:47.89473684210526%;}
+.col-3-4{width:73.94736842105263%;}
+.col-1-4.nogutter{width:25%;}
+.col-2-4.nogutter{width:50%;}
+.col-3-4.nogutter{width:75%;}
+
+/* Fifth */
+.col-1-5{width:16.63157894736842%;}
+.col-2-5{width:37.47368421052632%;}
+.col-3-5{width:58.31578947368421%;}
+.col-4-5{width:79.15789473684211%;}
+.col-1-5.nogutter{width:20%;}
+.col-2-5.nogutter{width:40%;}
+.col-3-5.nogutter{width:60%;}
+.col-4-5.nogutter{width:80%;}
+
+/* Sixth */
+.col-1-6{width:13.1578947368421%;}
+.col-2-6{width:30.52631578947368%;}
+.col-3-6{width:47.89473684210526%;}
+.col-4-6{width:65.26315789473685%;}
+.col-5-6{width:82.63157894736842%;}
+.col-1-6.nogutter{width:16.66666666666666%;}
+.col-2-6.nogutter{width:33.33333333333333%;}
+.col-3-6.nogutter{width:50%;}
+.col-4-6.nogutter{width:66.66666666666666%;}
+.col-5-6.nogutter{width:83.33333333333334%;}
+
+
+/* General Sizing / Spacing
+---------------------------------------------------------------------------------------------------------------------------------------*/
+
+/* Push Elements Down */
+.push5{margin-bottom:5px;}
+.push10{margin-bottom:10px;}
+.push15{margin-bottom:15px;}
+.push20{margin-bottom:20px;}
+.push25{margin-bottom:25px;}
+.push30{margin-bottom:30px;}
+.push35{margin-bottom:35px;}
+.push40{margin-bottom:40px;}
+.push45{margin-bottom:45px;}
+.push50{margin-bottom:50px;}
+.push55{margin-bottom:55px;}
+.push60{margin-bottom:60px;}
+.push65{margin-bottom:65px;}
+.push70{margin-bottom:70px;}
+.push75{margin-bottom:75px;}
+.push80{margin-bottom:80px;}
+.push85{margin-bottom:85px;}
+.push90{margin-bottom:90px;}
+.push95{margin-bottom:95px;}
+.push100{margin-bottom:100px;}
+
+/* Pad Elements Out */
+.pad5{padding:5px;}
+.pad10{padding:10px;}
+.pad15{padding:15px;}
+.pad20{padding:20px;}
+.pad25{padding:25px;}
+.pad30{padding:30px;}
+.pad35{padding:35px;}
+.pad40{padding:40px;}
+.pad45{padding:45px;}
+.pad50{padding:50px;}
+.pad55{padding:55px;}
+.pad60{padding:60px;}
+.pad65{padding:65px;}
+.pad70{padding:70px;}
+.pad75{padding:75px;}
+.pad80{padding:80px;}
+.pad85{padding:85px;}
+.pad90{padding:90px;}
+.pad95{padding:95px;}
+.pad100{padding:100px;}
+
+/* Give Elements Width */
+[class^="w-"], [class*=" w-"]{width:auto; box-sizing:border-box;}
+.w-5{width:5%;}
+.w-10{width:10%;}
+.w-15{width:15%;}
+.w-20{width:20%;}
+.w-25{width:25%;}
+.w-30{width:30%;}
+.w-35{width:35%;}
+.w-40{width:40%;}
+.w-45{width:45%;}
+.w-50{width:50%;}
+.w-55{width:55%;}
+.w-60{width:60%;}
+.w-65{width:65%;}
+.w-70{width:70%;}
+.w-75{width:75%;}
+.w-80{width:80%;}
+.w-85{width:85%;}
+.w-90{width:90%;}
+.w-95{width:95%;}
+.w-100{width:100%;}

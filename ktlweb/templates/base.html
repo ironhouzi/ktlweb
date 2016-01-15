@@ -1,35 +1,152 @@
-{% load static wagtailuserbar %}
+{% load homepage_tags static wagtailuserbar wagtailcore_tags %}
+
+{% get_site_root as site_root %}
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>{% block title %}{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}{% endblock %}{% block title_suffix %}{% endblock %}</title>
-        <meta name="description" content="" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %}{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}{% endblock %}{% block title_suffix %}{% endblock %}</title>
+  <meta name="description" content="Karma Tashi Ling buddhistsenter">
+  <meta name="keywords" content="">
+  <meta name="author" content="Karma Tashi Ling buddhistsenter">
+  <meta name="dcterms.rightsHolder" content="Karma Tashi Ling buddhistsenter">
+  <meta name="dcterms.dateCopyrighted" content="2016">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-        {# Global stylesheets #}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/ktlweb.css' %}">
+  {# Global stylesheets #}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/layout/styles/main.css' %}" media="all">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/layout/styles/mediaqueries.css' %}" media="all">
 
-        {% block extra_css %}
-            {# Override this in templates to add extra stylesheets #}
-        {% endblock %}
-    </head>
+  {% block extra_css %}
+  {# Override this in templates to add extra stylesheets #}
+  {% endblock %}
+</head>
 
-    <body class="{% block body_class %}{% endblock %}">
-        {% wagtailuserbar %}
+<body id="{% block body_id %}top{% endblock %}" class="{% block body_class %}{% endblock %}">
 
-        {% block content %}{% endblock %}
+  {% wagtailuserbar %}
 
-        {# Global javascript #}
-        <script type="text/javascript" src="{% static 'js/ktlweb.js' %}"></script>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- TOPBAR -->
+<div class="wrapper row0">
+  <div id="topbar">
+    <div id="slidepanel" class="clear">
+      <div class="fl_left">
+        {# <form method="get" action="{% url 'search' %}" class="block clear"> #}
+        <form method="get" action="javascript:myFunction(); return false;" class="block clear">
+          <input type="text" value="" size="35">
+          <button class="button" type="submit"><span class="fa fa-search"></span></button>
+        </form>
+      </div>
+      <div class="fl_right">
+        <ul class="social">
+          <li><a class="socico-facebook" title="Facebook" href="#"><span class="fa fa-facebook"><em>Facebook</em></span></a></li>
+          {# <li><a class="socico-pinterest" title="Pinterest" href="#"><span class="fa fa-pinterest"><em>Pinterest</em></span></a></li> #}
+          <li><a class="socico-twitter" title="Twitter" href="#"><span class="fa fa-twitter"><em>Twitter</em></span></a></li>
+          {# <li><a class="socico-dribble" title="Dribble" href="#"><span class="fa fa-dribbble"><em>Dribble</em></span></a></li> #}
+          {# <li><a class="socico-linkedin" title="LinkedIn" href="#"><span class="fa fa-linkedin"><em>LinkedIn</em></span></a></li> #}
+          <li><a class="socico-google-plus" title="Google+" href="#"><span class="fa fa-google-plus"><em>Google+</em></span></a></li>
+          {# <li><a class="socico-skype" title="Skype" href="#"><span class="fa fa-skype"><em>Skype</em></span></a></li> #}
+        </ul>
+      </div>
+    </div>
+    <!-- TOP BAR SLIDER BUTTON -->
+    <div id="openpanel"><a id="slideit" class="fa fa-chevron-down" href="#slidepanel"></a><a id="closeit" class="fa fa-chevron-up" style="display:none;" href="#slidepanel"></a></div>
+  </div>
+</div>
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- HEADER -->
+  <div class="wrapper row1">
+    <header role="banner" id="header" class="clear">
+      <div class="fl_left">
+        <h1><a href="{% pageurl site_root %}">Karma Tashi Ling buddhistsamfunn</a></h1>
+        <p class="times">Norges eldste buddhistsmmfunn for tibetansk buddhisme</p>
+      </div>
+      <div class="fl_right right">
+        <ul class="meta nospace inline">
+          <li><span class="fa fa-phone"></span>+47 22 61 28 84</li>
+          <li><span class="fa fa-envelope-o"></span><a href="mailto:post@ktl.no">post@ktl.no</a></li>
+        </ul>
+      </div>
+    </header>
+  </div>
 
-        {% block extra_js %}
-            {# Override this in templates to add extra javascript #}
-        {% endblock %}
-    </body>
+  {% block menu %}
+    {% get_site_root as site_root %}
+    {% top_menu parent=site_root calling_page=self %}
+  {% endblock %}
+
+  {% block content %}{% endblock %}
+
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- FOOTER -->
+  <div class="wrapper row6">
+    <footer role="contentinfo" id="p-footer" class="clear center">
+      <!-- BLOCK 1 -->
+      <div class="col-1-5 first">
+        <div class="block push30"><span class="cc circle fa fa-map-marker"></span></div>
+        <h6 class="push20">Addresse</h6>
+        <address>
+        Bjørnåsveien 124,<br>
+        1274, Oslo
+        </address>
+      </div>
+      <!-- BLOCK 2 -->
+      <div class="col-1-5">
+        <div class="block push30"><span class="cc circle fa fa-phone"></span></div>
+        <h6 class="push20">Telefon</h6>
+        <p class="nospace">+47 22 61 28 84<br>
+        +47 22 00 89 98</p>
+      </div>
+      <!-- BLOCK 3 -->
+      <div class="col-1-5">
+        <div class="block push30"><span class="cc circle fa fa-envelope-o"></span></div>
+        <h6 class="push20">Epost</h6>
+        <p class="nospace"><a href="mailto:post@ktl.no">post@ktl.no<br>
+        <a href="mailto:webmaster@ktl.no">webmaster@ktl.no</a>
+
+      </div>
+      <!-- BLOCK 4 -->
+      <div class="col-2-5">
+        <div class="block push30"><span class="cc circle fa fa-file-text-o"></span></div>
+        <h6 class="push20">Nyhetsbrev</h6>
+        <form method="post" action="javascript:myFunction(); return false;">
+          <input type="text">
+          <input type="submit" value="Abonnér">
+        </form>
+      </div>
+    </footer>
+    <!-- COPYRIGHT -->
+    <div id="copyright" class="clear">
+      <div class="fl_left">Copyright &copy; 2016 <a href="index.html">Book Of Wisdom</a>. All Rights Reserved</div>
+    </div>
+  </div>
+  <!-- END FOOTER -->
+  <!-- BACK TO TOP BUTTON -->
+  <a href="#top" id="scrolltotop" title="Back To Top"><span class="fa fa-arrow-up fa-2x"></span></a>
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  {# Global javascript #}
+  <script src="{% static 'css/layout/scripts/jquery-latest.min.js' %}"></script>
+  <script src="{% static 'css/layout/scripts/jquery-ui.min.js' %}"></script>
+  <!-- Media -->
+  <script src="{% static 'css/layout/scripts/fitvids/jquery.fitvids.js' %}"></script>
+  <!-- Slider -->
+  <script src="{% static 'css/layout/scripts/flexslider/jquery.flexslider-min.js' %}"></script>
+  <script src="{% static 'css/layout/scripts/flexslider/jquery.flexslider-setup.js' %}"></script>
+  <!-- Custom Settings -->
+  <script src="{% static 'css/layout/scripts/custom.js' %}"></script>
+
+  {% block extra_js %}
+  {# Override this in templates to add extra javascript #}
+  {% endblock %}
+</body>
 </html>

@@ -1,9 +1,23 @@
-<ul>
+<h2><span>Kommende aktiviteter</span></h2>
+<ul class="nospace spacing push50">
 {% for event in events %}
-  <li> "{{ event.summary }}"
-    {{ event.start }} - {{ event.end }}
-    {% if event.full_day %} FULL DAY! {% endif %}
-    @ {{ event.calendar.centre.code }}
+  <li class="clear">
+    <time datetime="{{ event.start|date:"c" }}" class="date-icon"><strong>{{ event.start|date:"b" }}</strong> <em>{{ event.start|date:"j" }}</em></time>
+    <div>
+      <p class="nospace times font-medium">
+        <a href="#">
+          {{ event.summary }}
+        </a>
+      </p>
+      <p class="nospace">
+        {% if not event.full_day %}
+          {{ event.start|time:"TIME_FORMAT" }} -
+          {{ event.end|time:"TIME_FORMAT" }}
+        {% endif %}
+        <span class="fa fa-map-marker"></span>
+        {{ event.calendar.centre.code }}
+      </p>
+    </div>
   </li>
 {% endfor %}
 </ul>

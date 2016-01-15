@@ -1,16 +1,14 @@
 import httplib2
 import os
-import datetime
 import arrow
-import oauth2client
+import json
 
 from pytz import timezone
 
-from oauth2client import client, tools
 from apiclient import discovery
+from oauth2client.client import SignedJwtAssertionCredentials
 
 from .models import Calendar, Centre, Event
-from django.conf import settings
 from django.utils.timezone import (
     get_default_timezone_name, utc, localtime, make_aware, is_naive, now)
 
@@ -18,39 +16,20 @@ from django.utils.timezone import (
 # TODO: check response codes!!!!!!!!!!!!!!!!!
 
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
-CLIENT_SECRET_FILE = 'client_secret.json'
-CREDENTIAL_FILE = '.'.join((settings.WAGTAIL_SITE_NAME, 'json',))
+
 
 def get_credentials():
-    """Gets valid user credentials from storage.
+    '''
+    Gets credentials for server to server google API communications.
+    '''
+    with open(os.environ['JWT_JSON_PATH']) as f:
+        secrets = json.loads(f.read())
 
-    If nothing has been stored, or if the stored credentials are invalid,
-    the OAuth2 flow is completed to obtain the new credentials.
-
-    Returns:
-        Credentials, the obtained credential.
-    """
-    home_dir = os.path.expanduser('~')
-    credential_dir = os.path.join(home_dir, '.credentials')
-
-    if not os.path.exists(credential_dir):
-        os.makedirs(credential_dir)
-
-    credential_path = os.path.join(credential_dir, CREDENTIAL_FILE)
-
-    store = oauth2client.file.Storage(credential_path)
-    credentials = store.get()
-
-    if not credentials or credentials.invalid:
-        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
-        flow.user_agent = settings.WAGTAIL_SITE_NAME
-
-        # XXX: this was originally in a flags test clause from argparse..
-        credentials = tools.run_flow(flow, store, flags)
-
-        print('Storing credentials to ' + credential_path)
-
-    return credentials
+    return SignedJwtAssertionCredentials(
+        secrets['client_email'],
+        secrets['private_key'],
+        SCOPES
+    )
 
 
 def get_remote_calendars(service, items='id,summary,description,accessRole'):
@@ -235,7 +214,7 @@ def db_sync_public(service):
         db_sync_events(service, calendar)
 
 
-def db_populate_full():
+def db_init():
     '''
     Helper function for populating the local database.
     '''

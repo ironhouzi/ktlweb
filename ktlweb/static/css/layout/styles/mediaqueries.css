@@ -1,0 +1,70 @@
+@charset "UTF-8";
+/*
+Template Name: Book Of Wisdom
+Template URI: http://www.os-templates.com/
+Description: Designed and Built by <a href="http://www.os-templates.com/">OS Templates</a>. This modern template is adaptable, lightweight and fully customisable. The template is easy to use, enabling you to create your site within minutes.
+Version: 1.0.1
+Author: OS-Templates.com
+Author URI: http://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Single Site
+Licence URI: http://www.os-templates.com/template-terms
+File: Media Queries CSS
+*/
+
+@-ms-viewport{width:device-width;} /* http://msdn.microsoft.com/en-gb/library/ie/hh869615%28v=vs.85%29.aspx */
+
+
+/* 
+---------------------------------------------------------------------------------------------------------------------------------------*/
+@media screen and (min-width:180px) and (max-width:615px) {
+	#topbar, #header, #topnav, #pageintro, #intro, .container, .linkblock, #p-footer, #copyright{max-width:90%; margin:0 auto;}
+	.imgl, .imgr, .fl_left, .fl_right{display:inline-block; float:none;}
+	[class^="col-"], [class*=" col-"], [class^="col-"].nogutter, [class*=" col-"].nogutter{display:block; float:none; width:auto; margin:0 0 5% 0; padding:0;}
+	
+	#topbar .fl_left, #topbar .fl_right, #header .fl_left, #header .fl_right, #pageintro .fl_left, #pageintro .fl_right, #copyright .fl_left, #copyright .fl_right{display:block; width:auto; margin:0; padding:0;}
+	#topbar .fl_left, #header .fl_left, #pageintro .fl_left, #copyright .fl_left{margin-bottom:20px;}
+	#header, #header .right{text-align:center;}
+
+	#intro ul, #intro li{display:block; width:100%;}
+	#intro li{border-width:0 1px 1px 1px; border-color:inherit;}
+	#intro li:last-child{border-bottom:none;}
+	
+	#comment-list .list li > ul{margin:0 0 0 20px; padding:0; list-style:none;}
+	.comment-wrapper .fl_left.w-10, .comment-wrapper .fl_left.w-90{display:block; width:100%; float:none;}
+	
+	#p-footer [class^="col-"], #p-footer [class*=" col-"]{margin:50px 0 0 0;}
+	#p-footer [class^="col-"].first, #p-footer [class*=" col-"].first{margin:0;}
+}
+
+@media screen and (min-width:180px) and (max-width:850px) {
+	#topnav ul{display:none;}
+}
+
+
+/* Framework Sizing
+---------------------------------------------------------------------------------------------------------------------------------------*/
+@media screen and (min-width:361px) {
+	#topbar, #header, #topnav, #pageintro, #intro, .container, .linkblock, #p-footer, #copyright{max-width:95%; margin:0 auto;}
+}
+
+@media screen and (min-width:1140px) {
+	html.boxed .wrapper, #topbar, #header, #topnav, #pageintro, #intro, .container, .linkblock, #p-footer, #copyright, .boxedslider{max-width:1140px; margin:0 auto;}
+	html.boxed .wrapper{max-width:1200px;}
+	html.boxed #topbar, html.boxed #header, html.boxed #topnav, html.boxed #pageintro, html.boxed #intro, html.boxed .container, html.boxed .linkblock, html.boxed #p-footer, html.boxed #copyright{max-width:95%; margin:0 auto;}
+}
+
+/* Other
+---------------------------------------------------------------------------------------------------------------------------------------*/
+@media screen and (min-width:851px) and (max-width:10000px) {
+	/* Hide The Jquery Generated Navigation Form from 851px upwards */
+	#topnav form{display:none;}
+}
+
+@media screen and (max-width:650px) {
+	/* Creates A Container For Tables To Be Scrolled In  */
+	.res-table{display:block; width:100%; margin:0 0 30px 0; padding:0 0 15px 0; overflow:auto; overflow-x:scroll;}
+	.res-table table, .res-table .table{margin:0; padding:0; white-space:nowrap;}
+	/* Sliders - Hide Captions */
+	.flex-caption{visibility:hidden; opacity:0;}
+}

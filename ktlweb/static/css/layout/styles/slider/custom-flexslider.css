@@ -1,0 +1,119 @@
+/*
+Template Name: Book Of Wisdom
+Template URI: http://www.os-templates.com/
+Description: Designed and Built by <a href="http://www.os-templates.com/">OS Templates</a>. This modern template is adaptable, lightweight and fully customisable. The template is easy to use, enabling you to create your site within minutes.
+Version: 1.0.1
+Author: OS-Templates.com
+Author URI: http://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Single Site
+Licence URI: http://www.os-templates.com/template-terms
+File: Custom FlexSlider CSS
+*/
+
+/*
+ * jQuery FlexSlider v2.0
+ * http://www.woothemes.com/flexslider/
+ *
+ * Copyright 2012 WooThemes
+ * Free to use under the GPLv2 license.
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * Contributing author:Tyler Smith (@mbmufffin)
+ */
+ 
+/* Browser Resets
+*********************************/
+.flex-container a:active, .flexslider a:active, .flex-container a:focus, .flexslider a:focus{outline:none;}
+.flex-slides, .flex-control-nav, .flex-direction-nav{margin:0; padding:0; list-style:none;}
+
+/* Icon Fonts
+*********************************/
+/* Font-face Icons */
+@font-face{
+	font-family:"flexslider-icon";
+	src:url("font/flexslider-icon.eot");
+	src:url("font/flexslider-icon.eot?#iefix") format("embedded-opentype"),
+		url("font/flexslider-icon.woff") format("woff"),
+		url("font/flexslider-icon.ttf") format("truetype"),
+		url("font/flexslider-icon.svg#flexslider-icon") format("svg");
+	font-weight:normal;
+	font-style:normal;
+	}
+
+/* FlexSlider Necessary Styles
+*********************************/ 
+.flexslider{margin:0; padding:0;}
+.flexslider .flex-slides > li{display:none; -webkit-backface-visibility:hidden; position:relative;}/* Hide the slides before the JS is loaded. Avoids image jumping */
+
+.flexslider .flex-slides a{text-decoration:none; outline:none;}
+.flexslider .flex-slides a img{border:none;}
+.flexslider .flex-slides img{max-width:100%; display:block;}
+.flex-pauseplay span{text-transform:capitalize;}
+
+/* Clearfix for the .flex-slides element */
+.flex-slides::after{content:"."; display:block; clear:both; visibility:hidden; line-height:0; height:0;}
+html[xmlns] .flex-slides{display:block;}
+* html .flex-slides{height:1%;}
+
+/* FlexSlider Default Theme
+*********************************/
+.flexslider{position:relative; margin:0;}
+.flex-viewport{max-height:2000px; direction:ltr;}
+.loading .flex-viewport{max-height:300px;}
+
+.carousel li{margin-right:30px;}
+.carousel li:last-child{margin-right:0;}
+
+/* Direction Nav */
+.flex-direction-nav{*height:0; line-height:normal;}
+.flex-direction-nav li{display:inline-block; position:absolute; top:50%; width:30px; height:30px; margin:-15px 0 0 0; z-index:10;}
+.flex-direction-nav li:first-child{left:10px;}
+.flex-direction-nav li:last-child{right:10px;}
+
+.flex-direction-nav a{display:table-cell; width:30px; height:30px; padding:2px 0 0 0; font-size:18px; line-height:18px; font-family:"flexslider-icon"; text-align:center; vertical-align:middle; opacity:0; cursor:pointer; box-sizing:border-box; border-radius:50%; transition:all .3s ease;}
+.flex-direction-nav a::before{content:"\f001";}
+.flex-direction-nav a.flex-next::before{content:"\f002";}
+.flex-direction-nav a{color:#FFF; background-color:#000;}
+
+.flexslider:hover .flex-prev, .flexslider:hover .flex-next{opacity:0.7;}
+.flexslider:hover .flex-next:hover, .flexslider:hover .flex-prev:hover{opacity:1;}
+.flex-direction-nav .flex-disabled{opacity:0!important; cursor:default;}
+
+.flex-direction-nav em{display:none;}
+
+/* Direction Nav - Carousel Custom Override */
+.carousel.flex-carousel{position:relative;}
+.carousel.flex-carousel .flex-direction-nav{display:block; position:absolute; top:-25px; right:0; width:42px;}
+.carousel.flex-carousel .flex-direction-nav li{width:20px; height:20px; margin:0;}
+.carousel.flex-carousel .flex-direction-nav li:first-child{left:0;}
+.carousel.flex-carousel .flex-direction-nav li:last-child{right:0;}
+
+.carousel.flex-carousel .flex-direction-nav a{width:20px; height:20px; font-size:13px; line-height:13px;}
+
+/* Pause/Play */
+.flex-pauseplay a{display:block; position:absolute; bottom:5px; left:10px; width:20px; height:20px; color:#000; opacity:0.8; z-index:10; overflow:hidden; cursor:pointer; }
+.flex-pauseplay a::before{display:inline-block; font-family:"flexslider-icon"; font-size:20px; content:'\f004';}
+.flex-pauseplay a:hover{opacity:1;}
+.flex-pauseplay a.flex-play::before{content:'\f003';}
+
+/* Control Nav */
+.flex-control-nav{width:100%; position:absolute; bottom:-40px; text-align:center;}
+.flex-control-nav li{margin:0 6px; display:inline-block; zoom:1; *display:inline;}
+.flex-control-paging li a{width:11px; height:11px; display:block; background:#666; background:rgba(0,0,0,0.5); cursor:pointer; text-indent:-9999px; border-radius:20px; box-shadow:inset 0 0 3px rgba(0,0,0,0.3);}
+.flex-control-paging li a:hover{background:#333; background:rgba(0,0,0,0.7);}
+.flex-control-paging li a.flex-active{background:#000; background:rgba(0,0,0,0.9); cursor:default;}
+
+.flex-control-thumbs{margin:0; position:static; overflow:hidden; border-top:1px solid transparent;}
+.flex-control-thumbs li{width:25%; float:left; margin:0;}
+.flex-control-thumbs img{width:100%; display:block; opacity:.7; cursor:pointer;}
+.flex-control-thumbs img:hover{opacity:1;}
+.flex-control-thumbs .flex-active{opacity:1; cursor:default;}
+
+/* Captions */
+.flex-caption{display:block; width:100%; box-sizing:border-box;}
+.flex-caption{position:absolute; bottom:0; left:0; margin:0; padding:20px 15px; color:#FFF; background:#000; background:rgba(0,0,0,0.7);}
+.flex-caption *{margin:0; padding:0; font-size:1em;}
+
+/* Homepage */
+.full_width .flexslider{max-height:600px; overflow:hidden;}

@@ -1,0 +1,50 @@
+@charset "UTF-8";
+/*
+Template Name: Book Of Wisdom
+Template URI: http://www.os-templates.com/
+Description: Designed and Built by <a href="http://www.os-templates.com/">OS Templates</a>. This modern template is adaptable, lightweight and fully customisable. The template is easy to use, enabling you to create your site within minutes.
+Version: 1.0.1
+Author: OS-Templates.com
+Author URI: http://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Single Site
+Licence URI: http://www.os-templates.com/template-terms
+File: Main CSS
+*/
+
+/* Fonts */
+@import url("fonts/open-sans/stylesheet.css");
+@import url("fonts/font-awesome/css/font-awesome.min.css");
+
+/* Custom Sliders */
+@import url("slider/custom-flexslider.css");
+
+/* Lightbox */
+@import url("../scripts/nivo-lightbox/nivo-lightbox.css");
+@import url("../scripts/nivo-lightbox/themes/default/default.css");
+@import url("../scripts/nivo-lightbox/nivo-lightbox-custom.css");
+
+/* Layout */
+@import url("layout.css");
+@import url("navigation.css");
+@import url("pages.css");
+@import url("elements.css");
+@import url("framework.css");
+
+/* Layout Skin */
+@import url("skin/default.css");
+
+/* Colour
+@import url("colours/blue.css");
+@import url("colours/green.css");
+@import url("colours/orange.css");
+@import url("colours/purple.css");
+@import url("colours/red.css"); */
+
+@import url("colours/red.css");
+
+/* Custom CSS & Overrides
+It is possible that updates will be carried out on core files, so if you have modified the core files and wish to update them you will have a job of finding your changes
+If you want to add your own css or override any of the pre-defined elements we suggest you use the custom.css file
+This file will never be updated by us, so your changes won't be affected */
+@import url("custom.css");
