@@ -22,8 +22,16 @@ def get_credentials():
     '''
     Gets credentials for server to server google API communications.
     '''
-    with open(os.environ['JWT_JSON_PATH']) as f:
-        secrets = json.loads(f.read())
+    json_path = os.environ.get('JWT_JSON_PATH')
+
+    if json_path:
+        with open(json_path) as f:
+            secrets = json.loads(f.read())
+    else:
+        secrets = {
+            'client_email': os.environ['GCAL_CLIENT_MAIL'],
+            'private_key': os.environ['GCAL_PRIVATE_KEY']
+        }
 
     return SignedJwtAssertionCredentials(
         secrets['client_email'],
