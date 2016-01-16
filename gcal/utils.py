@@ -30,7 +30,7 @@ def get_credentials():
     else:
         secrets = {
             'client_email': os.environ['GCAL_CLIENT_MAIL'],
-            'private_key': os.environ['GCAL_PRIVATE_KEY']
+            'private_key': os.environ['GCAL_PRIVATE_KEY'].replace('\\n', '\n')
         }
 
     return SignedJwtAssertionCredentials(
