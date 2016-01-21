@@ -139,7 +139,4 @@ COMPRESS_ENABLED = False
 
 WAGTAIL_SITE_NAME = 'Karma Tashi Ling buddhistsamfunn'
 
-# TODO: to be removed when email is configured correctly
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 DATABASES['default'] = dj_database_url.config()
