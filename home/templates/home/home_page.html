@@ -7,7 +7,7 @@
 {% include "home/includes/image_slider.html" with slider_items=self.image_slider.all only %}
 {% include "home/includes/intro_boxes.html" with intro_box_items=self.intro_boxes.all only %}
 
-{% if not self.image_slider.all or not self.intro_boxes.all %}
+{% if not self.image_slider.all and not self.intro_boxes.all %}
 <div class="wrapper row3">
   <div id="pageintro" class="clear">
     <div class="fl_left">
