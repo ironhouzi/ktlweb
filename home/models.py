@@ -8,8 +8,8 @@ from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from wagtail.wagtaildocs.edit_handlers import DocumentChooserPanel
 from wagtail.wagtailcore.blocks import (
-    TextBlock, StructBlock, StreamBlock, FieldBlock,
-    CharBlock, RichTextBlock
+    TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock, ListBlock,
+    URLBlock, PageChooserBlock
 )
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, MultiFieldPanel, InlinePanel,
@@ -93,38 +93,9 @@ class RelatedLink(LinkFields):
         abstract = True
 
 
-class IntroBox(LinkFields):
-    header = models.CharField(
-        'Overskrift', max_length=255, help_text='Kortfattet emneforklaring'
-    )
-    subtitle = models.CharField(
-        'Undertittel', max_length=255, help_text='Kortfattet undertittel'
-    )
-    icon = models.CharField(
-        'Ikon', max_length=50,
-        help_text='Velg ikonnavn fra http://font-awesome.io/cheatsheet/'
-    )
-
-    panels = [
-        MultiFieldPanel(LinkFields.panels, 'Lenke'),
-        FieldPanel('header'),
-        FieldPanel('subtitle'),
-        FieldPanel('icon'),
-    ]
-
-    class Meta:
-        abstract = True
-
-
 class HomePageFullWidthImageSlider(Orderable, FullWidthImageSliderItem):
     page = ParentalKey(
         'home.HomePage', related_name='image_slider', verbose_name='side'
-    )
-
-
-class HomePageIntroBox(Orderable, IntroBox):
-    page = ParentalKey(
-        'home.HomePage', related_name='intro_boxes', verbose_name='side'
     )
 
 
@@ -171,6 +142,38 @@ class EventsBlock(StructBlock):
         template='gcal/blocks/display_events.html'
 
 
+class LinkBlock(StructBlock):
+    external_url = URLBlock(label='Ekstern lenke', required=False)
+    page_link = PageChooserBlock(label='Intern lenke', required=False)
+    document = DocumentChooserBlock(label='Dokument-lenke', required=False)
+
+
+class QuickLinkBlock(StructBlock):
+    link = LinkBlock(label='lenke', required=True)
+    caption = CharBlock(label='Overskrift')
+    subcaption = CharBlock(label='Undertittel')
+    icon = CharBlock(label='Ikon')
+
+    def get_context(self, value):
+        context = super().get_context(value)
+        link = value['link']
+
+        if link['external_url']:
+            value['url'] = link['external_url']
+        elif link['page_link']:
+            value['url'] = link['page_link'].url
+        elif link['document']:
+            value['url'] = link['document'].url
+        else:
+            value['url'] = '#'
+
+        return context
+
+    class Meta:
+        icon = 'link'
+        template='home/blocks/display_quicklinks.html'
+
+
 class ImageBlock(StructBlock):
     image = ImageChooserBlock(label='Bilde')
     caption = RichTextBlock(label='Bildetekst')
@@ -192,8 +195,13 @@ class SidePanelStreamBlock(StreamBlock):
     eventviewer = EventsBlock(label='Vis kommende aktiviteter')
 
 
+class HeadingPanelStreamBlock(StreamBlock):
+    quicklinks = QuickLinkBlock(label='Snarveispanel')
+
+
 class HomePage(Page):
     body = StreamField(HomePageStreamBlock(), verbose_name='hovedinnhold')
+    headingpanel = StreamField(HeadingPanelStreamBlock(), verbose_name='overpanel')
     sidepanel = StreamField(SidePanelStreamBlock(), verbose_name='sidepanel')
 
     class Meta:
@@ -202,19 +210,18 @@ class HomePage(Page):
     content_panels = [
         FieldPanel('title', classname='full tittel'),
         InlinePanel('image_slider', label='Bildefremviser i full bredde'),
-        InlinePanel('intro_boxes',
-                    label='Boks-elementer for hurtiglenker til viktige sider.'),
         StreamFieldPanel('body'),
         InlinePanel('related_links', label='Relatert lenke'),
     ]
 
-    sidepanel_panels = [
+    pagesection_panels = [
+        StreamFieldPanel('headingpanel'),
         StreamFieldPanel('sidepanel'),
     ]
 
     edit_handler = TabbedInterface([
         ObjectList(content_panels, heading='Hovedinnhold'),
-        ObjectList(sidepanel_panels, heading='Sidepanel'),
+        ObjectList(pagesection_panels, heading='Seksjoner'),
         ObjectList(Page.promote_panels, heading='Promovér'),
         ObjectList(
             Page.settings_panels,
