@@ -1,22 +1,17 @@
 from django.db import models
 from django import forms
 
-from wagtail.wagtailcore.models import Page, Orderable
+from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import StreamField
 from wagtail.wagtailimages.blocks import ImageChooserBlock
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
-from wagtail.wagtaildocs.edit_handlers import DocumentChooserPanel
 from wagtail.wagtailcore.blocks import (
     TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock, ListBlock,
     URLBlock, PageChooserBlock
 )
 from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, MultiFieldPanel, InlinePanel,
-    PageChooserPanel, StreamFieldPanel, TabbedInterface, ObjectList
+    FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
 )
-
-from modelcluster.fields import ParentalKey
 
 
 class PullQuoteBlock(StructBlock):
