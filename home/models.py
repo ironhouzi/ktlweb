@@ -19,92 +19,6 @@ from wagtail.wagtailadmin.edit_handlers import (
 from modelcluster.fields import ParentalKey
 
 
-class LinkFields(models.Model):
-    link_external = models.URLField(
-        blank=True,
-        verbose_name='Ekstern lenke',
-        help_text='Lenke til en side utenfor ktl.no'
-    )
-    link_page = models.ForeignKey(
-        'wagtailcore.Page',
-        null=True,
-        blank=True,
-        related_name='+',
-        verbose_name='Intern lenke',
-        help_text='Lenke til en side hos ktl.no'
-    )
-    link_document = models.ForeignKey(
-        'wagtaildocs.Document',
-        null=True,
-        blank=True,
-        related_name='+',
-        verbose_name='Dokument-lenke',
-        help_text='Lenke til et dokument'
-    )
-
-    @property
-    def link(self):
-        if self.link_page:
-            return self.link_page.url
-        elif self.link_document:
-            return self.link_document.url
-        else:
-            return self.link_external
-
-    panels = [
-        PageChooserPanel('link_page'),
-        DocumentChooserPanel('link_document'),
-        FieldPanel('link_external'),
-    ]
-
-    class Meta:
-        abstract = True
-
-
-class FullWidthImageSliderItem(LinkFields):
-    image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        verbose_name='bilde',
-        help_text=('Alle bildene bør være av samme størrelse'
-                   ', og bredere enn 1500px')
-    )
-
-    panels = [
-        ImageChooserPanel('image'),
-    ]
-
-    class Meta:
-        abstract = True
-
-
-class RelatedLink(LinkFields):
-    title = models.CharField(max_length=255, help_text='Lenketittel')
-
-    panels = [
-        FieldPanel('title'),
-        MultiFieldPanel(LinkFields.panels, 'Lenke'),
-    ]
-
-    class Meta:
-        abstract = True
-
-
-class HomePageFullWidthImageSlider(Orderable, FullWidthImageSliderItem):
-    page = ParentalKey(
-        'home.HomePage', related_name='image_slider', verbose_name='side'
-    )
-
-
-class HomePageRelatedLink(Orderable, RelatedLink):
-    page = ParentalKey(
-        'home.HomePage', related_name='related_links', verbose_name='side'
-    )
-
-
 class PullQuoteBlock(StructBlock):
     quote = TextBlock('sitat')
     attribution = CharBlock('tilegnelse')
@@ -147,6 +61,9 @@ class LinkBlock(StructBlock):
     page_link = PageChooserBlock(label='Intern lenke', required=False)
     document = DocumentChooserBlock(label='Dokument- lenke', required=False)
 
+    class Meta:
+        abstract = True
+
 
 class QuickLinkBlock(StructBlock):
     link = LinkBlock(label='lenke', required=True)
@@ -171,7 +88,15 @@ class QuickLinkBlock(StructBlock):
 
     class Meta:
         icon = 'link'
-        template='home/blocks/display_quicklinks.html'
+        template='home/blocks/quicklink.html'
+
+
+class ImageSliderBlock(StructBlock):
+    image = ImageChooserBlock(label='Bilde')
+
+    class Meta:
+        icon = 'image'
+        template='home/blocks/slider_image.html'
 
 
 class ImageBlock(StructBlock):
@@ -196,7 +121,18 @@ class SidePanelStreamBlock(StreamBlock):
 
 
 class HeadingPanelStreamBlock(StreamBlock):
-    quicklinks = ListBlock(QuickLinkBlock(label='Snarveispanel'))
+    quicklinks = ListBlock(
+        QuickLinkBlock(),
+        icon='link',
+        label='Snarveis- panel',
+        template='home/blocks/quicklink_list.html'
+    )
+    imageslider = ListBlock(
+        ImageSliderBlock(),
+        icon='image',
+        label='Bilde- karusell',
+        template='home/blocks/imageslider_list.html'
+    )
 
 
 class HomePage(Page):
@@ -208,10 +144,8 @@ class HomePage(Page):
         verbose_name = "hjemmeside"
 
     content_panels = [
-        FieldPanel('title', classname='full tittel'),
-        InlinePanel('image_slider', label='Bildefremviser i full bredde'),
+        FieldPanel('title'),
         StreamFieldPanel('body'),
-        InlinePanel('related_links', label='Relatert lenke'),
     ]
 
     pagesection_panels = [
