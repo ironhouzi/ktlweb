@@ -145,7 +145,7 @@ class EventsBlock(StructBlock):
 class LinkBlock(StructBlock):
     external_url = URLBlock(label='Ekstern lenke', required=False)
     page_link = PageChooserBlock(label='Intern lenke', required=False)
-    document = DocumentChooserBlock(label='Dokument-lenke', required=False)
+    document = DocumentChooserBlock(label='Dokument- lenke', required=False)
 
 
 class QuickLinkBlock(StructBlock):
@@ -196,7 +196,7 @@ class SidePanelStreamBlock(StreamBlock):
 
 
 class HeadingPanelStreamBlock(StreamBlock):
-    quicklinks = QuickLinkBlock(label='Snarveispanel')
+    quicklinks = ListBlock(QuickLinkBlock(label='Snarveispanel'))
 
 
 class HomePage(Page):

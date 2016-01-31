@@ -1,15 +1,15 @@
 {% load wagtailimages_tags %}
 
 {% if content %}
-<div class="wrapper row0">
-  <div id="intro" class="clear">
-    <ul class="nospace">
       {% for stream_item in content %}
         {% if stream_item.block_type == 'quicklinks' %}
-          {{ stream_item }}
+          <div class="wrapper row0">
+            <div id="intro" class="clear">
+              <ul class="nospace">
+                {{ stream_item }}
+              </ul>
+            </div>
+          </div>
         {% endif %}
       {% endfor %}
-    </ul>
-  </div>
-</div>
 {% endif %}
