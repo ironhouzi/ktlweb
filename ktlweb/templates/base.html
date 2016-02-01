@@ -38,8 +38,7 @@
   <div id="topbar">
     <div id="slidepanel" class="clear">
       <div class="fl_left">
-        {# <form method="get" action="{% url 'search' %}" class="block clear"> #}
-        <form method="get" action="javascript:myFunction(); return false;" class="block clear">
+        <form action="{% url 'search' %}" class="block clear" method="get">
           <input type="text" value="" size="35">
           <button class="button" type="submit"><span class="fa fa-search"></span></button>
         </form>

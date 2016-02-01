@@ -12,6 +12,7 @@ from wagtail.wagtailcore.blocks import (
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
 )
+from wagtail.wagtailsearch import index
 
 
 class PullQuoteBlock(StructBlock):
@@ -137,6 +138,10 @@ class HomePage(Page):
 
     class Meta:
         verbose_name = "hjemmeside"
+
+    search_fields = Page.search_fields + (
+        index.SearchField('body'),
+    )
 
     content_panels = [
         FieldPanel('title'),

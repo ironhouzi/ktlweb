@@ -7,6 +7,7 @@ from wagtail.wagtailcore.fields import RichTextField
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
+from wagtail.wagtailsearch import index
 
 # TODO:
 # [ ] Event FK.
@@ -68,6 +69,12 @@ class NewsEntry(Page):
     @property
     def news_index(self):
         return self.get_ancestors().type(NewsEntryIndex).last()
+
+    search_fields = Page.search_fields + (
+        index.SearchField('description'),
+        index.SearchField('details'),
+        index.FilterField('date'),
+    )
 
     content_panels = Page.content_panels + [
         FieldPanel('description'),
