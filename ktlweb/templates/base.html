@@ -29,7 +29,7 @@
 
 <body id="{% block body_id %}top{% endblock %}" class="{% block body_class %}{% endblock %}">
 
-  {% wagtailuserbar %}
+{% wagtailuserbar %}
 
 <!-- ################################################################################################ -->
 <!-- ################################################################################################ -->
@@ -39,7 +39,7 @@
     <div id="slidepanel" class="clear">
       <div class="fl_left">
         <form action="{% url 'search' %}" class="block clear" method="get">
-          <input type="text" value="" size="35">
+          <input type="text" value="" name="query" size="35"/>
           <button class="button" type="submit"><span class="fa fa-search"></span></button>
         </form>
       </div>

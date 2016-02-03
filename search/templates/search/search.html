@@ -1,38 +1,62 @@
-{% extends "base.html" %}
-{% load static wagtailcore_tags %}
+{% extends "home/home_page.html" %}
 
-{% block body_class %}template-searchresults{% endblock %}
+{% load wagtailcore_tags %}
 
-{% block title %}Search{% endblock %}
+{% block title %}KTL - Søk{% endblock %}
 
 {% block content %}
-    <h1>Search</h1>
+{% block heading %}
+<div class="wrapper row3">
+  <div id="pageintro" class="clear">
+    <div class="fl_right">
+      <div id="topbar">
+        {{ search_results|length }} treff
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock heading %}
 
-    <form action="{% url 'search' %}" method="get">
-        <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
-        <input type="submit" value="Search">
-    </form>
+<div class="wrapper row4">
+  <div role="main" class="container">
+    <!-- ################################################################################################ -->
+    <div id="fof" class="clear">
+      {% if search_results %}
+      <ul>
+        {% for result in search_results %}
+        <li>
+          <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
+          {% if result.search_description %}
+          {{ result.search_description|safe }}
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
 
-    {% if search_results %}
-        <ul>
-            {% for result in search_results %}
-                <li>
-                    <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
-                    {% if result.search_description %}
-                        {{ result.search_description|safe }}
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
+      {% if search_results.has_previous %}
+      <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
+      {% endif %}
 
-        {% if search_results.has_previous %}
-            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
-        {% endif %}
-
-        {% if search_results.has_next %}
-            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
-        {% endif %}
-    {% elif search_query %}
-        No results found
-    {% endif %}
-{% endblock %}
+      {% if search_results.has_next %}
+      <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
+      {% endif %}
+      {% elif search_query %}
+        <p class="notice">Beklager, ingen treff funnet.</p>
+        <p>Gå tilbake til <a href="{% pageurl site_root %}">forsiden</a> eller gjør et nytt søk for å prøve å finne det du ser etter:</p>
+        <form action="{% url 'search' %}" class="block clear" method="get">
+          <input type="text" name="query" size="35"/>
+          <button class="button red" type="submit"><span class="fa fa-search"></span></button>
+        </form>
+      {% endif %}
+      <!-- ####################################################################################################### -->
+      {# <h1>404</h1> #}
+      {# <h2>An error occured</h2> #}
+      <!-- ####################################################################################################### -->
+    </div>
+    <!-- ################################################################################################ -->
+    <div class="clear"></div>
+    <!-- Ensure That Everything Has Been Cleared -->
+  </div>
+  <!-- End class=container -->
+</div>
+{% endblock content %}

@@ -1,23 +1,23 @@
 {% load wagtailimages_tags %}
 
 {% if content %}
-      {% for stream_item in content %}
-        {% if stream_item.block_type == 'quicklinks' %}
-          <div class="wrapper row0">
-            <div id="intro" class="clear">
-              {{ stream_item }}
-            </div>
+  {% for stream_item in content %}
+    {% if stream_item.block_type == 'quicklinks' %}
+      <div class="wrapper row0">
+        <div id="intro" class="clear">
+          {{ stream_item }}
+        </div>
+      </div>
+    {% elif stream_item.block_type == 'imageslider' %}
+      <div class="wrapper full_width">
+        <div class="flex-container">
+          <div class="flexslider flex-homepage">
+            {{ stream_item }}
           </div>
-        {% elif stream_item.block_type == 'imageslider' %}
-          <div class="wrapper full_width">
-            <div class="flex-container">
-              <div class="flexslider flex-homepage">
-                {{ stream_item }}
-              </div>
-            </div>
-          </div>
-        {% endif %}
-      {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
 {% else %}
   <div class="wrapper row3">
     <div id="pageintro" class="clear">
