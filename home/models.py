@@ -27,21 +27,25 @@ class PullQuoteBlock(StructBlock):
 
 
 class UpcomingEventCountChoiceField(FieldBlock):
-    field = forms.ChoiceField(choices=(
-        ('3', 'Tre aktviteter'),
-        ('5', 'Fem aktviteter'),
-        ('7', 'Syv aktviteter'),
-        ('10', 'Ti aktviteter'),
-    ))
+    field = forms.ChoiceField(
+        choices=(
+            ('3', 'Tre aktviteter'),
+            ('5', 'Fem aktviteter'),
+            ('7', 'Syv aktviteter'),
+            ('10', 'Ti aktviteter'),
+        )
+    )
 
 
 class ImageFormatChoiceBlock(FieldBlock):
-    field = forms.ChoiceField(choices=(
-        ('left', 'Venstrejustér'),
-        ('right', 'Høyrejustér'),
-        # ('mid', 'Midtstill'),
-        ('full', 'Full størrelse'),
-    ))
+    field = forms.ChoiceField(
+        choices=(
+            ('left', 'Venstrejustér'),
+            ('right', 'Høyrejustér'),
+            # ('mid', 'Midtstill'),
+            ('full', 'Full størrelse'),
+        )
+    )
 
 
 class EventsBlock(StructBlock):
@@ -50,6 +54,9 @@ class EventsBlock(StructBlock):
     class Meta:
         icon = 'date'
         template='gcal/blocks/display_events.html'
+        help_text = (
+            'Ved å aktivere dette valget vil kommende aktiviteter vises.'
+        )
 
 
 class LinkBlock(StructBlock):
@@ -59,13 +66,26 @@ class LinkBlock(StructBlock):
 
     class Meta:
         abstract = True
+        help_text = 'Velg kun èn lenke-type (ekstern/intern/dokument).'
 
 
 class QuickLinkBlock(StructBlock):
     link = LinkBlock(label='lenke', required=True)
-    caption = CharBlock(label='Overskrift')
-    subcaption = CharBlock(label='Undertittel')
-    icon = CharBlock(label='Ikon')
+    caption = CharBlock(
+        label='Overskrift',
+        help_text='Vær kortfattet, slik at teksten vises riktig.',
+        max_length=50
+    )
+    subcaption = CharBlock(
+        label='Undertittel',
+        help_text='Vær kortfattet, slik at teksten vises riktig.',
+        max_length=50
+    )
+    icon = CharBlock(
+        label='Ikon',
+        help_text='Velg ikonnavn fra http://fontawesome.io/cheatsheet/',
+        max_length=50
+    )
 
     def get_context(self, value):
         context = super().get_context(value)
@@ -133,7 +153,10 @@ class HeadingPanelStreamBlock(StreamBlock):
 
 class HomePage(Page):
     body = StreamField(HomePageStreamBlock(), verbose_name='hovedinnhold')
-    headingpanel = StreamField(HeadingPanelStreamBlock(), verbose_name='overpanel')
+    headingpanel = StreamField(
+        HeadingPanelStreamBlock(),
+        verbose_name='overpanel'
+    )
     sidepanel = StreamField(SidePanelStreamBlock(), verbose_name='sidepanel')
 
     class Meta:
