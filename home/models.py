@@ -1,137 +1,18 @@
 from django.db import models
 from django import forms
 
-from wagtail.wagtailcore.models import Page, Orderable
+from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import StreamField
 from wagtail.wagtailimages.blocks import ImageChooserBlock
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
-from wagtail.wagtaildocs.edit_handlers import DocumentChooserPanel
 from wagtail.wagtailcore.blocks import (
-    TextBlock, StructBlock, StreamBlock, FieldBlock,
-    CharBlock, RichTextBlock
+    TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock, ListBlock,
+    URLBlock, PageChooserBlock
 )
 from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, MultiFieldPanel, InlinePanel,
-    PageChooserPanel, StreamFieldPanel, TabbedInterface, ObjectList
+    FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
 )
-
-from modelcluster.fields import ParentalKey
-
-
-class LinkFields(models.Model):
-    link_external = models.URLField(
-        blank=True,
-        verbose_name='Ekstern lenke',
-        help_text='Lenke til en side utenfor ktl.no'
-    )
-    link_page = models.ForeignKey(
-        'wagtailcore.Page',
-        null=True,
-        blank=True,
-        related_name='+',
-        verbose_name='Intern lenke',
-        help_text='Lenke til en side hos ktl.no'
-    )
-    link_document = models.ForeignKey(
-        'wagtaildocs.Document',
-        null=True,
-        blank=True,
-        related_name='+',
-        verbose_name='Dokument-lenke',
-        help_text='Lenke til et dokument'
-    )
-
-    @property
-    def link(self):
-        if self.link_page:
-            return self.link_page.url
-        elif self.link_document:
-            return self.link_document.url
-        else:
-            return self.link_external
-
-    panels = [
-        PageChooserPanel('link_page'),
-        DocumentChooserPanel('link_document'),
-        FieldPanel('link_external'),
-    ]
-
-    class Meta:
-        abstract = True
-
-
-class FullWidthImageSliderItem(LinkFields):
-    image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        verbose_name='bilde',
-        help_text=('Alle bildene bør være av samme størrelse'
-                   ', og bredere enn 1500px')
-    )
-
-    panels = [
-        ImageChooserPanel('image'),
-    ]
-
-    class Meta:
-        abstract = True
-
-
-class RelatedLink(LinkFields):
-    title = models.CharField(max_length=255, help_text='Lenketittel')
-
-    panels = [
-        FieldPanel('title'),
-        MultiFieldPanel(LinkFields.panels, 'Lenke'),
-    ]
-
-    class Meta:
-        abstract = True
-
-
-class IntroBox(LinkFields):
-    header = models.CharField(
-        'Overskrift', max_length=255, help_text='Kortfattet emneforklaring'
-    )
-    subtitle = models.CharField(
-        'Undertittel', max_length=255, help_text='Kortfattet undertittel'
-    )
-    icon = models.CharField(
-        'Ikon', max_length=50,
-        help_text='Velg ikonnavn fra http://font-awesome.io/cheatsheet/'
-    )
-
-    panels = [
-        MultiFieldPanel(LinkFields.panels, 'Lenke'),
-        FieldPanel('header'),
-        FieldPanel('subtitle'),
-        FieldPanel('icon'),
-    ]
-
-    class Meta:
-        abstract = True
-
-
-class HomePageFullWidthImageSlider(Orderable, FullWidthImageSliderItem):
-    page = ParentalKey(
-        'home.HomePage', related_name='image_slider', verbose_name='side'
-    )
-
-
-class HomePageIntroBox(Orderable, IntroBox):
-    page = ParentalKey(
-        'home.HomePage', related_name='intro_boxes', verbose_name='side'
-    )
-
-
-class HomePageRelatedLink(Orderable, RelatedLink):
-    page = ParentalKey(
-        'home.HomePage', related_name='related_links', verbose_name='side'
-    )
+from wagtail.wagtailsearch import index
 
 
 class PullQuoteBlock(StructBlock):
@@ -146,21 +27,25 @@ class PullQuoteBlock(StructBlock):
 
 
 class UpcomingEventCountChoiceField(FieldBlock):
-    field = forms.ChoiceField(choices=(
-        ('3', 'Tre aktviteter'),
-        ('5', 'Fem aktviteter'),
-        ('7', 'Syv aktviteter'),
-        ('10', 'Ti aktviteter'),
-    ))
+    field = forms.ChoiceField(
+        choices=(
+            ('3', 'Tre aktviteter'),
+            ('5', 'Fem aktviteter'),
+            ('7', 'Syv aktviteter'),
+            ('10', 'Ti aktviteter'),
+        )
+    )
 
 
 class ImageFormatChoiceBlock(FieldBlock):
-    field = forms.ChoiceField(choices=(
-        ('left', 'Venstrejustér'),
-        ('right', 'Høyrejustér'),
-        # ('mid', 'Midtstill'),
-        ('full', 'Full størrelse'),
-    ))
+    field = forms.ChoiceField(
+        choices=(
+            ('left', 'Venstrejustér'),
+            ('right', 'Høyrejustér'),
+            # ('mid', 'Midtstill'),
+            ('full', 'Full størrelse'),
+        )
+    )
 
 
 class EventsBlock(StructBlock):
@@ -169,6 +54,65 @@ class EventsBlock(StructBlock):
     class Meta:
         icon = 'date'
         template='gcal/blocks/display_events.html'
+        help_text = (
+            'Ved å aktivere dette valget vil kommende aktiviteter vises.'
+        )
+
+
+class LinkBlock(StructBlock):
+    external_url = URLBlock(label='Ekstern lenke', required=False)
+    page_link = PageChooserBlock(label='Intern lenke', required=False)
+    document = DocumentChooserBlock(label='Dokument- lenke', required=False)
+
+    class Meta:
+        abstract = True
+        help_text = 'Velg kun èn lenke-type (ekstern/intern/dokument).'
+
+
+class QuickLinkBlock(StructBlock):
+    link = LinkBlock(label='lenke', required=True)
+    caption = CharBlock(
+        label='Overskrift',
+        help_text='Vær kortfattet, slik at teksten vises riktig.',
+        max_length=50
+    )
+    subcaption = CharBlock(
+        label='Undertittel',
+        help_text='Vær kortfattet, slik at teksten vises riktig.',
+        max_length=50
+    )
+    icon = CharBlock(
+        label='Ikon',
+        help_text='Velg ikonnavn fra http://fontawesome.io/cheatsheet/',
+        max_length=50
+    )
+
+    def get_context(self, value):
+        context = super().get_context(value)
+        link = value['link']
+
+        if link['external_url']:
+            value['url'] = link['external_url']
+        elif link['page_link']:
+            value['url'] = link['page_link'].url
+        elif link['document']:
+            value['url'] = link['document'].url
+        else:
+            value['url'] = '#'
+
+        return context
+
+    class Meta:
+        icon = 'link'
+        template='home/blocks/quicklink.html'
+
+
+class ImageSliderBlock(StructBlock):
+    image = ImageChooserBlock(label='Bilde')
+
+    class Meta:
+        icon = 'image'
+        template='home/blocks/slider_image.html'
 
 
 class ImageBlock(StructBlock):
@@ -192,29 +136,49 @@ class SidePanelStreamBlock(StreamBlock):
     eventviewer = EventsBlock(label='Vis kommende aktiviteter')
 
 
+class HeadingPanelStreamBlock(StreamBlock):
+    quicklinks = ListBlock(
+        QuickLinkBlock(),
+        icon='link',
+        label='Snarveis- panel',
+        template='home/blocks/quicklink_list.html'
+    )
+    imageslider = ListBlock(
+        ImageSliderBlock(),
+        icon='image',
+        label='Bilde- karusell',
+        template='home/blocks/imageslider_list.html'
+    )
+
+
 class HomePage(Page):
     body = StreamField(HomePageStreamBlock(), verbose_name='hovedinnhold')
+    headingpanel = StreamField(
+        HeadingPanelStreamBlock(),
+        verbose_name='overpanel'
+    )
     sidepanel = StreamField(SidePanelStreamBlock(), verbose_name='sidepanel')
 
     class Meta:
         verbose_name = "hjemmeside"
 
+    search_fields = Page.search_fields + (
+        index.SearchField('body'),
+    )
+
     content_panels = [
-        FieldPanel('title', classname='full tittel'),
-        InlinePanel('image_slider', label='Bildefremviser i full bredde'),
-        InlinePanel('intro_boxes',
-                    label='Boks-elementer for hurtiglenker til viktige sider.'),
+        FieldPanel('title'),
         StreamFieldPanel('body'),
-        InlinePanel('related_links', label='Relatert lenke'),
     ]
 
-    sidepanel_panels = [
+    pagesection_panels = [
+        StreamFieldPanel('headingpanel'),
         StreamFieldPanel('sidepanel'),
     ]
 
     edit_handler = TabbedInterface([
         ObjectList(content_panels, heading='Hovedinnhold'),
-        ObjectList(sidepanel_panels, heading='Sidepanel'),
+        ObjectList(pagesection_panels, heading='Seksjoner'),
         ObjectList(Page.promote_panels, heading='Promovér'),
         ObjectList(
             Page.settings_panels,

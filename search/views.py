@@ -4,23 +4,29 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailsearch.models import Query
 
+# from wagtail.contrib.wagtailsearchpromotions.models import SearchPromotion
+
 
 def search(request):
-    search_query = request.GET.get('query', None)
-    page = request.GET.get('page', 1)
-
     # Search
+    search_query = request.GET.get('query', None)
     if search_query:
         search_results = Page.objects.live().search(search_query)
         query = Query.get(search_query)
 
         # Record hit
         query.add_hit()
+
+        # Get search picks
+        # search_picks = query.editors_picks.all()
     else:
         search_results = Page.objects.none()
+        # search_picks = SearchPromotion.objects.none()
 
     # Pagination
+    page = request.GET.get('page', 1)
     paginator = Paginator(search_results, 10)
+
     try:
         search_results = paginator.page(page)
     except PageNotAnInteger:
@@ -28,7 +34,12 @@ def search(request):
     except EmptyPage:
         search_results = paginator.page(paginator.num_pages)
 
-    return render(request, 'search/search.html', {
-        'search_query': search_query,
-        'search_results': search_results,
-    })
+    return render(
+        request,
+        'search/search.html',
+        {
+            'search_query': search_query,
+            'search_results': search_results,
+            # 'search_picks': search_picks,
+        }
+    )
