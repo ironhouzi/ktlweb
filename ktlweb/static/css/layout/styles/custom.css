@@ -18,3 +18,10 @@ File: Custom CSS
     font-weight: bold;
 }
 #header .fl_left p { text-transform: none; }
+.search input {
+    width: 30%;
+    display: inline-block;
+}
+.search-stats {
+    padding: 10px;
+}

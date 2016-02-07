@@ -8,55 +8,108 @@
 {% block heading %}
 <div class="wrapper row3">
   <div id="pageintro" class="clear">
-    <div class="fl_right">
-      <div id="topbar">
-        {{ search_results|length }} treff
-      </div>
+    <div class="fl_left">
+      <h2 class="nospace">Søkeresultater</h2>
     </div>
+    {# <div class="fl_right"> #}
+      {#   {% if search_results %} #}
+      {#   <div id="topbar">{{ search_results|length }} treff</div> #}
+      {#   {% endif %} #}
+      {# </div> #}
   </div>
 </div>
 {% endblock heading %}
 
 <div class="wrapper row4">
   <div role="main" class="container">
-    <!-- ################################################################################################ -->
-    <div id="fof" class="clear">
-      {% if search_results %}
-      <ul>
-        {% for result in search_results %}
-        <li>
-          <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
-          {% if result.search_description %}
-          {{ result.search_description|safe }}
-          {% endif %}
-        </li>
+    {% if search_results %}
+    <div class="block clear push50">
+      <form action="{% url 'search' %}" class="search" method="get">
+        <input type="text" name="query" size="35"/>
+        <button class="button red" type="submit"><span class="fa fa-search"></span></button>
+      </form>
+      <p class="bold push50 search-stats">Side {{ search_results.number }} av {{ search_results.paginator.num_pages }} / Totalt {{ search_results|length }} treff</p>
+    </div>
+    <div class="res-table push50">
+      <table>
+        <thead>
+          <tr>
+            <th>Tittel</th>
+            <th>Tekst</th>
+            <th>Publisert</th>
+            <th>Sidetype</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for hit in search_results %}
+          <tr>
+            <td><a href="{% pageurl hit %}">{{ hit }}</a></td>
+            <td><a href="{% pageurl hit %}">{{ hit.specific.body|last }}</a></td>
+            <td>
+              <time datetime="{{ hit.specific.first_published_at|date:"c" }}">
+                {{ hit.specific.first_published_at|date:"j" }}. {{ hit.specific.first_published_at|date:"F Y" }}
+              </time>
+            </td>
+            <td>Informasjon</td>
+          </tr>
+        </tbody>
         {% endfor %}
-      </ul>
-
-      {% if search_results.has_previous %}
-      <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
-      {% endif %}
-
-      {% if search_results.has_next %}
-      <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
-      {% endif %}
-      {% elif search_query %}
+      </table>
+      {% else %}
+      <div id="fof" class="clear">
         <p class="notice">Beklager, ingen treff funnet.</p>
         <p>Gå tilbake til <a href="{% pageurl site_root %}">forsiden</a> eller gjør et nytt søk for å prøve å finne det du ser etter:</p>
         <form action="{% url 'search' %}" class="block clear" method="get">
           <input type="text" name="query" size="35"/>
           <button class="button red" type="submit"><span class="fa fa-search"></span></button>
         </form>
+      </div>
       {% endif %}
-      <!-- ####################################################################################################### -->
-      {# <h1>404</h1> #}
-      {# <h2>An error occured</h2> #}
-      <!-- ####################################################################################################### -->
     </div>
-    <!-- ################################################################################################ -->
-    <div class="clear"></div>
-    <!-- Ensure That Everything Has Been Cleared -->
+    {% if search_results.paginator.num_pages|length > 1 %}
+    <nav class="pagination">
+      <ul>
+        {% if search_results.has_previous %}
+        <li class="prev">
+          <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">
+            <span class="fa fa-chevron-left"></span>
+          </a>
+        </li>
+        {% endif %}
+        <li><a href="#">1</a></li>
+        {% if search_results.has_next %}
+        <li class="next">
+          <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">
+            <span class="fa fa-chevron-right"></span>
+          </a>
+        </li>
+        {% endif %}
+        {# <li><a href="#">2</a></li> #}
+        {# <li class="splitter"><strong>&hellip;</strong></li> #}
+        {# <li><a href="#">6</a></li> #}
+        {# <li class="current"><strong>7</strong></li> #}
+        {# <li><a href="#">8</a></li> #}
+        {# <li class="splitter"><strong>&hellip;</strong></li> #}
+        {# <li><a href="#">14</a></li> #}
+        {# <li><a href="#">15</a></li> #}
+      </ul>
+    </nav>
+    {% endif %}
+    {#     <!-- ############################################ --> #}
+    {#     {% if search_results.has_previous %} #}
+    {#     <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a> #}
+    {#     {% endif %} #}
+
+    {#     {% if search_results.has_next %} #}
+    {#     <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a> #}
+    {#     {% endif %} #}
+    {# <!-- ################################################################################################ --> #}
+
+    {# <!-- ################################################################################################ --> #}
+    {# <div class="clear"></div> #}
+    {# <!-- Ensure That Everything Has Been Cleared --> #}
   </div>
-  <!-- End class=container -->
 </div>
 {% endblock content %}
+{# <!-- / BLOG POST OVERVIEW CONTENT WRAPPER --> #}
+{# <!-- ################################################################################################ --> #}
