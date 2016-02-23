@@ -139,13 +139,4 @@ COMPRESS_ENABLED = False
 
 WAGTAIL_SITE_NAME = 'Karma Tashi Ling buddhistsamfunn'
 
-# Search
-
-WAGTAILSEARCH_BACKENDS = {
-    'default': {
-        'BACKEND': 'wagtail.wagtailsearch.backends.elasticsearch',
-        'URLS': [os.getenv('ES_URL', 'http://localhost:9200')],
-    }
-}
-
 DATABASES['default'] = dj_database_url.config()

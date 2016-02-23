@@ -18,6 +18,15 @@ MEDIA_URL = '/media/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# Search
+
+WAGTAILSEARCH_BACKENDS = {
+    'default': {
+        'BACKEND': 'wagtail.wagtailsearch.backends.elasticsearch',
+        'URLS': [os.getenv('ES_URL', 'http://localhost:9200')],
+    }
+}
+
 try:
     from .local import *
 except ImportError:

@@ -26,6 +26,15 @@ EMAIL_HOST_PASSWORD = os.getenv(
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in ('true', '1',)
 
+# Search
+
+WAGTAILSEARCH_BACKENDS = {
+    'default': {
+        'BACKEND': 'wagtail.wagtailsearch.backends.elasticsearch',
+        'URLS': [os.environ['BONSAI_URL']],
+    }
+}
+
 try:
     from .local import *
 except ImportError:
