@@ -26,6 +26,10 @@ EMAIL_HOST_PASSWORD = os.getenv(
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in ('true', '1',)
 
+ADMINS = (
+    ('Robin Skahjem-Eriksen', 'robinds@gmail.com'),
+)
+
 # Search
 
 WAGTAILSEARCH_BACKENDS = {
