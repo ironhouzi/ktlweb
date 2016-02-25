@@ -28,7 +28,7 @@ EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in ('true', '1',)
 
 ADMINS = (
-    ('Robin Skahjem-Eriksen', 'robinds@gmail.com'),
+    ('Robin Skahjem-Eriksen', 'robindse@gmail.com'),
 )
 
 SERVER_EMAIL = 'webmaster@ktl.no'
