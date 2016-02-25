@@ -30,6 +30,8 @@ ADMINS = (
     ('Robin Skahjem-Eriksen', 'robinds@gmail.com'),
 )
 
+SERVER_EMAIL = 'webmaster@ktl.no'
+
 # Search
 
 WAGTAILSEARCH_BACKENDS = {
