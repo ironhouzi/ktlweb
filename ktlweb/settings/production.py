@@ -4,6 +4,7 @@ import os
 
 
 DEBUG = os.environ.get('DEBUG', 'False') in ('True',)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', 'True') in ('True',)
 SECRET_KEY = os.environ['SECRET_KEY']
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
