@@ -139,4 +139,7 @@ COMPRESS_ENABLED = False
 
 WAGTAIL_SITE_NAME = 'Karma Tashi Ling buddhistsamfunn'
 
+# Usage stats from images and documents
+WAGTAIL_USAGE_COUNT_ENABLED = True
+
 DATABASES['default'] = dj_database_url.config()

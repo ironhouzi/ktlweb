@@ -15,7 +15,10 @@ from django.utils.timezone import (
 
 # TODO: check response codes!!!!!!!!!!!!!!!!!
 
-SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
+SCOPES = os.environ.get(
+    'GCAL_SCOPES',
+    'https://www.googleapis.com/auth/calendar.readonly'
+)
 
 
 def get_credentials():
