@@ -195,12 +195,14 @@ def db_sync_events(service, calendar):
         'syncToken': calendar.sync_token
     }
 
-    response = get_events(service, None, **kwargs)
+    calendar_data = get_events(service, None, **kwargs)
+    calendar.sync_token = calendar_data.get('nextSyncToken')
+    calendar.save()
 
-    for event in response['items']:
+    for event in calendar_data['items']:
         start, end, full_day = json_time_to_utc(event)
 
-        db_event = Event(
+        event_data = dict(
             event_id=event['id'],
             start=start,
             end=end,
@@ -208,36 +210,40 @@ def db_sync_events(service, calendar):
             full_day=full_day,
             html_link=event.get('htmlLink'),
             calendar=calendar
+            # TODO: recurrence list, recurringEventId, description string,
+            # creator
         )
 
-        db_event.save()
+        Event.objects.update_or_create(
+            event_id=event['id'],
+            defaults=event_data
+        )
 
-        calendar.sync_token = response.get('nextSyncToken')
-        calendar.save()
 
+def db_sync_public_calendars(service):
+'''
+Synchronize all public calendars in local database.
+'''
 
-def db_sync_public(service):
-    '''
-    Synchronize all public calendars in local database.
-    '''
-
-    for calendar in Calendar.objects.filter(public=True):
-        db_sync_events(service, calendar)
+for calendar in Calendar.objects.filter(public=True):
+    db_sync_events(service, calendar)
 
 
 def db_init():
-    '''
-    Helper function for populating the local database.
-    '''
-    register_centers()
-    service = get_calendar_service()
-    db_sync_calendars(service)
-    db_sync_public(service)
+'''
+Helper function for populating the local database.
+'''
+register_centers()
+service = get_calendar_service()
+db_sync_calendars(service)
+db_sync_public_calendars(service)
 
 
-def db_populate_events():
-    '''
-    Helper function for populating the local database.
-    '''
-    service = get_calendar_service()
-    db_sync_public(service)
+def sync_events():
+'''
+For CRONjobs or from a google API signal.
+
+Will update the calendars incrementally using the syncToken.
+'''
+service = get_calendar_service()
+db_sync_public_calendars(service)

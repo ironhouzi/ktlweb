@@ -43,6 +43,8 @@ class Event(models.Model):
     summary = models.CharField('Oppsummering', max_length=400)
     full_day = models.BooleanField('Full dag', blank=False)
     html_link = models.URLField('Google lenke', null=True, blank=True)
+    # TODO: recurrence list, recurringEventId, description string,
+    # creator
     calendar = models.ForeignKey(
         Calendar,
         on_delete=models.PROTECT,
