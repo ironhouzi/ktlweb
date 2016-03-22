@@ -5,6 +5,8 @@
     {% for child in content %}
       {% if child.block_type == 'eventviewer' %}
         {{ child }}
+      {% elif child.block_type == 'linkviewer' %}
+        {{ child }}
       {% endif %}
     {% endfor %}
   </div>

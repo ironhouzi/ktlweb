@@ -69,7 +69,7 @@ class LinkBlock(StructBlock):
         help_text = 'Velg kun èn lenke-type (ekstern/intern/dokument).'
 
 
-class QuickLinkBlock(StructBlock):
+class CommonLinkBlock(StructBlock):
     link = LinkBlock(label='lenke', required=True)
     caption = CharBlock(
         label='Overskrift',
@@ -103,8 +103,19 @@ class QuickLinkBlock(StructBlock):
         return context
 
     class Meta:
+        abstract = True
+
+
+class QuickLinkBlock(CommonLinkBlock):
+    class Meta:
         icon = 'link'
         template='home/blocks/quicklink.html'
+
+
+class SidepanelLinkBlock(CommonLinkBlock):
+    class Meta:
+        icon = 'link'
+        template='home/blocks/sidepanel_link.html'
 
 
 class ImageSliderBlock(StructBlock):
@@ -134,6 +145,12 @@ class HomePageStreamBlock(StreamBlock):
 
 class SidePanelStreamBlock(StreamBlock):
     eventviewer = EventsBlock(label='Vis kommende aktiviteter')
+    linkviewer = ListBlock(
+        SidepanelLinkBlock(),
+        icon='link',
+        label='Lenke- fremviser',
+        template='home/blocks/sidepanel_links.html'
+    )
 
 
 class HeadingPanelStreamBlock(StreamBlock):

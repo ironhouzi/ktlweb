@@ -1,0 +1,11 @@
+            <h2><span>Ressurser</span></h2>
+            <ul class="nospace spacing">
+              {% for link in self %}
+              <li>
+                <a class="button block pad20 {% cycle 'green' 'orange' 'red' %} clear" href="{{ link.url }}">
+                  {{ link }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+
