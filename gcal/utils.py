@@ -214,10 +214,12 @@ def db_sync_events(service, calendar):
             # creator
         )
 
-        Event.objects.update_or_create(
+        event_object, _ = Event.objects.update_or_create(
             event_id=event['id'],
             defaults=event_data
-        ).save()
+        )
+
+        event_object.save()
 
 
 def db_sync_public_calendars(service):
