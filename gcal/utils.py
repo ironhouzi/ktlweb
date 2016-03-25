@@ -217,33 +217,33 @@ def db_sync_events(service, calendar):
         Event.objects.update_or_create(
             event_id=event['id'],
             defaults=event_data
-        )
+        ).save()
 
 
 def db_sync_public_calendars(service):
-'''
-Synchronize all public calendars in local database.
-'''
+    '''
+    Synchronize all public calendars in local database.
+    '''
 
-for calendar in Calendar.objects.filter(public=True):
-    db_sync_events(service, calendar)
+    for calendar in Calendar.objects.filter(public=True):
+        db_sync_events(service, calendar)
 
 
 def db_init():
-'''
-Helper function for populating the local database.
-'''
-register_centers()
-service = get_calendar_service()
-db_sync_calendars(service)
-db_sync_public_calendars(service)
+    '''
+    Helper function for populating the local database.
+    '''
+    register_centers()
+    service = get_calendar_service()
+    db_sync_calendars(service)
+    db_sync_public_calendars(service)
 
 
 def sync_events():
-'''
-For CRONjobs or from a google API signal.
+    '''
+    For CRONjobs or from a google API signal.
 
-Will update the calendars incrementally using the syncToken.
-'''
-service = get_calendar_service()
-db_sync_public_calendars(service)
+    Will update the calendars incrementally using the syncToken.
+    '''
+    service = get_calendar_service()
+    db_sync_public_calendars(service)
