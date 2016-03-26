@@ -17,10 +17,8 @@ export DATABASE_URL="postgres://postgres:$(gpass.sh ktlweb_db 2>&1)@localhost:$(
 export ES_URL="http://localhost:$(docker port ktlweb_es | head -n1 | cut -d : -f2)"
 unset DB
 
-if [ -e ~/secrets/ktlweb/envvars ]; then
-    for line in `cat ~/secrets/ktlweb/envvars`; do
-        export $(echo $line | envsubst)
-    done
+if [ -e ~/store/secrets/ktlweb/envvars ]; then
+    source ~/store/secrets/ktlweb/envvars
 fi
 
 ./manage.py "$@"
