@@ -1,14 +1,18 @@
 from django.db import models
 from django.shortcuts import render
+from django.contrib.postgres.fields import JSONField
 
-from wagtail.wagtailcore.models import Page
+from wagtail.wagtailcore.models import Page, Orderable
 from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel
+from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
+
+from modelcluster.fields import ParentalKey
 
 
 class EventSignupPage(Page):
     # TODO: use on_delete=models.CASCADE, but respect Event's FK's on_delete
-    event_calendar_entry = models.ForeignKey(
+    calendar_entry = models.ForeignKey(
         'gcal.Event',
         on_delete=models.SET_NULL,
         null=True,
@@ -16,7 +20,6 @@ class EventSignupPage(Page):
         related_name='signup'
     )
     # TODO: normalize to uppercase
-    course_code = models.CharField(blank=False, max_length=8)
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
         max_length=255,
@@ -29,39 +32,24 @@ class EventSignupPage(Page):
         blank=True,
         related_name='+'
     )
-    PAYMENT_CHOICES = (
-        ('donation', 'Donasjon'),
-        ('full', 'Èn pris for hele kurset'),
-        ('choice', 'Pris per valgte kursdag'),
-    )
-    payment = models.CharField(
-        blank=False,
-        choices=PAYMENT_CHOICES,
-        max_length=20
-    )
+    payment = models.BooleanField()
     earlybird_deadline = models.DateField(blank=True)
-    full_price = models.IntegerField(blank=False)
-    daily_price = models.IntegerField(blank=False)
 
     content_panels = Page.content_panels + [
-        FieldPanel('event_calendar_entry'),
+        FieldPanel('calendar_entry'),
         FieldPanel('intro', classname='full'),
         FieldPanel('thankyou_page_title'),
         FieldPanel('speaker'),
         FieldPanel('payment'),
         FieldPanel('earlybird_deadline'),
-        FieldPanel('full_price'),
-        FieldPanel('daily_price'),
+        InlinePanel('skus', label='Kursalternativer'),
     ]
 
     def serve(self, request):
-        from events.forms import GenericPersonForm
+        from events.forms import EventRegistration
 
         if request.method == 'POST':
-            form = GenericPersonForm(request.POST)
-
             if form.is_valid():
-                # TODO: paypal generation
                 person = form.save()
 
                 return render(
@@ -73,7 +61,13 @@ class EventSignupPage(Page):
                     }
                 )
         else:
-            form = GenericPersonForm(dates=list(range(4)))
+            # form = EventRegistration()
+            form = EventRegistration(
+                name=self.title,
+                skus=self.skus,
+                event_begin=self.calendar_entry.start,
+                event_end=self.calendar_entry.end
+            )
 
         return render(
             request,
@@ -85,8 +79,28 @@ class EventSignupPage(Page):
         )
 
 
-class Teacher(Page):
+class EventSKU(Orderable):
+    event = ParentalKey(EventSignupPage, related_name='skus')
+    course_code = models.CharField(blank=False, max_length=8)
     name = models.CharField(blank=False, max_length=100)
+    price = models.IntegerField(blank=False)
+    first_day = models.DateField(blank=True, null=True)
+    last_day = models.DateField(blank=True, null=True)
+    multi_itemed = models.BooleanField()
+    flat_rate_day = models.BooleanField()
+
+    panels = [
+        FieldPanel('course_code'),
+        FieldPanel('name'),
+        FieldPanel('price'),
+        FieldPanel('first_day'),
+        FieldPanel('last_day'),
+        FieldPanel('multi_itemed'),
+        FieldPanel('flat_rate_day'),
+    ]
+
+
+class Teacher(Page):
     bio = RichTextField(blank=False)
     image = models.ForeignKey(
         'wagtailimages.Image',
@@ -95,6 +109,11 @@ class Teacher(Page):
         blank=False,
         related_name='+'
     )
+
+    content_panels = Page.content_panels + [
+        FieldPanel('bio'),
+        ImageChooserPanel('image'),
+    ]
 
 
 # TODO: use RegexValidator!
@@ -110,7 +129,12 @@ class EventSignupEntry(models.Model):
         ('later', 'Pay later without receiving invoice'),
     )
 
-    gender = models.CharField(blank=False, choices=GENDER_CHOICES, max_length=1)
+    gender = models.CharField(
+        blank=False,
+        choices=GENDER_CHOICES,
+        default='f',
+        max_length=1
+    )
     first_name = models.CharField(blank=False, max_length=40)
     sir_name = models.CharField(blank=False, max_length=120)
     email = models.EmailField(blank=False, max_length=120)
@@ -119,7 +143,12 @@ class EventSignupEntry(models.Model):
     payment = models.CharField(
         blank=False,
         choices=PAYMENT_CHOICES,
+        default='online',
         max_length=20
     )
     # TODO: add description
     discount = models.BooleanField()
+    # TODO: add datefield validators based on event time range
+    arrival = models.DateField(blank=False)
+    departure = models.DateField(blank=False)
+    paypal_transactions = JSONField()
