@@ -49,6 +49,8 @@ class EventSignupPage(Page):
         from events.forms import EventRegistration
 
         if request.method == 'POST':
+            form = EventRegistration(request.POST)
+
             if form.is_valid():
                 person = form.save()
 
@@ -61,7 +63,6 @@ class EventSignupPage(Page):
                     }
                 )
         else:
-            # form = EventRegistration()
             form = EventRegistration(
                 name=self.title,
                 skus=self.skus,
