@@ -1,12 +1,12 @@
 from django import forms
 from events.models import EventSignupEntry
 
-from datetime import datetime, date, timedelta
+from datetime import timedelta
 
 
-def date_range(start, end):
+def date_range(first_day, last_day):
     for i in range(int((last_day - first_day)).days):
-        yield start + timedelta(i)
+        yield first_day + timedelta(i)
 
 
 class DateInput(forms.TextInput):
@@ -22,7 +22,7 @@ class EventRegistration(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         first_day = self.fields['arrival']
         last_day = self.fields['departure']
 
@@ -57,7 +57,7 @@ class EventRegistration(forms.ModelForm):
 
         self.fields['paypal_transactions'] = {
             'item_list': items,
-            'amount': { 'total': total, 'currency': 'NOK' }
+            'amount': {'total': total, 'currency': 'NOK'}
         }
 
         super().save(*args, **kwargs)
@@ -90,8 +90,10 @@ class EventRegistration(forms.ModelForm):
         return max(int((last_day - self.event_end).days), 0)
 
     def _sort_single_dated_skus_by_duration(self):
-        sort_func = lambda x: not x.multi_itemed and \
-            max(int((x.departure - x.arrival).days))
+        def sort_func(x):
+            return (not x.multi_itemed and
+                    max(int((x.departure - x.arrival).days)))
+
         return sorted(self.event_skus, key=sort_func)
 
     class Meta:
@@ -108,7 +110,7 @@ class EventRegistration(forms.ModelForm):
 
 class GenericAddressForm(forms.Form):
     country = forms.ChoiceField(
-        choices = (('no', 'Norway'), ('uk', 'United Kingdom')),
-        initial = 'no',
-        required = True,
+        choices=(('no', 'Norway'), ('uk', 'United Kingdom')),
+        initial='no',
+        required=True,
     )
