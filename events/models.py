@@ -4,7 +4,9 @@ from django.contrib.postgres.fields import JSONField
 
 from wagtail.wagtailcore.models import Page, Orderable
 from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel
+from wagtail.wagtailadmin.edit_handlers import (
+    FieldPanel, InlinePanel, PageChooserPanel
+)
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 
 from modelcluster.fields import ParentalKey
@@ -17,7 +19,7 @@ class EventSignupPage(Page):
         on_delete=models.SET_NULL,
         null=True,
         blank=False,
-        related_name='signup'
+        related_name='signup_page'
     )
     # TODO: normalize to uppercase
     intro = RichTextField(blank=True)
@@ -36,10 +38,10 @@ class EventSignupPage(Page):
     earlybird_deadline = models.DateField(blank=True)
 
     content_panels = Page.content_panels + [
-        FieldPanel('calendar_entry'),
+        PageChooserPanel('calendar_entry'),
         FieldPanel('intro', classname='full'),
         FieldPanel('thankyou_page_title'),
-        FieldPanel('speaker'),
+        PageChooserPanel('speaker'),
         FieldPanel('payment'),
         FieldPanel('earlybird_deadline'),
         InlinePanel('skus', label='Kursalternativer'),
