@@ -115,34 +115,31 @@ def register_centers():
     database.
     '''
     ktl = Centre(
-        'KTL',
-        'Karma Tashi Ling',
-        'Bjørnåsveien 124, 1272 Oslo',
-        'Vårt hovedsenter med tempelbygg og fredsstupa.',
-        '22 61 28 84',
-        None
+        code='KTL',
+        title='Karma Tashi Ling',
+        address='Bjørnåsveien 124, 1272 Oslo',
+        description='Vårt hovedsenter med tempelbygg og fredsstupa.',
+        tlf='22 61 28 84'
     )
 
     ktl.save()
 
     pm = Centre(
-        'PM',
-        'Paramita meditasjonssenter',
-        'Storgata 13, 0155 Oslo - 3 etasje (Strøget)',
-        'Vårt bysenter i gangavstand fra Oslo Sentralstasjon.',
-        '22 00 89 98',
-        None
+        code='PM',
+        title='Paramita meditasjonssenter',
+        address='Storgata 13, 0155 Oslo - 3 etasje (Strøget)',
+        description='Vårt bysenter i gangavstand fra Oslo Sentralstasjon.',
+        tlf='22 00 89 98'
     )
 
     pm.save()
 
     ksl = Centre(
-        'KSL',
-        'Karma Shedrup Ling retreatsenter',
-        'Siggerudveien 734, 1400 Ski',
-        'Retreatsenter i Sørmarka.',
-        None,
-        None
+        code='KSL',
+        title='Karma Shedrup Ling retreatsenter',
+        address='Siggerudveien 734, 1400 Ski',
+        description='Retreatsenter i Sørmarka.',
+        tlf=None
     )
 
     ksl.save()
@@ -208,7 +205,6 @@ def db_sync_events(service, calendar):
             end=end,
             summary=event.get('summary', ''),
             full_day=full_day,
-            html_link=event.get('htmlLink'),
             calendar=calendar
             # TODO: recurrence list, recurringEventId, description string,
             # creator
@@ -235,7 +231,7 @@ def db_init():
     '''
     Helper function for populating the local database.
     '''
-    register_centers()
+    # register_centers()
     service = get_calendar_service()
     db_sync_calendars(service)
     db_sync_public_calendars(service)

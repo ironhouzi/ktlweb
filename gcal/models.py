@@ -1,20 +1,41 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
+
+from wagtail.wagtailcore.models import Page
+from wagtail.wagtailcore.fields import RichTextField, StreamField
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
+from wagtail.wagtailsearch import index
+
+from home.models import HomePageStreamBlock
 
 
-class Centre(models.Model):
+class Centre(Page):
     code = models.CharField(
         'Kode',
         max_length=3,
-        primary_key=True
+        blank=False
     )
-    name = models.CharField('Navn', max_length=200, blank=False)
     address = models.TextField('Addresse', blank=False)
-    description = models.CharField('Beskrivelse', max_length=200, blank=False)
+    description = models.CharField('Beskrivelse', blank=False, max_length=200)
+    information = StreamField(HomePageStreamBlock(), verbose_name='information', null=True)
     tlf = models.CharField(max_length=18, null=True, blank=True)
-    image = models.ImageField('Bilde', null=True, blank=True)
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
 
-    def __str__(self):
-        return self.code
+    content_panels = Page.content_panels + [
+        FieldPanel('code'),
+        FieldPanel('address'),
+        FieldPanel('description'),
+        StreamFieldPanel('information'),
+        FieldPanel('tlf'),
+        ImageChooserPanel('image'),
+    ]
 
 
 class Calendar(models.Model):
@@ -36,24 +57,34 @@ class Calendar(models.Model):
         return self.summary
 
 
-class Event(models.Model):
-    event_id = models.CharField(max_length=1024, primary_key=True)
+class Event(Page):
+    event_id = models.CharField(max_length=1024)
     start = models.DateTimeField('Start', null=False, blank=False)
     end = models.DateTimeField('Slutt', null=False, blank=False)
-    summary = models.CharField('Oppsummering', max_length=400)
+    summary = models.CharField('Oppsummering', max_length=200, blank=False)
     full_day = models.BooleanField('Full dag', blank=False)
-    html_link = models.URLField('Google lenke', null=True, blank=True)
-    # TODO: recurrence list, recurringEventId, description string,
-    # creator
+    recurrence = ArrayField(models.CharField(max_length=200))
+    recurring_event_id = models.CharField(
+        max_length=1024,
+        null=True,
+        blank=True
+    )
+    description = RichTextField(blank=False)
+    creator = models.CharField('Opprettet av', max_length=100)
     calendar = models.ForeignKey(
         Calendar,
         on_delete=models.PROTECT,
         verbose_name='Kalender',
         related_name='calendar',
-        null=False,
+        null=True,
         blank=False
     )
 
-    def __str__(self):
-        return self.summary
-
+    content_panels = Page.content_panels + [
+        FieldPanel('start'),
+        FieldPanel('end'),
+        FieldPanel('summary'),
+        FieldPanel('full_day'),
+        FieldPanel('description'),
+        FieldPanel('calendar'),
+    ]

@@ -52,14 +52,14 @@ class EventSignupPage(Page):
             form = EventRegistration(request.POST)
 
             if form.is_valid():
-                person = form.save()
+                event_signup = form.save()
 
                 return render(
                     request,
                     'events/thankyou.html',
                     {
                         'page': self,
-                        'person': person,
+                        'event_signup': event_signup,
                     }
                 )
         else:
