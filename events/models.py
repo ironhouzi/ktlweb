@@ -35,7 +35,7 @@ class EventSignupPage(Page):
         related_name='+'
     )
     payment = models.BooleanField()
-    earlybird_deadline = models.DateField(blank=True)
+    earlybird_deadline = models.DateField(blank=True, null=True)
 
     content_panels = Page.content_panels + [
         PageChooserPanel('calendar_entry'),

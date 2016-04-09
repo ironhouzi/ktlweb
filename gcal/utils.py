@@ -70,7 +70,7 @@ def get_events(*args, **kwargs):
         kwargs.setdefault('calendarId', calendar['id'])
 
     kwargs.setdefault('timeMin', localtime(now()).isoformat())
-    kwargs.setdefault('singleEvents', True)
+    kwargs.setdefault('singleEvents', False)
 
     if kwargs['singleEvents']:
         kwargs.setdefault('orderBy', 'startTime')
@@ -237,7 +237,16 @@ def db_sync_events(service, calendar):
         site_root_page.add_child(instance=events_root_page)
 
     for event in calendar_data['items']:
+        if event['status'] == 'cancelled':
+            try:
+                Event.objects.get(event_id=event['id']).delete()
+            except Event.DoesNotExist:
+                pass
+
+            continue
+
         start, end, full_day = json_time_to_utc(event)
+
 
         event_data = dict(
             event_id=event['id'],

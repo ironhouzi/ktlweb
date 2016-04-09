@@ -55,7 +55,7 @@ class EventRegistration(forms.ModelForm):
             items.append(item)
             total += cost
 
-        self.fields['paypal_transactions'] = {
+        self.instance.paypal_transactions = {
             'item_list': items,
             'amount': {'total': total, 'currency': 'NOK'}
         }
