@@ -11,6 +11,7 @@ from oauth2client.client import SignedJwtAssertionCredentials
 from .models import Calendar, Centre, Event
 from django.utils.timezone import (
     get_default_timezone_name, utc, localtime, make_aware, is_naive, now)
+from wagtail.wagtailcore.models import Page
 
 
 # TODO: check response codes!!!!!!!!!!!!!!!!!
@@ -109,22 +110,52 @@ def db_sync_calendars(service):
         ).save()
 
 
+def create_center(attributes, centre_root_page):
+    centre = None
+
+    try:
+        centre = Centre.objects.get(code=attributes['code'])
+    except Page.DoesNotExist:
+        centre = Centre(**attributes)
+        centre_root_page.add_child(instance=centre)
+
+
+def update_or_create_event(event_data, centre_root_page):
+    event = Event.objects.filter(event_id=event_data['event_id'])
+
+    if event:
+        event.update(**event_data)
+    else:
+        event = Event(**event_data)
+        centre_root_page.add_child(instance=event)
+
+
 def register_centers():
     '''
     Utility function for registering the three available centres into the
     database.
     '''
-    ktl = Centre(
+
+    centre_root_page = None
+
+    try:
+        centre_root_page = Page.objects.get(title='centre_index')
+    except Page.DoesNotExist:
+        centre_root_page = Page(title='centre_index')
+        site_root_page = Page.get_root_nodes()[0]
+        site_root_page.add_child(instance=centre_root_page)
+
+
+    ktl_attributes = dict(
         code='KTL',
         title='Karma Tashi Ling',
         address='Bjørnåsveien 124, 1272 Oslo',
         description='Vårt hovedsenter med tempelbygg og fredsstupa.',
         tlf='22 61 28 84'
     )
+    create_center(ktl_attributes, centre_root_page)
 
-    ktl.save()
-
-    pm = Centre(
+    pm_attributes = dict(
         code='PM',
         title='Paramita meditasjonssenter',
         address='Storgata 13, 0155 Oslo - 3 etasje (Strøget)',
@@ -132,9 +163,9 @@ def register_centers():
         tlf='22 00 89 98'
     )
 
-    pm.save()
+    create_center(pm_attributes, centre_root_page)
 
-    ksl = Centre(
+    ksl_attributes = dict(
         code='KSL',
         title='Karma Shedrup Ling retreatsenter',
         address='Siggerudveien 734, 1400 Ski',
@@ -142,7 +173,7 @@ def register_centers():
         tlf=None
     )
 
-    ksl.save()
+    create_center(ksl_attributes, centre_root_page)
 
 
 def json_time_to_utc(event):
@@ -196,6 +227,15 @@ def db_sync_events(service, calendar):
     calendar.sync_token = calendar_data.get('nextSyncToken')
     calendar.save()
 
+    events_root_page = None
+
+    try:
+        events_root_page = Page.objects.get(title='event_index')
+    except Page.DoesNotExist:
+        events_root_page = Page(title='event_index')
+        site_root_page = Page.get_root_nodes()[0]
+        site_root_page.add_child(instance=events_root_page)
+
     for event in calendar_data['items']:
         start, end, full_day = json_time_to_utc(event)
 
@@ -203,19 +243,16 @@ def db_sync_events(service, calendar):
             event_id=event['id'],
             start=start,
             end=end,
-            summary=event.get('summary', ''),
+            title=event.get('summary', ''),
             full_day=full_day,
-            calendar=calendar
-            # TODO: recurrence list, recurringEventId, description string,
-            # creator
+            calendar=calendar,
+            recurrence=event.get('recurrence'),
+            recurring_event_id=event.get('recurringEventId'),
+            description=event.get('description'),
+            creator=event['creator']
         )
 
-        event_object, _ = Event.objects.update_or_create(
-            event_id=event['id'],
-            defaults=event_data
-        )
-
-        event_object.save()
+        update_or_create_event(event_data, events_root_page)
 
 
 def db_sync_public_calendars(service):
@@ -231,7 +268,7 @@ def db_init():
     '''
     Helper function for populating the local database.
     '''
-    # register_centers()
+    register_centers()
     service = get_calendar_service()
     db_sync_calendars(service)
     db_sync_public_calendars(service)

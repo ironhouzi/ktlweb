@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import JSONField, ArrayField
 
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import RichTextField, StreamField
@@ -44,13 +44,13 @@ class Calendar(models.Model):
     description = models.CharField('Beskrivelse', max_length=1000)
     public = models.BooleanField('Offentlig kalender', blank=False)
     sync_token = models.CharField(max_length=50, null=True, blank=True)
-    centre = models.ForeignKey(
+    centre = models.OneToOneField(
         Centre,
         on_delete=models.SET_NULL,
         verbose_name='Senter',
         related_name='centre',
         null=True,
-        blank=True
+        blank=False
     )
 
     def __str__(self):
@@ -61,21 +61,24 @@ class Event(Page):
     event_id = models.CharField(max_length=1024)
     start = models.DateTimeField('Start', null=False, blank=False)
     end = models.DateTimeField('Slutt', null=False, blank=False)
-    summary = models.CharField('Oppsummering', max_length=200, blank=False)
     full_day = models.BooleanField('Full dag', blank=False)
-    recurrence = ArrayField(models.CharField(max_length=200))
+    recurrence = ArrayField(
+        models.CharField(max_length=200),
+        null=True,
+        blank=True
+    )
     recurring_event_id = models.CharField(
         max_length=1024,
         null=True,
         blank=True
     )
-    description = RichTextField(blank=False)
-    creator = models.CharField('Opprettet av', max_length=100)
+    description = models.TextField(null=True, blank=False)
+    creator = JSONField(null=True, blank=True)
     calendar = models.ForeignKey(
         Calendar,
         on_delete=models.PROTECT,
         verbose_name='Kalender',
-        related_name='calendar',
+        related_name='events',
         null=True,
         blank=False
     )
@@ -83,8 +86,6 @@ class Event(Page):
     content_panels = Page.content_panels + [
         FieldPanel('start'),
         FieldPanel('end'),
-        FieldPanel('summary'),
-        FieldPanel('full_day'),
         FieldPanel('description'),
         FieldPanel('calendar'),
     ]
