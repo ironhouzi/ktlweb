@@ -51,11 +51,17 @@ class EventSignupPage(Page):
         from events.forms import EventRegistration
 
         if request.method == 'POST':
-            form = EventRegistration(request.POST)
+            form = EventRegistration(
+                request.POST,
+            )
 
             if form.is_valid():
-                event_signup = form.save()
-
+                event_signup = form.save(
+                    name=self.title,
+                    skus=self.skus,
+                    event_begin=self.calendar_entry.start,
+                    event_end=self.calendar_entry.end
+                )
                 return render(
                     request,
                     'events/thankyou.html',
@@ -65,12 +71,7 @@ class EventSignupPage(Page):
                     }
                 )
         else:
-            form = EventRegistration(
-                name=self.title,
-                skus=self.skus,
-                event_begin=self.calendar_entry.start,
-                event_end=self.calendar_entry.end
-            )
+            form = EventRegistration()
 
         return render(
             request,
