@@ -57,23 +57,27 @@ class Calendar(models.Model):
         return self.summary
 
 
-class Event(Page):
+class EventPage(Page, Event):
+    pass
+
+
+class Event(models.Model):
     event_id = models.CharField(max_length=1024)
     start = models.DateTimeField('Start', null=False, blank=False)
     end = models.DateTimeField('Slutt', null=False, blank=False)
+    description = models.TextField(null=True, blank=False)
+    creator = JSONField(null=True, blank=True)
     full_day = models.BooleanField('Full dag', blank=False)
-    recurrence = ArrayField(
-        models.CharField(max_length=200),
-        null=True,
-        blank=True
-    )
     recurring_event_id = models.CharField(
         max_length=1024,
         null=True,
         blank=True
     )
-    description = models.TextField(null=True, blank=False)
-    creator = JSONField(null=True, blank=True)
+    recurrence = ArrayField(
+        models.CharField(max_length=200),
+        null=True,
+        blank=True
+    )
     calendar = models.ForeignKey(
         Calendar,
         on_delete=models.PROTECT,
