@@ -8,7 +8,7 @@ from pytz import timezone
 from apiclient import discovery
 from oauth2client.client import SignedJwtAssertionCredentials
 
-from .models import Calendar, Centre, Event
+from .models import Calendar, Centre, Event, EventInstance
 from django.utils.timezone import (
     get_default_timezone_name, utc, localtime, make_aware, is_naive, now)
 from wagtail.wagtailcore.models import Page
@@ -50,6 +50,42 @@ def get_remote_calendars(service, items='id,summary,description,accessRole'):
     '''
     return service.calendarList().list(
         fields='items({})'.format(items)).execute().get('items', [])
+
+
+def create_instance_entries(instances, event):
+    for event_instance in instances['items']:
+        start, end, full_day = json_time_to_utc(event_instance)
+
+        event_instance_data = dict(
+            event_id = event_instance['id'],
+            start=start,
+            end=end,
+            master_event=event
+        )
+
+        event_instance_object, _ = EventInstance.objects.update_or_create(
+            event_id=event_instance['id'],
+            defaults=event_instance_data
+        )
+
+        event_instance_object.save()
+
+
+def fetch_instances(service, calendar, event):
+    page_token = None
+
+    while True:
+        instances = service.events().instances(
+            calendarId=calendar.calendar_id,
+            eventId=event.event_id,
+            pageToken=page_token
+        ).execute()
+
+        create_instance_entries(instances, event)
+        page_token = instances.get('nextPageToken')
+
+        if page_token is None:
+            break
 
 
 def get_events(*args, **kwargs):
@@ -125,9 +161,12 @@ def update_or_create_event(event_data, centre_root_page):
 
     if event:
         event.update(**event_data)
+        event = event[0]
     else:
         event = Event(**event_data)
         centre_root_page.add_child(instance=event)
+
+    return event
 
 
 def register_centers():
@@ -214,16 +253,18 @@ def json_time_to_utc(event):
     return start, end, full_day
 
 
-def db_sync_events(service, calendar):
+def db_sync_events(service, calendar, page_token):
     '''
     Update local database from Google Calendar API
     '''
     kwargs = {
         'calendarId': calendar.calendar_id,
-        'syncToken': calendar.sync_token
+        'syncToken': calendar.sync_token,
+        'pageToken': page_token
     }
 
     calendar_data = get_events(service, None, **kwargs)
+    next_page_token = calendar_data.get('nextPageToken')
     calendar.sync_token = calendar_data.get('nextSyncToken')
     calendar.save()
 
@@ -247,6 +288,7 @@ def db_sync_events(service, calendar):
 
         start, end, full_day = json_time_to_utc(event)
 
+        recurrence = event.get('recurrence')
 
         event_data = dict(
             event_id=event['id'],
@@ -255,13 +297,19 @@ def db_sync_events(service, calendar):
             title=event.get('summary', ''),
             full_day=full_day,
             calendar=calendar,
-            recurrence=event.get('recurrence'),
-            recurring_event_id=event.get('recurringEventId'),
+            recurrence=recurrence,
             description=event.get('description'),
             creator=event['creator']
         )
 
-        update_or_create_event(event_data, events_root_page)
+        db_event_entry = update_or_create_event(event_data, events_root_page)
+
+        if recurrence is None:
+            return
+
+        fetch_instances(service, calendar, db_event_entry)
+
+        return next_page_token
 
 
 def db_sync_public_calendars(service):
@@ -269,8 +317,14 @@ def db_sync_public_calendars(service):
     Synchronize all public calendars in local database.
     '''
 
+    page_token = None
+
     for calendar in Calendar.objects.filter(public=True):
-        db_sync_events(service, calendar)
+        while True:
+            page_token = db_sync_events(service, calendar, page_token)
+
+            if page_token is None:
+                break
 
 
 def db_init():
