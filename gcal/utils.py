@@ -8,7 +8,7 @@ from pytz import timezone
 from apiclient import discovery
 from oauth2client.client import SignedJwtAssertionCredentials
 
-from .models import Calendar, Centre, Event, EventInstance
+from .models import Calendar, Centre, Event, EventPage
 from django.utils.timezone import (
     get_default_timezone_name, utc, localtime, make_aware, is_naive, now)
 from wagtail.wagtailcore.models import Page
@@ -52,38 +52,44 @@ def get_remote_calendars(service, items='id,summary,description,accessRole'):
         fields='items({})'.format(items)).execute().get('items', [])
 
 
-def create_instance_entries(instances, event):
-    for event_instance in instances['items']:
-        start, end, full_day = json_time_to_utc(event_instance)
+def create_event_instance_entry(gcal_event, event_page):
+    # TODO: is it necessary to handle cancelled instance?
+    start, end, full_day = json_time_to_utc(gcal_event)
 
-        event_instance_data = dict(
-            event_id = event_instance['id'],
-            start=start,
-            end=end,
-            master_event=event
-        )
+    instance_data = dict(
+        event_id=gcal_event['id'],
+        start=start,
+        end=end,
+        recurring_event_id=gcal_event.get('recurringEventId'),
+        creator=gcal_event.get('creator'),
+        event_page=event_page
+    )
 
-        event_instance_object, _ = EventInstance.objects.update_or_create(
-            event_id=event_instance['id'],
-            defaults=event_instance_data
-        )
+    event_instance_object, _ = Event.objects.update_or_create(
+        defaults=instance_data
+    )
 
-        event_instance_object.save()
+    event_instance_object.save()
+
+    return event_instance_object
 
 
-def fetch_instances(service, calendar, event):
+def fetch_instances(service, calendar, event_page):
     page_token = None
 
     while True:
-        instances = service.events().instances(
+        gcal_event_instances = service.events().instances(
             calendarId=calendar.calendar_id,
-            eventId=event.event_id,
+            eventId=event_page.first_event.event_id,
             pageToken=page_token
         ).execute()
 
-        create_instance_entries(instances, event)
-        page_token = instances.get('nextPageToken')
+        for gcal_event_instance in gcal_event_instances['items']:
+            _ = create_event_instance_entry(gcal_event_instance, event_page)
 
+        page_token = gcal_event_instances.get('nextPageToken')
+
+        # TODO: reassurance from infinite recurring events
         if page_token is None:
             break
 
@@ -156,17 +162,19 @@ def create_center(attributes, centre_root_page):
         centre_root_page.add_child(instance=centre)
 
 
-def update_or_create_event(event_data, centre_root_page):
-    event = Event.objects.filter(event_id=event_data['event_id'])
+def update_or_create_event_page(event_data, centre_root_page):
+    event_page = EventPage.objects.filter(
+        first_event__event_id=event_data['event_id']
+    )
 
-    if event:
-        event.update(**event_data)
-        event = event[0]
+    if event_page:
+        event_page.update(**event_data)
+        event_page = event_page[0]
     else:
-        event = Event(**event_data)
-        centre_root_page.add_child(instance=event)
+        event_page = EventPage(**event_data)
+        centre_root_page.add_child(instance=event_page)
 
-    return event
+    return event_page
 
 
 def register_centers():
@@ -183,7 +191,6 @@ def register_centers():
         centre_root_page = Page(title='centre_index')
         site_root_page = Page.get_root_nodes()[0]
         site_root_page.add_child(instance=centre_root_page)
-
 
     ktl_attributes = dict(
         code='KTL',
@@ -215,7 +222,7 @@ def register_centers():
     create_center(ksl_attributes, centre_root_page)
 
 
-def json_time_to_utc(event):
+def json_time_to_utc(gcal_event):
     '''
     Extracts a google calendar time range (start/stop) json object and returns
     a UTC datetime object and full-day boolean status.
@@ -243,14 +250,48 @@ def json_time_to_utc(event):
     full_day = all(time.get('date') for time in timerange) and not (
                any(time.get('dateTime') for time in timerange))
 
-    local_tz = timezone(timerange[0].get('timeZone',
-        timerange[1].get('timeZone', get_default_timezone_name())))
+    local_tz = timezone(timerange[0].get(
+        'timeZone',
+        timerange[1].get(
+            'timeZone',
+            get_default_timezone_name())
+        )
+    )
 
     key = 'date' if full_day else 'dateTime'
     start, end = (to_utc(time, key, local_tz) for time in timerange)
 
     # assert is_naive(start) and is_naive(end)
     return start, end, full_day
+
+
+def create_event_page(calendar, gcal_event, events_root_page):
+    if gcal_event['status'] == 'cancelled':
+        try:
+            # TODO: elect new EventPage.first_entry
+            pass
+            # gcal_event.objects.get(event_id=gcal_event['id']).delete()
+        except gcal_event.DoesNotExist:
+            pass
+
+        # TODO: replace with Exception ??
+        return (False, False,)
+
+    start, end, full_day = json_time_to_utc(gcal_event)
+    recurrence = gcal_event.get('recurrence')
+
+    event_page_data = dict(
+        title=gcal_event.get('summary', ''),
+        calendar=calendar,
+        recurrence=recurrence,
+        description=gcal_event.get('description'),
+    )
+
+    event_page = update_or_create_event_page(event_page_data, events_root_page)
+    event_entry = create_event_instance_entry(gcal_event, event_page)
+    event_page.first_event=event_entry
+
+    return (recurrence, event_page,)
 
 
 def db_sync_events(service, calendar, page_token):
@@ -277,39 +318,22 @@ def db_sync_events(service, calendar, page_token):
         site_root_page = Page.get_root_nodes()[0]
         site_root_page.add_child(instance=events_root_page)
 
-    for event in calendar_data['items']:
-        if event['status'] == 'cancelled':
-            try:
-                Event.objects.get(event_id=event['id']).delete()
-            except Event.DoesNotExist:
-                pass
-
-            continue
-
-        start, end, full_day = json_time_to_utc(event)
-
-        recurrence = event.get('recurrence')
-
-        event_data = dict(
-            event_id=event['id'],
-            start=start,
-            end=end,
-            title=event.get('summary', ''),
-            full_day=full_day,
-            calendar=calendar,
-            recurrence=recurrence,
-            description=event.get('description'),
-            creator=event['creator']
+    for gcal_event in calendar_data['items']:
+        recurrence, event_page = create_event_page(
+            calendar,
+            gcal_event,
+            events_root_page
         )
 
-        db_event_entry = update_or_create_event(event_data, events_root_page)
+        if recurrence is False and event_page is False:
+            continue
 
         if recurrence is None:
             return
 
-        fetch_instances(service, calendar, db_event_entry)
+        fetch_instances(service, calendar, event_page)
 
-        return next_page_token
+    return next_page_token
 
 
 def db_sync_public_calendars(service):
