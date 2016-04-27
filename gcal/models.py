@@ -49,7 +49,7 @@ class Calendar(models.Model):
     public = models.BooleanField('Offentlig kalender', blank=False)
     sync_token = models.CharField(max_length=50, null=True, blank=True)
     centre = models.OneToOneField(
-        Centre,
+        'Centre',
         on_delete=models.SET_NULL,
         verbose_name='Senter',
         related_name='centre',
@@ -62,7 +62,7 @@ class Calendar(models.Model):
 
 
 class Event(models.Model):
-    event_id = models.CharField(max_length=1024)
+    event_id = models.CharField(max_length=1024, primary_key=True)
     start = models.DateTimeField('Start', null=False, blank=False)
     end = models.DateTimeField('Slutt', null=False, blank=False)
     creator = JSONField(null=True, blank=True)
@@ -71,7 +71,7 @@ class Event(models.Model):
     # full_day
     recurring_event_id = models.CharField(max_length=256, null=True, blank=True)
     event_page = models.ForeignKey(
-        EventPage,
+        'EventPage',
         on_delete=models.SET_NULL,
         verbose_name='Aktivitetside',
         related_name='event_instances',
@@ -80,12 +80,12 @@ class Event(models.Model):
     )
 
     def __str__(self):
-        return events.title
+        return self.event_page.title
 
 
 class EventPage(Page):
     first_event = models.OneToOneField(
-        Event,
+        'Event',
         on_delete=models.SET_NULL,
         verbose_name='Første kalenderoppføring',
         related_name='+',

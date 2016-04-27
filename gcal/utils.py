@@ -57,15 +57,16 @@ def create_event_instance_entry(gcal_event, event_page):
     start, end, full_day = json_time_to_utc(gcal_event)
 
     instance_data = dict(
-        event_id=gcal_event['id'],
         start=start,
         end=end,
+        full_day=full_day,
         recurring_event_id=gcal_event.get('recurringEventId'),
         creator=gcal_event.get('creator'),
         event_page=event_page
     )
 
     event_instance_object, _ = Event.objects.update_or_create(
+        event_id=gcal_event['id'],
         defaults=instance_data
     )
 
@@ -111,10 +112,7 @@ def get_events(*args, **kwargs):
     if calendar:
         kwargs.setdefault('calendarId', calendar['id'])
 
-    kwargs.setdefault('timeMin', localtime(now()).isoformat())
-    kwargs.setdefault('singleEvents', False)
-
-    if kwargs['singleEvents']:
+    if kwargs.get('singleEvents'):
         kwargs.setdefault('orderBy', 'startTime')
 
     return service.events().list(**kwargs).execute()
@@ -162,9 +160,9 @@ def create_center(attributes, centre_root_page):
         centre_root_page.add_child(instance=centre)
 
 
-def update_or_create_event_page(event_data, centre_root_page):
+def update_or_create_event_page(event_data, event_id, centre_root_page):
     event_page = EventPage.objects.filter(
-        first_event__event_id=event_data['event_id']
+        first_event__event_id=event_id
     )
 
     if event_page:
@@ -244,7 +242,7 @@ def json_time_to_utc(gcal_event):
 
         return localtime(time, utc)
 
-    timerange = (event['start'], event['end'],)
+    timerange = (gcal_event['start'], gcal_event['end'],)
 
     # TODO: verify that google calendar has sanity checked date/dateTime fields
     full_day = all(time.get('date') for time in timerange) and not (
@@ -266,28 +264,31 @@ def json_time_to_utc(gcal_event):
 
 
 def create_event_page(calendar, gcal_event, events_root_page):
-    if gcal_event['status'] == 'cancelled':
-        try:
-            # TODO: elect new EventPage.first_entry
-            pass
-            # gcal_event.objects.get(event_id=gcal_event['id']).delete()
-        except gcal_event.DoesNotExist:
-            pass
-
-        # TODO: replace with Exception ??
-        return (False, False,)
-
-    start, end, full_day = json_time_to_utc(gcal_event)
     recurrence = gcal_event.get('recurrence')
+
+    if gcal_event['status'] == 'cancelled':
+        # try:
+        #     # TODO: elect new EventPage.first_entry
+        #     gcal_event.objects.get(event_id=gcal_event['id']).delete()
+        # except gcal_event.DoesNotExist:
+        #     pass
+
+        # # TODO: replace with Exception ??
+        return (None, None,)
 
     event_page_data = dict(
         title=gcal_event.get('summary', ''),
         calendar=calendar,
         recurrence=recurrence,
-        description=gcal_event.get('description'),
+        description=gcal_event.get('description', 'Ingen beskrivelse'),
     )
 
-    event_page = update_or_create_event_page(event_page_data, events_root_page)
+    event_page = update_or_create_event_page(
+        event_page_data,
+        gcal_event['id'],
+        events_root_page
+    )
+
     event_entry = create_event_instance_entry(gcal_event, event_page)
     event_page.first_event=event_entry
 
@@ -325,11 +326,8 @@ def db_sync_events(service, calendar, page_token):
             events_root_page
         )
 
-        if recurrence is False and event_page is False:
+        if recurrence is None and event_page is None:
             continue
-
-        if recurrence is None:
-            return
 
         fetch_instances(service, calendar, event_page)
 
