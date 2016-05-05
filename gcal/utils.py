@@ -8,11 +8,13 @@ from pytz import timezone
 from apiclient import discovery
 from oauth2client.client import SignedJwtAssertionCredentials
 
-from .models import Calendar, Centre, Event, EventPage
+from django.utils.text import slugify as django_slugify
 from django.utils.timezone import (
     get_default_timezone_name, utc, localtime, make_aware, is_naive)
+
 from wagtail.wagtailcore.models import Page
 
+from .models import Calendar, Centre, Event, EventPage
 
 # TODO: check response codes!!!!!!!!!!!!!!!!!
 
@@ -20,6 +22,15 @@ SCOPES = os.environ.get(
     'GCAL_SCOPES',
     'https://www.googleapis.com/auth/calendar.readonly'
 )
+
+
+def slugify(string):
+    string = string.lower()
+
+    for substitution in (('æ', 'ae'), ('ø', 'oe'), ('å', 'aa'),):
+        string = string.replace(*substitution)
+
+    return django_slugify(string)
 
 
 def get_credentials():
@@ -86,7 +97,7 @@ def fetch_instances(service, calendar, event_page):
         ).execute()
 
         for gcal_event_instance in gcal_event_instances['items']:
-            _ = create_event_instance_entry(gcal_event_instance, event_page)
+            create_event_instance_entry(gcal_event_instance, event_page)
 
         page_token = gcal_event_instances.get('nextPageToken')
 
@@ -150,17 +161,17 @@ def db_sync_calendars(service):
         ).save()
 
 
-def create_center(attributes, centre_root_page):
+def create_center(attributes, centre_parent_page):
     centre = None
 
     try:
         centre = Centre.objects.get(code=attributes['code'])
     except Page.DoesNotExist:
         centre = Centre(**attributes)
-        centre_root_page.add_child(instance=centre)
+        centre_parent_page.add_child(instance=centre)
 
 
-def update_or_create_event_page(event_data, event_id, centre_root_page):
+def update_or_create_event_page(event_data, event_id, centre_parent_page):
     event_page = EventPage.objects.filter(
         first_event__event_id=event_id
     )
@@ -170,7 +181,7 @@ def update_or_create_event_page(event_data, event_id, centre_root_page):
         event_page = event_page[0]
     else:
         event_page = EventPage(**event_data)
-        centre_root_page.add_child(instance=event_page)
+        centre_parent_page.add_child(instance=event_page)
 
     return event_page
 
@@ -181,43 +192,44 @@ def register_centers():
     database.
     '''
 
-    centre_root_page = None
+    centre_parent_page = None
 
     try:
-        centre_root_page = Page.objects.get(title='centre_index')
+        centre_parent_page = Page.objects.get(title='sentre')
     except Page.DoesNotExist:
-        centre_root_page = Page(title='centre_index')
+        centre_parent_page = Page(title='sentre', slug='sentre')
         site_root_page = Page.get_root_nodes()[0]
-        site_root_page.add_child(instance=centre_root_page)
+        site_root_page.add_child(instance=centre_parent_page)
 
-    ktl_attributes = dict(
-        code='KTL',
-        title='Karma Tashi Ling',
-        address='Bjørnåsveien 124, 1272 Oslo',
-        description='Vårt hovedsenter med tempelbygg og fredsstupa.',
-        tlf='22 61 28 84'
+    centres = (
+        dict(
+            code='KTL',
+            slug='ktl',
+            title='Karma Tashi Ling',
+            address='Bjørnåsveien 124, 1272 Oslo',
+            description='Vårt hovedsenter med tempelbygg og fredsstupa.',
+            tlf='22 61 28 84'
+        ),
+        dict(
+            code='PM',
+            slug='pm',
+            title='Paramita meditasjonssenter',
+            address='Storgata 13, 0155 Oslo - 3 etasje (Strøget)',
+            description='Vårt bysenter i gangavstand fra Oslo Sentralstasjon.',
+            tlf='22 00 89 98'
+        ),
+        dict(
+            code='KSL',
+            slug='ksl',
+            title='Karma Shedrup Ling retreatsenter',
+            address='Siggerudveien 734, 1400 Ski',
+            description='Retreatsenter i Sørmarka.',
+            tlf=None
+        ),
     )
-    create_center(ktl_attributes, centre_root_page)
 
-    pm_attributes = dict(
-        code='PM',
-        title='Paramita meditasjonssenter',
-        address='Storgata 13, 0155 Oslo - 3 etasje (Strøget)',
-        description='Vårt bysenter i gangavstand fra Oslo Sentralstasjon.',
-        tlf='22 00 89 98'
-    )
-
-    create_center(pm_attributes, centre_root_page)
-
-    ksl_attributes = dict(
-        code='KSL',
-        title='Karma Shedrup Ling retreatsenter',
-        address='Siggerudveien 734, 1400 Ski',
-        description='Retreatsenter i Sørmarka.',
-        tlf=None
-    )
-
-    create_center(ksl_attributes, centre_root_page)
+    for centre_data in centres:
+        create_center(centre_data, centre_parent_page)
 
 
 def json_time_to_utc(gcal_event):
@@ -276,11 +288,14 @@ def create_event_page(calendar, gcal_event, events_root_page):
         # # TODO: replace with Exception ??
         return (None, None,)
 
+    title = gcal_event.get('summary', '')
     event_page_data = dict(
-        title=gcal_event.get('summary', ''),
+        title=title,
+        slug=slugify(title),
         calendar=calendar,
         recurrence=recurrence,
         description=gcal_event.get('description', 'Ingen beskrivelse'),
+        first_published_at=gcal_event['created']
     )
 
     event_page = update_or_create_event_page(
@@ -310,20 +325,19 @@ def db_sync_events(service, calendar, page_token):
     calendar.sync_token = calendar_data.get('nextSyncToken')
     calendar.save()
 
-    events_root_page = None
+    events_parent_page = None
 
     try:
-        events_root_page = Page.objects.get(title='event_index')
+        events_parent_page = Centre.objects.get(code=calendar.centre.code)
     except Page.DoesNotExist:
-        events_root_page = Page(title='event_index')
-        site_root_page = Page.get_root_nodes()[0]
-        site_root_page.add_child(instance=events_root_page)
+        register_centers()
+        events_parent_page = Centre.objects.get(code=calendar.centre.code)
 
     for gcal_event in calendar_data['items']:
         recurrence, event_page = create_event_page(
             calendar,
             gcal_event,
-            events_root_page
+            events_parent_page
         )
 
         if recurrence is None and event_page is None:
