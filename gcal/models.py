@@ -99,7 +99,7 @@ class EventPage(Page):
         blank=True
     )
     calendar = models.ForeignKey(
-        Calendar,
+        'Calendar',
         on_delete=models.PROTECT,
         verbose_name='Kalender',
         related_name='events',

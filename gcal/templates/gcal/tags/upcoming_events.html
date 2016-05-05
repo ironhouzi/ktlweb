@@ -6,7 +6,7 @@
     <div>
       <p class="nospace times font-medium">
         <a href="#">
-          {{ event.summary }}
+          {{ event.event_page.title }}
         </a>
       </p>
       <p class="nospace">
@@ -15,7 +15,7 @@
           {{ event.end|time:"TIME_FORMAT" }}
         {% endif %}
         <span class="fa fa-map-marker"></span>
-        {{ event.calendar.centre.code }}
+        {{ event.event_page.calendar.centre.code }}
       </p>
     </div>
   </li>

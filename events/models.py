@@ -15,7 +15,7 @@ from modelcluster.fields import ParentalKey
 class EventSignupPage(Page):
     # TODO: use on_delete=models.CASCADE, but respect Event's FK's on_delete
     calendar_entry = models.ForeignKey(
-        'gcal.Event',
+        'gcal.EventPage',
         on_delete=models.SET_NULL,
         null=True,
         blank=False,

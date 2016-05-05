@@ -10,7 +10,7 @@ from oauth2client.client import SignedJwtAssertionCredentials
 
 from .models import Calendar, Centre, Event, EventPage
 from django.utils.timezone import (
-    get_default_timezone_name, utc, localtime, make_aware, is_naive, now)
+    get_default_timezone_name, utc, localtime, make_aware, is_naive)
 from wagtail.wagtailcore.models import Page
 
 
@@ -290,7 +290,7 @@ def create_event_page(calendar, gcal_event, events_root_page):
     )
 
     event_entry = create_event_instance_entry(gcal_event, event_page)
-    event_page.first_event=event_entry
+    event_page.first_event = event_entry
 
     return (recurrence, event_page,)
 
