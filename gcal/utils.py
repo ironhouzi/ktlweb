@@ -2,6 +2,8 @@ import httplib2
 import os
 import arrow
 import json
+import logging
+import datetime
 
 from pytz import timezone
 
@@ -17,6 +19,8 @@ from wagtail.wagtailcore.models import Page
 from .models import Calendar, Centre, Event, EventPage
 
 # TODO: check response codes!!!!!!!!!!!!!!!!!
+
+logger = logging.getLogger(__name__)
 
 SCOPES = os.environ.get(
     'GCAL_SCOPES',
@@ -82,6 +86,14 @@ def create_event_instance_entry(gcal_event, event_page):
     )
 
     event_instance_object.save()
+
+    logger.debug(
+        'Created event instance w/ event id {}, master id: {})'
+        .format(
+            gcal_event['id'],
+            event_page.first_event.event_id if event_page.first_event else None
+        )
+    )
 
     return event_instance_object
 
@@ -160,6 +172,8 @@ def db_sync_calendars(service):
             centre=fk
         ).save()
 
+        logger.info('Created calendar for: "{}"'.format(center_code))
+
 
 def create_center(attributes, centre_parent_page):
     centre = None
@@ -179,9 +193,13 @@ def update_or_create_event_page(event_data, event_id, centre_parent_page):
     if event_page:
         event_page.update(**event_data)
         event_page = event_page[0]
+        action = 'Updated'
     else:
         event_page = EventPage(**event_data)
         centre_parent_page.add_child(instance=event_page)
+        action = 'Created'
+
+    logger.debug('{} event page for event id {}'.format(action, event_id))
 
     return event_page
 
@@ -230,6 +248,7 @@ def register_centers():
 
     for centre_data in centres:
         create_center(centre_data, centre_parent_page)
+        logger.info('registerred centre: "{}"'.format(centre_data['title']))
 
 
 def json_time_to_utc(gcal_event):
@@ -276,8 +295,6 @@ def json_time_to_utc(gcal_event):
 
 
 def create_event_page(calendar, gcal_event, events_root_page):
-    recurrence = gcal_event.get('recurrence')
-
     if gcal_event['status'] == 'cancelled':
         # try:
         #     # TODO: elect new EventPage.first_entry
@@ -286,16 +303,14 @@ def create_event_page(calendar, gcal_event, events_root_page):
         #     pass
 
         # # TODO: replace with Exception ??
-        return (None, None,)
+        return
 
     title = gcal_event.get('summary', '')
     event_page_data = dict(
         title=title,
         slug=slugify(title),
         calendar=calendar,
-        recurrence=recurrence,
-        description=gcal_event.get('description', 'Ingen beskrivelse'),
-        first_published_at=gcal_event['created']
+        description=gcal_event.get('description', 'Ingen beskrivelse')
     )
 
     event_page = update_or_create_event_page(
@@ -307,16 +322,24 @@ def create_event_page(calendar, gcal_event, events_root_page):
     event_entry = create_event_instance_entry(gcal_event, event_page)
     event_page.first_event = event_entry
 
-    return (recurrence, event_page,)
+    return event_page
 
 
-def db_sync_events(service, calendar, page_token):
+def db_sync_events(service, calendar, page_token, recurring_events={}):
     '''
     Update local database from Google Calendar API
     '''
+    today = datetime.datetime.utcnow().replace(
+                hour=0,
+                minute=0,
+                second=0
+            ).isoformat('T') + 'Z'
+
     kwargs = {
         'calendarId': calendar.calendar_id,
         'syncToken': calendar.sync_token,
+        'singleEvents': True,
+        'timeMin': today,
         'pageToken': page_token
     }
 
@@ -326,6 +349,10 @@ def db_sync_events(service, calendar, page_token):
     calendar.save()
 
     events_parent_page = None
+    logger.debug(
+        'Saved into calendar "{}", sync token: "{}"'
+        .format(calendar.calendar_id, calendar.sync_token)
+    )
 
     try:
         events_parent_page = Centre.objects.get(code=calendar.centre.code)
@@ -334,18 +361,36 @@ def db_sync_events(service, calendar, page_token):
         events_parent_page = Centre.objects.get(code=calendar.centre.code)
 
     for gcal_event in calendar_data['items']:
-        recurrence, event_page = create_event_page(
-            calendar,
-            gcal_event,
-            events_parent_page
-        )
+        if 'recurringEventId' in gcal_event:
+            event_id = gcal_event['recurringEventId']
 
-        if recurrence is None and event_page is None:
-            continue
+            if event_id not in recurring_events:
+                recurring_events[event_id] = []
 
-        fetch_instances(service, calendar, event_page)
+            recurring_events[event_id].append(gcal_event)
+            logger.debug('Added to recurring events: "{}"'.format(event_id))
+        else:
+            # event_page = create_event_page(
+            create_event_page(calendar, gcal_event, events_parent_page)
 
-    return next_page_token
+        # fetch_instances(service, calendar, event_page)
+
+    return next_page_token, recurring_events
+
+
+def create_recurring_event_pages(service, calendar, recurring_events):
+    events_parent_page = Centre.objects.get(code=calendar.centre.code)
+
+    for event_id, event_instances in recurring_events.items():
+        event = service.events().get(
+            calendarId=calendar.calendar_id,
+            eventId=event_id,
+        ).execute()
+
+        event_page = create_event_page(calendar, event, events_parent_page)
+
+        for event_instance in event_instances:
+            create_event_instance_entry(event_instance, event_page)
 
 
 def db_sync_public_calendars(service):
@@ -353,14 +398,19 @@ def db_sync_public_calendars(service):
     Synchronize all public calendars in local database.
     '''
 
-    page_token = None
-
     for calendar in Calendar.objects.filter(public=True):
+        recurring_events = {}
+        page_token = None
+
         while True:
-            page_token = db_sync_events(service, calendar, page_token)
+            page_token, recurring_events = db_sync_events(
+                service, calendar, page_token, recurring_events
+            )
 
             if page_token is None:
                 break
+
+        create_recurring_event_pages(service, calendar, recurring_events)
 
 
 def db_init():
