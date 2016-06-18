@@ -10,11 +10,13 @@ from pytz import timezone
 from apiclient import discovery
 from oauth2client.client import SignedJwtAssertionCredentials
 
+from django.contrib.auth.models import User
 from django.utils.text import slugify as django_slugify
 from django.utils.timezone import (
     get_default_timezone_name, utc, localtime, make_aware, is_naive)
 
 from wagtail.wagtailcore.models import Page
+from wagtail.wagtailcore.rich_text import RichText
 
 from .models import Calendar, Centre, Event, EventPage
 
@@ -28,7 +30,35 @@ SCOPES = os.environ.get(
 )
 
 
+def publish_page(page, page_parent, default_body_string, user):
+    '''
+    Helper function for publishing a manually created Wagtail Page object.
+    '''
+
+    logger.debug('publishing page: {} w/ parent: {}'.format(page, page_parent))
+
+    paragraph = '<p>{}</p>'.format(default_body_string)
+
+    page.body.stream_data = [
+        ('paragraph', RichText(paragraph))
+    ]
+
+    page_parent.add_child(instance=page)
+
+    revision = page.save_revision(
+        user=user,
+        submitted_for_moderation=False,
+    )
+
+    revision.publish()
+    page.save()
+
+
 def slugify(string):
+    '''
+    Helper function for converting Norwegian characters to ASCII representation.
+    '''
+
     string = string.lower()
 
     for substitution in (('æ', 'ae'), ('ø', 'oe'), ('å', 'aa'),):
@@ -41,6 +71,7 @@ def get_credentials():
     '''
     Gets credentials for server to server google API communications.
     '''
+
     json_path = os.environ.get('JWT_JSON_PATH')
 
     if json_path:
@@ -63,11 +94,16 @@ def get_remote_calendars(service, items='id,summary,description,accessRole'):
     '''
     Fetches calendar list from Google Calendar API.
     '''
+
     return service.calendarList().list(
         fields='items({})'.format(items)).execute().get('items', [])
 
 
 def create_event_instance_entry(gcal_event, event_page):
+    '''
+    Function for creating event instance entries which belongs to an EventPage.
+    '''
+
     # TODO: is it necessary to handle cancelled instance?
     start, end, full_day = json_time_to_utc(gcal_event)
 
@@ -99,6 +135,11 @@ def create_event_instance_entry(gcal_event, event_page):
 
 
 def fetch_instances(service, calendar, event_page):
+    '''
+    Populates the site with Google calendar events represented as EventPages
+    with one or more event instances per EventPage.
+    '''
+
     page_token = None
 
     while True:
@@ -130,6 +171,7 @@ def get_events(*args, **kwargs):
     it should already be available in the kwargs as the query response object
     is a json dict.
     '''
+
     service, calendar = args
 
     if calendar:
@@ -145,6 +187,7 @@ def get_calendar_service():
     '''
     Helper function that returns a service object for the Google calendar API.
     '''
+
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
 
@@ -156,6 +199,7 @@ def db_sync_calendars(service):
     Utility function for storing calendars from Google Calendar API to the
     local database.
     '''
+
     calendars = get_remote_calendars(service)
 
     for cal in calendars:
@@ -175,28 +219,36 @@ def db_sync_calendars(service):
         logger.info('Created calendar for: "{}"'.format(center_code))
 
 
-def create_center(attributes, centre_parent_page):
+def create_center(centre_data, centre_parent_page, user):
+    '''
+    Creates a Wagtail Page representing each centre. Note that there is one
+    calendar per centre.
+    '''
+
+    centre_entry_data, description = centre_data
     centre = None
 
     try:
-        centre = Centre.objects.get(code=attributes['code'])
-    except Page.DoesNotExist:
-        centre = Centre(**attributes)
-        centre_parent_page.add_child(instance=centre)
+        Centre.objects.get(code=centre_entry_data['code'])
+    except Centre.DoesNotExist:
+        centre = Centre(show_in_menus=True, **centre_entry_data)
+        publish_page(centre, centre_parent_page, description, user)
 
 
-def update_or_create_event_page(event_data, event_id, centre_parent_page):
+def update_or_create_event_page(event_data, event_id, centre_parent_page, user):
+    event_data_attributes, event_description = event_data
+
     event_page = EventPage.objects.filter(
         first_event__event_id=event_id
     )
 
     if event_page:
-        event_page.update(**event_data)
+        event_page.update(**event_data_attributes)
         event_page = event_page[0]
         action = 'Updated'
     else:
-        event_page = EventPage(**event_data)
-        centre_parent_page.add_child(instance=event_page)
+        event_page = EventPage(**event_data_attributes)
+        publish_page(event_page, centre_parent_page, event_description, user)
         action = 'Created'
 
     logger.debug('{} event page for event id {}'.format(action, event_id))
@@ -204,7 +256,7 @@ def update_or_create_event_page(event_data, event_id, centre_parent_page):
     return event_page
 
 
-def register_centers():
+def register_centers(user):
     '''
     Utility function for registering the three available centres into the
     database.
@@ -217,38 +269,45 @@ def register_centers():
     except Page.DoesNotExist:
         centre_parent_page = Page(title='sentre', slug='sentre')
         site_root_page = Page.get_root_nodes()[0]
-        site_root_page.add_child(instance=centre_parent_page)
+        main_page = site_root_page.get_children()[0]
+        main_page.add_child(instance=centre_parent_page)
 
     centres = (
-        dict(
-            code='KTL',
-            slug='ktl',
-            title='Karma Tashi Ling',
-            address='Bjørnåsveien 124, 1272 Oslo',
-            description='Vårt hovedsenter med tempelbygg og fredsstupa.',
-            tlf='22 61 28 84'
+        (
+            dict(
+                code='KTL',
+                slug='ktl',
+                title='Karma Tashi Ling',
+                address='Bjørnåsveien 124, 1272 Oslo',
+                tlf='22 61 28 84'
+            ),
+            '<p>Vårt hovedsenter med tempelbygg og fredsstupa.</p>'
         ),
-        dict(
-            code='PM',
-            slug='pm',
-            title='Paramita meditasjonssenter',
-            address='Storgata 13, 0155 Oslo - 3 etasje (Strøget)',
-            description='Vårt bysenter i gangavstand fra Oslo Sentralstasjon.',
-            tlf='22 00 89 98'
+        (
+            dict(
+                code='PM',
+                slug='pm',
+                title='Paramita meditasjonssenter',
+                address='Storgata 13, 0155 Oslo - 3 etasje (Strøget)',
+                tlf='22 00 89 98'
+            ),
+            '<p>Vårt bysenter i gangavstand fra Oslo Sentralstasjon.</p>'
         ),
-        dict(
-            code='KSL',
-            slug='ksl',
-            title='Karma Shedrup Ling retreatsenter',
-            address='Siggerudveien 734, 1400 Ski',
-            description='Retreatsenter i Sørmarka.',
-            tlf=None
-        ),
+        (
+            dict(
+                code='KSL',
+                slug='ksl',
+                title='Karma Shedrup Ling retreatsenter',
+                address='Siggerudveien 734, 1400 Ski',
+                tlf=None
+            ),
+            '<p>Retreatsenter i Sørmarka.</p>'
+        )
     )
 
     for centre_data in centres:
-        create_center(centre_data, centre_parent_page)
-        logger.info('registerred centre: "{}"'.format(centre_data['title']))
+        create_center(centre_data, centre_parent_page, user)
+        logger.info('registerred centre: "{}"'.format(centre_data[0]['title']))
 
 
 def json_time_to_utc(gcal_event):
@@ -294,7 +353,7 @@ def json_time_to_utc(gcal_event):
     return start, end, full_day
 
 
-def create_event_page(calendar, gcal_event, events_root_page):
+def create_event_page(calendar, gcal_event, events_root_page, user):
     if gcal_event['status'] == 'cancelled':
         # try:
         #     # TODO: elect new EventPage.first_entry
@@ -306,17 +365,15 @@ def create_event_page(calendar, gcal_event, events_root_page):
         return
 
     title = gcal_event.get('summary', '')
-    event_page_data = dict(
-        title=title,
-        slug=slugify(title),
-        calendar=calendar,
-        description=gcal_event.get('description', 'Ingen beskrivelse')
+    event_page_data = (
+        dict(title=title, slug=slugify(title), calendar=calendar),
+        gcal_event.get('description', 'Ingen beskrivelse')
     )
-
     event_page = update_or_create_event_page(
         event_page_data,
         gcal_event['id'],
-        events_root_page
+        events_root_page,
+        user
     )
 
     event_entry = create_event_instance_entry(gcal_event, event_page)
@@ -325,7 +382,7 @@ def create_event_page(calendar, gcal_event, events_root_page):
     return event_page
 
 
-def db_sync_events(service, calendar, page_token, recurring_events={}):
+def db_sync_events(service, calendar, page_token, user, recurring_events={}):
     '''
     Update local database from Google Calendar API
     '''
@@ -356,8 +413,8 @@ def db_sync_events(service, calendar, page_token, recurring_events={}):
 
     try:
         events_parent_page = Centre.objects.get(code=calendar.centre.code)
-    except Page.DoesNotExist:
-        register_centers()
+    except Centre.DoesNotExist:
+        register_centers(user)
         events_parent_page = Centre.objects.get(code=calendar.centre.code)
 
     for gcal_event in calendar_data['items']:
@@ -371,14 +428,14 @@ def db_sync_events(service, calendar, page_token, recurring_events={}):
             logger.debug('Added to recurring events: "{}"'.format(event_id))
         else:
             # event_page = create_event_page(
-            create_event_page(calendar, gcal_event, events_parent_page)
+            create_event_page(calendar, gcal_event, events_parent_page, user)
 
         # fetch_instances(service, calendar, event_page)
 
     return next_page_token, recurring_events
 
 
-def create_recurring_event_pages(service, calendar, recurring_events):
+def create_recurring_event_pages(service, calendar, recurring_events, user):
     events_parent_page = Centre.objects.get(code=calendar.centre.code)
 
     for event_id, event_instances in recurring_events.items():
@@ -387,13 +444,18 @@ def create_recurring_event_pages(service, calendar, recurring_events):
             eventId=event_id,
         ).execute()
 
-        event_page = create_event_page(calendar, event, events_parent_page)
+        event_page = create_event_page(
+            calendar,
+            event,
+            events_parent_page,
+            user
+        )
 
         for event_instance in event_instances:
             create_event_instance_entry(event_instance, event_page)
 
 
-def db_sync_public_calendars(service):
+def db_sync_public_calendars(service, user):
     '''
     Synchronize all public calendars in local database.
     '''
@@ -404,30 +466,51 @@ def db_sync_public_calendars(service):
 
         while True:
             page_token, recurring_events = db_sync_events(
-                service, calendar, page_token, recurring_events
+                service, calendar, page_token, user, recurring_events
             )
 
             if page_token is None:
                 break
 
-        create_recurring_event_pages(service, calendar, recurring_events)
+        create_recurring_event_pages(service, calendar, recurring_events, user)
 
 
-def db_init():
+def get_user(user_name=None):
+    '''
+    Helper function to retreive User object from a username.
+    '''
+
+    if not user_name:
+        raise RuntimeError('Must provide valid user name')
+
+    user = User.objects.get(username=user_name)
+
+    if user is None:
+        raise RuntimeError('Username does not exist!')
+
+    return user
+
+
+def db_init(user_name=None):
     '''
     Helper function for populating the local database.
     '''
-    register_centers()
+
+    user = get_user(user_name)
+
+    register_centers(user)
     service = get_calendar_service()
     db_sync_calendars(service)
-    db_sync_public_calendars(service)
+    db_sync_public_calendars(service, user)
 
 
-def sync_events():
+def sync_events(user_name=None):
     '''
     For CRONjobs or from a google API signal.
 
     Will update the calendars incrementally using the syncToken.
     '''
+    user = get_user(user_name)
+
     service = get_calendar_service()
-    db_sync_public_calendars(service)
+    db_sync_public_calendars(service, user)

@@ -1,0 +1,13 @@
+{% if slider_items %}
+  <div class="wrapper full_width">
+    <div class="flex-container">
+      <div class="flexslider flex-homepage">
+        <ul class="flex-slides">
+          {% for slider_item in slider_items %}
+            {{ slider_item }}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endif %}

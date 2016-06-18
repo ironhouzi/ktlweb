@@ -1,0 +1,7 @@
+{% load homepage_tags wagtailcore_tags %}
+
+<ul class="sub-menu">
+  {% for child_item in menuitems_children %}
+    <li{% if child_item.active %} class="active"{% endif %}><a href="{% pageurl child_item %}" title="{{ child_item.title }}">{{ child_item.title }}</a></li>
+  {% endfor %}
+</ul>

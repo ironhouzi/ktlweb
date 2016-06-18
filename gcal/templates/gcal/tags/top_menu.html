@@ -1,0 +1,22 @@
+{% load homepage_tags wagtailcore_tags %}
+{% get_site_root as site_root %}
+
+<div class="wrapper row2">
+  <nav role="navigation" id="topnav" class="clear">
+    <ul class="clear">
+      {# Link to main page #}
+      <li{% if request.path == site_root.url %} class="active"{% endif %}><a href="{% pageurl site_root %}" title="{{ site_root.title }}">Forside</a></li>
+
+      {% for menuitem in menuitems %}
+        {% if menuitem.show_dropdown %}
+          <li{% if menuitem.active %} class="active"{% endif %}><a class="{% if menuitem.show_dropdown %}drop{% endif %}" href="#" title="{{ menuitem.title }}">{{ menuitem.title }}</a>
+            {% top_menu_children parent=menuitem path=calling_page %}
+          </li>
+        {% else %}
+          <li><a href="{% pageurl menuitem %}" title="{{ menuitem.title }}">{{ menuitem.title }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+    </ul>
+  </nav>
+</div>

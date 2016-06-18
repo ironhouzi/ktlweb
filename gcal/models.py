@@ -2,15 +2,14 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField, ArrayField
 
 from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.fields import StreamField, RichTextField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 # from wagtail.wagtailsearch import index
 
-from home.models import HomePageStreamBlock
+from home.models import AbstractHomePage
 
 
-class Centre(Page):
+class Centre(AbstractHomePage):
     code = models.CharField(
         'Kode',
         max_length=3,
@@ -18,11 +17,6 @@ class Centre(Page):
     )
     address = models.TextField('Addresse', blank=False)
     description = models.CharField('Beskrivelse', blank=False, max_length=200)
-    information = StreamField(
-        HomePageStreamBlock(),
-        verbose_name='information',
-        null=True
-    )
     tlf = models.CharField(max_length=18, null=True, blank=True)
     image = models.ForeignKey(
         'wagtailimages.Image',
@@ -36,7 +30,6 @@ class Centre(Page):
         FieldPanel('code'),
         FieldPanel('address'),
         FieldPanel('description'),
-        StreamFieldPanel('information'),
         FieldPanel('tlf'),
         ImageChooserPanel('image'),
     ]
@@ -83,7 +76,7 @@ class Event(models.Model):
         return self.event_page.title
 
 
-class EventPage(Page):
+class EventPage(AbstractHomePage):
     first_event = models.OneToOneField(
         'Event',
         on_delete=models.SET_NULL,
@@ -92,14 +85,13 @@ class EventPage(Page):
         null=True,
         blank=True
     )
-    description = RichTextField()
     recurrence = ArrayField(
         models.CharField(max_length=200),
         null=True,
         blank=True
     )
     calendar = models.ForeignKey(
-        'Calendar',
+        Calendar,
         on_delete=models.PROTECT,
         verbose_name='Kalender',
         related_name='events',

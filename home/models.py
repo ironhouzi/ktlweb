@@ -1,4 +1,3 @@
-from django.db import models
 from django import forms
 
 from wagtail.wagtailcore.models import Page
@@ -6,8 +5,8 @@ from wagtail.wagtailcore.fields import StreamField
 from wagtail.wagtailimages.blocks import ImageChooserBlock
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from wagtail.wagtailcore.blocks import (
-    TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock, ListBlock,
-    URLBlock, PageChooserBlock
+    TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock,
+    ListBlock, URLBlock, PageChooserBlock
 )
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
@@ -53,7 +52,7 @@ class EventsBlock(StructBlock):
 
     class Meta:
         icon = 'date'
-        template='gcal/blocks/display_events.html'
+        template = 'gcal/blocks/display_events.html'
         help_text = (
             'Ved å aktivere dette valget vil kommende aktiviteter vises.'
         )
@@ -104,7 +103,7 @@ class QuickLinkBlock(StructBlock):
 
     class Meta:
         icon = 'link'
-        template='home/blocks/quicklink.html'
+        template = 'home/blocks/quicklink.html'
 
 
 class ImageSliderBlock(StructBlock):
@@ -112,7 +111,7 @@ class ImageSliderBlock(StructBlock):
 
     class Meta:
         icon = 'image'
-        template='home/blocks/slider_image.html'
+        template = 'home/blocks/slider_image.html'
 
 
 class ImageBlock(StructBlock):
@@ -151,7 +150,7 @@ class HeadingPanelStreamBlock(StreamBlock):
     )
 
 
-class HomePage(Page):
+class AbstractHomePage(Page):
     body = StreamField(HomePageStreamBlock(), verbose_name='hovedinnhold')
     headingpanel = StreamField(
         HeadingPanelStreamBlock(),
@@ -160,7 +159,7 @@ class HomePage(Page):
     sidepanel = StreamField(SidePanelStreamBlock(), verbose_name='sidepanel')
 
     class Meta:
-        verbose_name = "hjemmeside"
+        abstract = True
 
     search_fields = Page.search_fields + (
         index.SearchField('body'),
@@ -186,3 +185,8 @@ class HomePage(Page):
             classname='settings'
         ),
     ])
+
+
+class HomePage(AbstractHomePage):
+    class Meta:
+        verbose_name = "hjemmeside"
