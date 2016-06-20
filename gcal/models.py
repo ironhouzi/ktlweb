@@ -77,7 +77,7 @@ class Event(models.Model):
 
 
 class EventPage(AbstractHomePage):
-    first_event = models.OneToOneField(
+    initial_event = models.OneToOneField(
         'Event',
         on_delete=models.SET_NULL,
         verbose_name='Første kalenderoppføring',
