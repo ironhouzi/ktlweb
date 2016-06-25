@@ -233,9 +233,13 @@ def register_centers(user):
     centre_parent_page = None
 
     try:
-        centre_parent_page = Centre.objects.get(title='sentre')
-    except Centre.DoesNotExist:
-        centre_parent_page = Centre(title='sentre', slug='sentre')
+        centre_parent_page = Page.objects.get(title='sentre')
+    except Page.DoesNotExist:
+        centre_parent_page = Page(
+            title='sentre',
+            slug='sentre',
+            show_in_menus=True
+        )
         site_root_page = Page.get_root_nodes()[0]
         main_page = site_root_page.get_children()[0]
         main_page.add_child(instance=centre_parent_page)
