@@ -16,7 +16,6 @@ class Centre(AbstractHomePage):
         blank=False
     )
     address = models.TextField('Addresse', blank=False)
-    description = models.CharField('Beskrivelse', blank=False, max_length=200)
     tlf = models.CharField(max_length=18, null=True, blank=True)
     image = models.ForeignKey(
         'wagtailimages.Image',
@@ -29,7 +28,6 @@ class Centre(AbstractHomePage):
     content_panels = Page.content_panels + [
         FieldPanel('code'),
         FieldPanel('address'),
-        FieldPanel('description'),
         FieldPanel('tlf'),
         ImageChooserPanel('image'),
     ]
@@ -58,7 +56,6 @@ class Event(models.Model):
     event_id = models.CharField(max_length=1024, primary_key=True)
     start = models.DateTimeField('Start', null=False, blank=False)
     end = models.DateTimeField('Slutt', null=False, blank=False)
-    creator = JSONField(null=True, blank=True)
     full_day = models.BooleanField('Full dag', blank=False)
     # TODO: investigate if recurring_event_id is sufficient for determining
     # full_day
@@ -85,6 +82,7 @@ class EventPage(AbstractHomePage):
         null=True,
         blank=True
     )
+    creator = JSONField(null=True, blank=True)
     recurrence = ArrayField(
         models.CharField(max_length=200),
         null=True,

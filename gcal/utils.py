@@ -15,6 +15,12 @@ from django.utils.text import slugify as django_slugify
 from django.utils.timezone import (
     get_default_timezone_name, utc, localtime, make_aware, is_naive)
 
+# TODO: remove Wagtail 1.3 error when upgrading!
+# Use validation for Wagtail 1.5
+from django.core.exceptions import ValidationError
+# Use validation for Wagtail 1.3
+from django.db.utils import IntegrityError
+
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.rich_text import RichText
 
@@ -112,7 +118,6 @@ def sync_event_instance_entry(gcal_event, event_page):
         end=end,
         full_day=full_day,
         recurring_event_id=gcal_event.get('recurringEventId'),
-        creator=gcal_event.get('creator'),
         event_page=event_page
     )
 
@@ -218,7 +223,12 @@ def update_or_create_event_page(event_data, event_id, centre_parent_page, user):
         event_page = EventPage(**event_data_attributes)
         action = 'Created'
 
-    publish_page(event_page, centre_parent_page, event_description, user)
+    try:
+        publish_page(event_page, centre_parent_page, event_description, user)
+    except (ValidationError, IntegrityError):
+        logger.debug('Duplicate page: {}'.format(event_data))
+        raise IntegrityError
+
     logger.debug('{} event page for event id {}'.format(action, event_id))
 
     return event_page
@@ -358,6 +368,7 @@ def sync_event_page(calendar, main_gcal_event, events_root_page, user):
             title=title,
             slug=slugify(title),
             recurrence=main_gcal_event.get('recurrence'),
+            creator=main_gcal_event.get('creator'),
             calendar=calendar
         ),
         main_gcal_event.get('description', 'Ingen beskrivelse')
