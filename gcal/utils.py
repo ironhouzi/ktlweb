@@ -15,12 +15,6 @@ from django.utils.text import slugify as django_slugify
 from django.utils.timezone import (
     get_default_timezone_name, utc, localtime, make_aware, is_naive)
 
-# TODO: remove Wagtail 1.3 error when upgrading!
-# Use validation for Wagtail 1.5
-from django.core.exceptions import ValidationError
-# Use validation for Wagtail 1.3
-from django.db.utils import IntegrityError
-
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.rich_text import RichText
 
@@ -223,11 +217,7 @@ def update_or_create_event_page(event_data, event_id, centre_parent_page, user):
         event_page = EventPage(**event_data_attributes)
         action = 'Created'
 
-    try:
-        publish_page(event_page, centre_parent_page, event_description, user)
-    except (ValidationError, IntegrityError):
-        logger.debug('Duplicate page: {}'.format(event_data))
-        raise IntegrityError
+    publish_page(event_page, centre_parent_page, event_description, user)
 
     logger.debug('{} event page for event id {}'.format(action, event_id))
 
@@ -243,9 +233,9 @@ def register_centers(user):
     centre_parent_page = None
 
     try:
-        centre_parent_page = Page.objects.get(title='sentre')
-    except Page.DoesNotExist:
-        centre_parent_page = Page(
+        centre_parent_page = Centre.objects.get(title='sentre')
+    except Centre.DoesNotExist:
+        centre_parent_page = Centre(
             title='sentre',
             slug='sentre',
             show_in_menus=True
@@ -487,7 +477,7 @@ def sync_recurring_events(service, calendar, recurring_events, user):
     Event entries in the database.
     '''
 
-    events_parent_page = calendar.centre
+    events_parent_page = Centre.objects.get(code=calendar.centre.code)
 
     for main_event_id, event_instances in recurring_events.items():
         event = service.events().get(
