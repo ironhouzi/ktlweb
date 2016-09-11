@@ -54,12 +54,13 @@ class Calendar(models.Model):
 
 class Event(models.Model):
     event_id = models.CharField(max_length=1024, primary_key=True)
-    start = models.DateTimeField('Start', null=False, blank=False)
-    end = models.DateTimeField('Slutt', null=False, blank=False)
-    full_day = models.BooleanField('Full dag', blank=False)
+    start = models.DateTimeField('Start')
+    end = models.DateTimeField('Slutt')
+    full_day = models.BooleanField('Full dag')
     # TODO: investigate if recurring_event_id is sufficient for determining
     # full_day
     recurring_event_id = models.CharField(max_length=256, null=True, blank=True)
+    url = models.URLField()
     event_page = models.ForeignKey(
         'EventPage',
         on_delete=models.SET_NULL,
@@ -74,14 +75,7 @@ class Event(models.Model):
 
 
 class EventPage(AbstractHomePage):
-    initial_event = models.OneToOneField(
-        'Event',
-        on_delete=models.SET_NULL,
-        verbose_name='Første kalenderoppføring',
-        related_name='+',
-        null=True,
-        blank=True
-    )
+    master_event_id = models.CharField(max_length=1024, unique=True)
     creator = JSONField(null=True, blank=True)
     recurrence = ArrayField(
         models.CharField(max_length=200),

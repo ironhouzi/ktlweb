@@ -111,7 +111,7 @@ def get_remote_calendars(service, items='id,summary,description,accessRole'):
 
 def sync_event_instance_entry(gcal_event, event_page):
     '''
-    Function for creating event instance entries which belongs to an EventPage.
+    Function for creating an event instance and couple with an EventPage.
     '''
 
     # TODO: is it necessary to handle cancelled instance?
@@ -122,6 +122,7 @@ def sync_event_instance_entry(gcal_event, event_page):
         end=end,
         full_day=full_day,
         recurring_event_id=gcal_event.get('recurringEventId'),
+        url=gcal_event.get('htmlLink'),
         event_page=event_page
     )
 
@@ -131,8 +132,6 @@ def sync_event_instance_entry(gcal_event, event_page):
     )
 
     event_instance_object.save()
-
-    return event_instance_object
 
 
 def poll_events(service, calendar, page_token):
@@ -178,7 +177,7 @@ def poll_events(service, calendar, page_token):
     try:
         response = service.events().list(**gcal_params).execute()
     except HttpError as http_err:
-        if http_err.error.resp.status == 401:
+        if http_err.resp.status == 410:
             logger.debug('Google sync token expired!')
             raise ExpiredGoogleCalendarSyncToken
         else:
@@ -262,24 +261,29 @@ def create_center(centre_data, centre_parent_page, user):
         publish_page(centre, centre_parent_page, description, user)
 
 
-def update_or_create_event_page(event_data, event_id, centre_parent_page, user):
+def update_or_create_event_page(event_data, centre_page, user):
+    '''
+    Function for reliably updating/creating an event_page, since django's
+    update_or_create() doesn't handle Treebeard MP_node attributes.
+    MP_node is used by Wagtail pages for tree structured hiearchy.
+    '''
+
     event_data_attributes, event_description = event_data
+    master_event_id = event_data_attributes['master_event_id']
 
-    event_page = EventPage.objects.filter(
-        initial_event__event_id=event_id
-    )
-
-    if event_page:
+    try:
+        event_page = EventPage.objects.get(master_event_id=master_event_id)
         event_page.update(**event_data_attributes)
-        event_page = event_page[0]
         action = 'Updated'
-    else:
+    except EventPage.DoesNotExist:
         event_page = EventPage(**event_data_attributes)
         action = 'Created'
 
-    publish_page(event_page, centre_parent_page, event_description, user)
+    publish_page(event_page, centre_page, event_description, user)
 
-    logger.debug('{} event page for event id {}'.format(action, event_id))
+    logger.debug(
+        '{} event page for event id {}'.format(action, master_event_id)
+    )
 
     return event_page
 
@@ -388,80 +392,80 @@ def json_time_to_utc(gcal_event):
 def handle_cancelled_event(event):
     # cases:
     # 1. deleted recurring event instance
-    # 2. deleted recurring event instance which is event_page initial_event
-    # 3. deleted non-recurring event
+    # 2. deleted non-recurring event
+    # 3. Modified Event
+    # 4. Modified EventPage
     #
     #
     # try:
-    #     # TODO: elect new EventPage.initial_event
-    #     main_gcal_event.objects.get(event_id=main_gcal_event['id']).delete()
-    # except main_gcal_event.DoesNotExist:
+    #     master_gcal_event.objects.get(event_id=master_gcal_event['id']).delete()
+    # except master_gcal_event.DoesNotExist:
     #     pass
 
     logger.debug('Handling cancelled event: {}'.format(event['summary']))
 
     cancelled_event = Event.objects.get(event_id=event['id'])
     event_page = cancelled_event.event_page
-    needs_new_initial_event = event_page.initial_event == cancelled_event
 
     cancelled_event.delete()
 
     if len(event_page.event_instances) == 0:
         event_page.delete()
-    elif needs_new_initial_event:
-        # event_page.initial_event = event_page.event_instances
-        pass
 
-    logger.debug('compute_events created event page: "{}"'.format(event))
+    logger.debug('handle_events created event page: "{}"'.format(event))
 
 
-def sync_event_page(calendar, main_gcal_event, user):
-    title = main_gcal_event.get('summary', '')
-    event_page_data = (
-        dict(
-            title=title,
-            slug=slugify(title),
-            recurrence=main_gcal_event.get('recurrence'),
-            creator=main_gcal_event.get('creator'),
-            calendar=calendar
-        ),
-        main_gcal_event.get('description', 'Ingen beskrivelse')
-    )
-
+def get_event_parent_page(calendar, user):
     try:
         event_parent_page = Centre.objects.get(code=calendar.centre.code)
     except Centre.DoesNotExist:
         register_centers(user)
         event_parent_page = Centre.objects.get(code=calendar.centre.code)
 
-    event_page = update_or_create_event_page(
-        event_page_data,
-        main_gcal_event['id'],
-        event_parent_page,
-        user
+    return event_parent_page
+
+
+def sync_event_page(calendar, user, master_gcal_event):
+    title = master_gcal_event.get('summary', '')
+    event_page_data = (
+        dict(
+            title=title,
+            slug=slugify(title),
+            master_event_id=master_gcal_event['id'],
+            recurrence=master_gcal_event.get('recurrence'),
+            creator=master_gcal_event.get('creator'),
+            calendar=calendar
+        ),
+        master_gcal_event.get('description', 'Ingen beskrivelse')
     )
 
-    event_entry = sync_event_instance_entry(main_gcal_event, event_page)
-    event_page.initial_event = event_entry
-    event_page.save()
+    event_parent_page = get_event_parent_page(calendar, user)
+
+    event_page = update_or_create_event_page(
+        event_data=event_page_data,
+        centre_page=event_parent_page,
+        user=user
+    )
+
+    sync_event_instance_entry(master_gcal_event, event_page)
 
     logger.debug(
-        'compute_events created event page for single event: "{}" ({})'
-        .format(main_gcal_event['id'], main_gcal_event.get('summary'))
+        'handle_events created event page for single event: "{}" ({})'
+        .format(master_gcal_event['id'], master_gcal_event.get('summary'))
     )
 
     return event_page
 
 
-def compute_events(service, calendar, page_token, user, recurring_events={}):
+def handle_events(service, calendar, page_token, user, recurring_events={}):
     '''
     Used to create calendar events in the database.
 
     Collects events from Google Calendar using the 'singleEvents'
     parameters, which will expand all event instances into single events. Any
     recurring event will be collected in the `recurring_events` dictionary using
-    the main event id as the key and a list of event ids as the value. The
-    dictionary is used by sync_recurring_events().
+    the master event id (recurringEventId) as the key and a list of event ids as
+    the value. The dictionary is used by sync_recurring_events().
 
     If an event does not contain a recurringEventId, it is a non-recurring event
     and the EventPage representing the event can be created immediately.
@@ -490,23 +494,23 @@ def compute_events(service, calendar, page_token, user, recurring_events={}):
         if gcal_event.get('status') == 'cancelled':
             handle_cancelled_event(gcal_event)
         elif 'recurringEventId' in gcal_event:
-            main_event_id = gcal_event['recurringEventId']
+            master_event_id = gcal_event['recurringEventId']
 
-            if main_event_id not in recurring_events:
-                recurring_events[main_event_id] = []
+            if master_event_id not in recurring_events:
+                recurring_events[master_event_id] = []
 
-            recurring_events[main_event_id].append(gcal_event)
+            recurring_events[master_event_id].append(gcal_event)
 
             logger.debug(
-                'compute_events added recurrence {} to event: "{}" ({})'
+                'handle_events added recurrence {} to event: "{}" ({})'
                 .format(
                     gcal_event['id'],
-                    main_event_id,
+                    master_event_id,
                     gcal_event.get('summary')
                 )
             )
         else:
-            sync_event_page(calendar, gcal_event, user)
+            sync_event_page(calendar, user, master_gcal_event=gcal_event)
 
     return next_page_token, recurring_events
 
@@ -519,19 +523,23 @@ def sync_recurring_events(service, calendar, recurring_events, user):
     Event entries in the database.
     '''
 
-    events_parent_page = Centre.objects.get(code=calendar.centre.code)
-
-    for main_event_id, event_instances in recurring_events.items():
-        event = service.events().get(
+    for master_event_id, event_instances in recurring_events.items():
+        master_event = service.events().get(
             calendarId=calendar.calendar_id,
-            eventId=main_event_id,
+            eventId=master_event_id,
         ).execute()
 
         event_page = sync_event_page(
             calendar,
-            event,
-            events_parent_page,
-            user
+            user,
+            master_gcal_event=master_event
+        )
+
+        logger.debug(
+            'Creating {} event instances for Page: {}'.format(
+                len(event_instances),
+                event_page.title
+            )
         )
 
         for event_instance in event_instances:
@@ -549,7 +557,7 @@ def sync_db_calendar_events(service, user):
 
         while True:
             try:
-                next_page_token, recurring_events = compute_events(
+                next_page_token, recurring_events = handle_events(
                     service,
                     calendar,
                     next_page_token,
