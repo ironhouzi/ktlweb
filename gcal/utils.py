@@ -112,6 +112,8 @@ def get_remote_calendars(service, items='id,summary,description,accessRole'):
 def sync_event_instance_entry(gcal_event, event_page):
     '''
     Function for creating an event instance and couple with an EventPage.
+
+    Returns the google calendar event object if the summary has changed.
     '''
 
     # TODO: is it necessary to handle cancelled instance?
@@ -121,7 +123,6 @@ def sync_event_instance_entry(gcal_event, event_page):
         start=start,
         end=end,
         full_day=full_day,
-        recurring_event_id=gcal_event.get('recurringEventId'),
         url=gcal_event.get('htmlLink'),
         event_page=event_page
     )
@@ -133,8 +134,11 @@ def sync_event_instance_entry(gcal_event, event_page):
 
     event_instance_object.save()
 
+    if gcal_event.get('summary', '') != event_page.title:
+        return gcal_event
 
-def poll_events(service, calendar, page_token):
+
+def poll_event_instances(service, calendar, page_token):
     '''
     Request event list from Google calendar API.
 
@@ -168,20 +172,12 @@ def poll_events(service, calendar, page_token):
         })
 
     else:
-        # perform partial event sync
-
+        # Request diff since last event sync token
         gcal_params['syncToken'] = calendar.sync_token
 
     logger.debug('List events w/ params: {}'.format(gcal_params))
 
-    try:
-        response = service.events().list(**gcal_params).execute()
-    except HttpError as http_err:
-        if http_err.resp.status == 410:
-            logger.debug('Google sync token expired!')
-            raise ExpiredGoogleCalendarSyncToken
-        else:
-            raise http_err
+    response = service.events().list(**gcal_params).execute()
 
     next_page_token = response.get('nextPageToken')
     next_sync_token = response.get('nextSyncToken')
@@ -273,7 +269,13 @@ def update_or_create_event_page(event_data, centre_page, user):
 
     try:
         event_page = EventPage.objects.get(master_event_id=master_event_id)
-        event_page.update(**event_data_attributes)
+
+        # Cannot use update_or_create, since treebeard attributes must be set in
+        # publish_page prior to saving.
+        for key, value in event_data_attributes.items():
+            setattr(event_page, key, value)
+
+        event_page.save()
         action = 'Updated'
     except EventPage.DoesNotExist:
         event_page = EventPage(**event_data_attributes)
@@ -315,6 +317,10 @@ def register_centers(user):
                 slug='ktl',
                 title='Karma Tashi Ling',
                 address='Bjørnåsveien 124, 1272 Oslo',
+                google_location=(
+                    'Karma Tashi Ling buddhistsamfunn,'
+                    ' Bjørnåsveien 124, 1272 Oslo, Norway'
+                ),
                 tlf='22 61 28 84'
             ),
             'Vårt hovedsenter med tempelbygg og fredsstupa.'
@@ -325,6 +331,9 @@ def register_centers(user):
                 slug='pm',
                 title='Paramita meditasjonssenter',
                 address='Storgata 13, 0155 Oslo - 3 etasje (Strøget)',
+                google_location=(
+                    'Karma Tashi Ling Buddhistsamfunn, Storgata, Oslo, Norway'
+                ),
                 tlf='22 00 89 98'
             ),
             'Vårt bysenter i gangavstand fra Oslo Sentralstasjon.'
@@ -334,6 +343,10 @@ def register_centers(user):
                 code='KSL',
                 slug='ksl',
                 title='Karma Shedrup Ling retreatsenter',
+                google_location=(
+                    'Karma Shedrup Ling retreatsenter,'
+                    ' Siggerudveien, Ski, Norway'
+                ),
                 address='Siggerudveien 734, 1400 Ski',
                 tlf=None
             ),
@@ -389,30 +402,64 @@ def json_time_to_utc(gcal_event):
     return start, end, full_day
 
 
-def handle_cancelled_event(event):
-    # cases:
-    # 1. deleted recurring event instance
-    # 2. deleted non-recurring event
-    # 3. Modified Event
-    # 4. Modified EventPage
-    #
-    #
-    # try:
-    #     master_gcal_event.objects.get(event_id=master_gcal_event['id']).delete()
-    # except master_gcal_event.DoesNotExist:
-    #     pass
+def delete_cancelled_event_instance(event_instance):
+    logger.debug(
+        'Cancellation removed instance: "{}"'.format(event_instance)
+    )
 
-    logger.debug('Handling cancelled event: {}'.format(event['summary']))
+    event_instance.delete()
 
+
+def delete_cancelled_event_page(event_page):
+    logger.debug(
+        'Cancellation removing page: "{}"'.format(event_page)
+    )
+
+    event_page.delete()
+
+
+def handle_multi_event(service, calendar, event):
     cancelled_event = Event.objects.get(event_id=event['id'])
     event_page = cancelled_event.event_page
 
-    cancelled_event.delete()
+    cancelled_event.cancelled = True
+    cancelled_event.save()
 
-    if len(event_page.event_instances) == 0:
-        event_page.delete()
+    cancelled_instances = event_page.event_instances.all()
 
-    logger.debug('handle_events created event page: "{}"'.format(event))
+    if any(not event.cancelled for event in cancelled_instances):
+        return
+
+    for event in cancelled_instances:
+        delete_cancelled_event_instance(event)
+
+    delete_cancelled_event_page(event_page)
+
+
+def handle_cancellation(service, calendar, event):
+    handling_singular_event = 'recurringEventId' not in event
+
+    logger.debug(
+        'Handling cancelled {} event: {} ({})'.format(
+            'singular' if handling_singular_event else 'multi',
+            event['summary'],
+            event['id']
+        )
+    )
+
+    if handling_singular_event:
+        try:
+            cancelled_event = Event.objects.get(event_id=event['id'])
+        except Event.DoesNotExist:
+            return
+
+        event_page = cancelled_event.event_page
+
+        delete_cancelled_event_instance(cancelled_event)
+        delete_cancelled_event_page(event_page)
+
+    else:
+        handle_multi_event(service, calendar, event)
 
 
 def get_event_parent_page(calendar, user):
@@ -459,7 +506,7 @@ def sync_event_page(calendar, user, master_gcal_event):
 
 def handle_events(service, calendar, page_token, user, recurring_events={}):
     '''
-    Used to create calendar events in the database.
+    Create calendar events in the database.
 
     Collects events from Google Calendar using the 'singleEvents'
     parameters, which will expand all event instances into single events. Any
@@ -475,7 +522,7 @@ def handle_events(service, calendar, page_token, user, recurring_events={}):
     when the all the data has been transmitted.
     '''
 
-    events_response = poll_events(service, calendar, page_token)
+    events_response = poll_event_instances(service, calendar, page_token)
 
     next_page_token = events_response.get('nextPageToken')
     sync_token = events_response.get('nextSyncToken')
@@ -492,27 +539,52 @@ def handle_events(service, calendar, page_token, user, recurring_events={}):
 
     for gcal_event in events_response['items']:
         if gcal_event.get('status') == 'cancelled':
-            handle_cancelled_event(gcal_event)
-        elif 'recurringEventId' in gcal_event:
+            handle_cancellation(service, calendar, gcal_event)
+
+        try:
             master_event_id = gcal_event['recurringEventId']
-
-            if master_event_id not in recurring_events:
-                recurring_events[master_event_id] = []
-
-            recurring_events[master_event_id].append(gcal_event)
-
-            logger.debug(
-                'handle_events added recurrence {} to event: "{}" ({})'
-                .format(
-                    gcal_event['id'],
-                    master_event_id,
-                    gcal_event.get('summary')
-                )
-            )
-        else:
+        except KeyError:
             sync_event_page(calendar, user, master_gcal_event=gcal_event)
+            continue
+
+        if master_event_id not in recurring_events:
+            recurring_events[master_event_id] = []
+
+        recurring_events[master_event_id].append(gcal_event)
+
+        logger.debug(
+            'handle_events added recurrence {} to event: "{}" ({})'
+            .format(
+                gcal_event['id'],
+                master_event_id,
+                gcal_event.get('summary')
+            )
+        )
 
     return next_page_token, recurring_events
+
+
+def reset_gcal_summary(service, calendar, event_page, summary_changed):
+    '''
+    Since the database model does not support individual summaries for
+    event instances, the summaries are reset if a summary in the
+    calendar backend has changed.
+    '''
+
+    # TODO: warn committer via email
+    for event_instance in summary_changed:
+        event_instance['summary'] = event_page.title
+
+        service.events().update(
+            calendarId=calendar.calendar_id,
+            eventId=event_instance.event_id,
+            body=event_instance,
+            sendNotifications=True
+        ).execute()
+
+        logger.debug(
+            'Reset modified title (event_id: {})'.format(event_instance)
+        )
 
 
 def sync_recurring_events(service, calendar, recurring_events, user):
@@ -529,6 +601,10 @@ def sync_recurring_events(service, calendar, recurring_events, user):
             eventId=master_event_id,
         ).execute()
 
+        if master_event['status'] == 'cancelled':
+            handle_cancellation(service, calendar, master_event)
+            continue
+
         event_page = sync_event_page(
             calendar,
             user,
@@ -542,8 +618,16 @@ def sync_recurring_events(service, calendar, recurring_events, user):
             )
         )
 
+        summary_changed = []
+
         for event_instance in event_instances:
-            sync_event_instance_entry(event_instance, event_page)
+            changed = sync_event_instance_entry(event_instance, event_page)
+
+            if changed:
+                summary_changed.append(changed)
+
+        if summary_changed:
+            reset_gcal_summary(service, calendar, event_page, summary_changed)
 
 
 def sync_db_calendar_events(service, user):
@@ -564,7 +648,10 @@ def sync_db_calendar_events(service, user):
                     user,
                     recurring_events
                 )
-            except ExpiredGoogleCalendarSyncToken:
+            except HttpError as http_err:
+                if http_err.resp.status != 410:
+                    raise http_err
+
                 logger.debug('Sync token EXPIRED!')
                 logger.debug('Removing sync token and event data ..')
                 calendar.sync_token = None
@@ -572,7 +659,8 @@ def sync_db_calendar_events(service, user):
                 EventPage.objects.all().delete()
 
                 # leave except block without breaking while loop
-                next_page_token = True
+                next_page_token = None
+                continue
 
             if next_page_token is None:
                 break

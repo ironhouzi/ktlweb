@@ -16,7 +16,17 @@ class Centre(AbstractHomePage):
         blank=False
     )
     address = models.TextField('Addresse', blank=False)
-    tlf = models.CharField(max_length=18, null=True, blank=True)
+    google_location = models.CharField(
+        'Google-lokasjon',
+        max_length=255,
+        blank=False
+    )
+    tlf = models.CharField(
+        'Telefonnummer',
+        max_length=18,
+        null=True,
+        blank=True
+    )
     image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -56,11 +66,9 @@ class Event(models.Model):
     event_id = models.CharField(max_length=1024, primary_key=True)
     start = models.DateTimeField('Start')
     end = models.DateTimeField('Slutt')
-    full_day = models.BooleanField('Full dag')
-    # TODO: investigate if recurring_event_id is sufficient for determining
-    # full_day
-    recurring_event_id = models.CharField(max_length=256, null=True, blank=True)
-    url = models.URLField()
+    full_day = models.BooleanField('Full dag', default=False)
+    url = models.URLField('Lenke')
+    cancelled = models.BooleanField('Kansellert', default=False)
     event_page = models.ForeignKey(
         'EventPage',
         on_delete=models.SET_NULL,
@@ -95,3 +103,6 @@ class EventPage(AbstractHomePage):
     content_panels = Page.content_panels + [
         FieldPanel('calendar'),
     ]
+
+    def __str__(self):
+        return '<EventPage: "{}" ({})>'.format(self.title, self.master_event_id)
