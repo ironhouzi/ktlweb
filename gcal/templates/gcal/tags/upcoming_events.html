@@ -1,11 +1,12 @@
-<h2><span>Kommende aktiviteter</span></h2>
+{% load wagtailcore_tags %}
+<h2><span>{{ title }}</span></h2>
 <ul class="nospace spacing push50">
 {% for event in events %}
   <li class="clear">
     <time datetime="{{ event.start|date:"c" }}" class="date-icon"><strong>{{ event.start|date:"b" }}</strong> <em>{{ event.start|date:"j" }}</em></time>
     <div>
       <p class="nospace times font-medium">
-        <a href="#">
+        <a href="{{ event.event_page.url }}">
           {{ event.event_page.title }}
         </a>
       </p>
@@ -15,7 +16,7 @@
           {{ event.end|time:"TIME_FORMAT" }}
         {% endif %}
         <span class="fa fa-map-marker"></span>
-        {{ event.event_page.calendar.centre.code }}
+        {{ event.centre.code }}
       </p>
     </div>
   </li>

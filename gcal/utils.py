@@ -6,6 +6,8 @@ import logging
 import datetime
 import warnings
 
+from urllib.parse import parse_qs, urlparse, urlencode, ParseResult
+
 from pytz import timezone
 
 from apiclient import discovery
@@ -15,7 +17,8 @@ from oauth2client.client import SignedJwtAssertionCredentials
 from django.contrib.auth.models import User
 from django.utils.text import slugify as django_slugify
 from django.utils.timezone import (
-    get_default_timezone_name, utc, localtime, make_aware, is_naive)
+    get_default_timezone_name, utc, localtime, make_aware, is_naive, now
+)
 
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.rich_text import RichText
@@ -123,7 +126,7 @@ def sync_event_instance_entry(gcal_event, event_page):
         start=start,
         end=end,
         full_day=full_day,
-        url=gcal_event.get('htmlLink'),
+        centre=event_page.calendar.centre,
         event_page=event_page
     )
 
@@ -418,7 +421,7 @@ def delete_cancelled_event_page(event_page):
     event_page.delete()
 
 
-def handle_multi_event(service, calendar, event):
+def handle_cancelled_multi_event(service, calendar, event):
     cancelled_event = Event.objects.get(event_id=event['id'])
     event_page = cancelled_event.event_page
 
@@ -459,7 +462,7 @@ def handle_cancellation(service, calendar, event):
         delete_cancelled_event_page(event_page)
 
     else:
-        handle_multi_event(service, calendar, event)
+        handle_cancelled_multi_event(service, calendar, event)
 
 
 def get_event_parent_page(calendar, user):
@@ -472,14 +475,43 @@ def get_event_parent_page(calendar, user):
     return event_parent_page
 
 
+def build_gcal_event_link(google_event_url, calendar):
+    original = urlparse(google_event_url)
+    e_id, = parse_qs(original.query)['eid']
+
+    new_query = {
+        'action': ['TEMPLATE'],
+        'catt': ['false'],
+        'hl': ['no'],
+        'pprop': ['HowCreated:DUPLICATE'],
+        'scp': ['ONE'],
+        'tmeid': [e_id],
+        'tmsrc': [calendar.calendar_id]
+    }
+
+    new_parse_result = ParseResult(
+        scheme=original.scheme,
+        netloc=original.netloc,
+        path=original.path,
+        params=original.params,
+        query=urlencode(new_query, doseq=True),
+        fragment=original.fragment
+    )
+
+    return new_parse_result.geturl()
+
+
 def sync_event_page(calendar, user, master_gcal_event):
     title = master_gcal_event.get('summary', '')
+    event_link = build_gcal_event_link(master_gcal_event['htmlLink'], calendar)
+
     event_page_data = (
         dict(
             title=title,
             slug=slugify(title),
             master_event_id=master_gcal_event['id'],
             recurrence=master_gcal_event.get('recurrence'),
+            google_event_url=event_link,
             creator=master_gcal_event.get('creator'),
             calendar=calendar
         ),
@@ -494,7 +526,11 @@ def sync_event_page(calendar, user, master_gcal_event):
         user=user
     )
 
-    sync_event_instance_entry(master_gcal_event, event_page)
+    start, end, _ = json_time_to_utc(master_gcal_event)
+    current_time = now()
+
+    if start >= current_time or end >= current_time:
+        sync_event_instance_entry(master_gcal_event, event_page)
 
     logger.debug(
         'handle_events created event page for single event: "{}" ({})'

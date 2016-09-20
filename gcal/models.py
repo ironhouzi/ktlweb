@@ -53,7 +53,7 @@ class Calendar(models.Model):
         'Centre',
         on_delete=models.SET_NULL,
         verbose_name='Senter',
-        related_name='centre',
+        related_name='calendar',
         null=True,
         blank=False
     )
@@ -67,8 +67,15 @@ class Event(models.Model):
     start = models.DateTimeField('Start')
     end = models.DateTimeField('Slutt')
     full_day = models.BooleanField('Full dag', default=False)
-    url = models.URLField('Lenke')
     cancelled = models.BooleanField('Kansellert', default=False)
+    centre = models.ForeignKey(
+        'Centre',
+        on_delete=models.SET_NULL,
+        verbose_name='Senter',
+        related_name='events',
+        null=True,
+        blank=False
+    )
     event_page = models.ForeignKey(
         'EventPage',
         on_delete=models.SET_NULL,
@@ -90,6 +97,7 @@ class EventPage(AbstractHomePage):
         null=True,
         blank=True
     )
+    google_event_url = models.URLField('Lenke', max_length=1024)
     calendar = models.ForeignKey(
         Calendar,
         on_delete=models.PROTECT,

@@ -1,22 +1,73 @@
+from collections import OrderedDict
 from django import template
 from django.db.models import Q
 from django.utils.timezone import now as django_now
-from gcal.models import Event
-
-
-from datetime import datetime
+from gcal.models import Event, Centre
 
 
 register = template.Library()
 
 
 @register.inclusion_tag('gcal/tags/upcoming_events.html')
-def show_upcoming_events(count):
+def show_upcoming_events(count, centre_code):
     # TODO: catch exception for int()
     count = min(max(1, int(count)), 10)
     now = django_now()
 
+    try:
+        centre = Centre.objects.get(code=centre_code)
+        title = 'Kommende aktiviteter på {}'.format(centre.title)
+
+        events = centre.events.filter(
+            Q(start__gte=now) | Q(end__gte=now)
+        ).order_by('start')[:count]
+    except Centre.DoesNotExist:
+        centre = None
+        title = 'Kommende aktiviteter'
+
+        events = Event.objects.filter(
+           Q(start__gte=now) | Q(end__gte=now)
+        ).order_by('start')[:count]
+
     return {
-        'events': Event.objects.filter(
-           Q(start__gte=now) | Q(end__gte=now)).order_by('start')[:count]
+        'events': events,
+        'centre': centre,
+        'title': title
     }
+
+
+@register.inclusion_tag('gcal/tags/upcoming_events.html')
+def show_event_instances(count, event_page):
+    # TODO: catch exception for int()
+    count = min(max(1, int(count)), 10)
+    now = django_now()
+
+    events = event_page.event_instances.filter(
+       Q(start__gte=now) | Q(end__gte=now)
+    ).order_by('start')[:count]
+
+    return {
+        'events': events,
+        'centre': event_page.calendar.centre,
+        'title': 'Kommende aktiviteter'
+    }
+
+
+@register.inclusion_tag('gcal/tags/full_event_overview.html')
+def full_event_overview(event_page):
+    overview = OrderedDict()
+    now = django_now()
+
+    events = event_page.event_instances.filter(
+       Q(start__gte=now) | Q(end__gte=now)
+    ).order_by('start')
+
+    for event in events:
+        month = event.start.strftime('%B')
+
+        try:
+            overview[month].append(event)
+        except KeyError:
+            overview[month] = [event]
+
+    return {'result': overview}

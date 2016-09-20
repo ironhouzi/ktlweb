@@ -1,1 +1,64 @@
-home_page.html
+{% extends "base.html" %}
+
+{% load wagtailcore_tags %}
+{% load upcoming_events %}
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% block content %}
+
+{% block heading %}
+{% include "home/includes/streamfield_heading.html" with content=self.headingpanel %}
+{% endblock heading %}
+
+<div class="wrapper row4">
+  <div role="main" class="container">
+    <div id="homepage">
+      <div class="col-3-4 first">
+        {% block main %}
+        <section class="clear">
+          <div class="col-1-3 first">
+            <ul class="nospace spacing">
+              <li>
+                <a class="button block pad20 green clear" href="{% pageurl self.get_parent %}"><span class="fa fa-map-pin fa-2x imgl"></span>
+                  <p class="nospace times font-medium">{{ self.calendar.centre.title }}</p>
+                </a>
+              </li>
+              <li>
+                <a class="button block pad20 orange clear" href="{{ self.google_event_url }}"><span class="fa fa-calendar-plus-o fa-2x imgl"></span>
+                  <p class="nospace times font-medium">Legg til</p>
+                  <p class="nospace">Google calender aktivitet</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-2-3">
+            <h2><span>Beskrivelse</span></h2>
+            {% include "home/includes/streamfield_body.html" with content=self.body %}
+            <div class="clear"></div>
+            <div>
+              <h2><span>Datoer</span></h2>
+              {% full_event_overview self %}
+            </div>
+            <div class="clear"></div>
+          </div>
+        </section>
+        <!-- ################################################################################################ --> 
+        {% endblock main %}
+      </div>
+    </div>
+    <div id="sidebar_1" class="sidebar col-1-4">
+      <aside>
+        {% block sidepanel %}
+        {% show_event_instances 3 self %}
+        {% endblock sidepanel %}
+      </aside>
+    </div>
+  </div>
+  <div class="clear"></div>
+  <!-- Ensure That Everything Has Been Cleared -->
+</div>
+<!-- End class=container -->
+</div>
+<!-- End wrapper row4 -->
+{% endblock content %}

@@ -36,6 +36,18 @@ class UpcomingEventCountChoiceField(FieldBlock):
     )
 
 
+class UpcomingEventCentreChoiceField(FieldBlock):
+    field = forms.ChoiceField(
+        choices=(
+            ('ALL', 'Alle kalendre'),
+            ('KTL', 'Kalender for KTL'),
+            ('KSL', 'Kalender for KSL'),
+            ('PM', 'Kalender for Paramita'),
+        ),
+        initial='ALL'
+    )
+
+
 class ImageFormatChoiceBlock(FieldBlock):
     field = forms.ChoiceField(
         choices=(
@@ -49,6 +61,7 @@ class ImageFormatChoiceBlock(FieldBlock):
 
 class EventsBlock(StructBlock):
     count = UpcomingEventCountChoiceField(label='Antall synlige aktiviteter')
+    centre_code = UpcomingEventCentreChoiceField(label='Hvilket senter?')
 
     class Meta:
         icon = 'date'
