@@ -1,0 +1,47 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<section class="clear">
+{% if latest_news %}
+  <h2><span>Siste nytt</span></h2>
+  {% image latest_news.feed_image fill-400x240 as theimage %}
+  <div class="col-1-2 first"><img {{ theimage.attrs }}></div>
+  <div class="col-1-2">
+    <h3>{{ latest_news.title }}</h3>
+    <div class="blog-post-meta">
+      <ul>
+        <li class="blog-post-date">
+          <time datetime="{{ latest_news.last_published_at|date:"c" }}"><strong>Publisert:</strong> {{ latest_news.first_published_at|date:"j" }}. {{ latest_news.first_published_at|date:"F" }} {{ latest_news.first_published_at|date:"Y" }}</time>
+        </li>
+        {# <li class="blog-post-author">By <a href="#">admin</a></li> #}
+      </ul>
+    </div>
+    <p class="block-with-text">{{ latest_news.description }}</p>
+    <p><a href="{{ latest_news.url }}" class="button small red">Les videre &raquo;</a></p>
+  </div>
+{% endif %}
+</section>
+<!-- ################################################################################################ -->
+<div class="clear"></div>
+<!-- ################################################################################################ -->
+<section class="clear">
+  {% for news_entry in secondary_news %}
+  <article class="blog-post-excerpt col-1-3">
+    <div class="post-content">
+      {% image latest_news.feed_image fill-400x240 as mini_img %}
+      <div class="post-image push20"><img {{ mini_img.attrs }}></div>
+      <h3 class="blog-post-title"><a href="{{ news_entry.url }}">{{ news_entry.title }}</a></h3>
+      <div class="blog-post-meta">
+        <ul>
+          <li class="blog-post-date">
+            <time datetime="{{ news_entry.last_published_at|date:"c" }}"><strong>Publisert:</strong> {{ news_entry.first_published_at|date:"j" }}. {{ news_entry.first_published_at|date:"F" }} {{ news_entry.first_published_at|date:"Y" }}</time>
+          </li>
+          {# <li class="blog-post-author">By <a href="#">admin</a></li> #}
+        </ul>
+      </div>
+      <p class="block-with-text">{{ news_entry.description }}</p>
+      <p><a href="{{ news_entry.url }}" class="button small red">Les videre &raquo;</a></p>
+    </div>
+  </article>
+  {% endfor %}
+  <div class="clear"></div>
+</section>

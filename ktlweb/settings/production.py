@@ -1,7 +1,7 @@
 from .base import *
 
 import os
-
+from elasticsearch import RequestsHttpConnection
 
 DEBUG = os.environ.get('DEBUG', 'False') in ('True',)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -34,11 +34,16 @@ ADMINS = (
 SERVER_EMAIL = 'webmaster@ktl.no'
 
 # Search
-
 WAGTAILSEARCH_BACKENDS = {
     'default': {
-        'BACKEND': 'wagtail.wagtailsearch.backends.elasticsearch',
+        'BACKEND': os.environ['WAGTAIL_SEARCH_BACKEND'],
         'URLS': [os.environ['BONSAI_URL']],
+        'INDEX': 'wagtail',
+        'OPTIONS': {
+            'connection_class': RequestsHttpConnection,
+            'use_ssl': True,
+            'verify_certs': False
+        }
     }
 }
 

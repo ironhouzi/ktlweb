@@ -28,16 +28,13 @@
           {% image child.value.image width-1280 as theimage %}
         {% endif %}
 
-          <img {{ theimage.attrs }}>
+        <img {{ theimage.attrs }}>
 
         {% if child.value.caption %}
-          <div class="caption">
-            {{ child.value.caption|richtext }}
-          </div>
-        {% endif %}
-        </figure>
-      {% elif child.block_type == 'news_feed' %}
-        {{ child.value }}
+        <div class="caption">
+          {{ child.value.caption|richtext }}
+        </div>
+        {% endif %}</figure>
       {% else %}
         {{ child }}
       {% endif %}

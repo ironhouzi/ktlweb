@@ -1,5 +1,8 @@
 from .base import *
 
+import sys
+from logging import config
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -26,6 +29,23 @@ WAGTAILSEARCH_BACKENDS = {
         'URLS': [os.getenv('ES_URL', 'http://localhost:9200')],
     }
 }
+
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+        }
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    }
+
+}
+
+config.dictConfig(LOGGING)
 
 try:
     from .local import *

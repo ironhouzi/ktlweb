@@ -8,20 +8,20 @@ from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
 from wagtail.wagtailsearch import index
+from home.models import AbstractHomePage
 
 # TODO:
-# [ ] Event FK.
-# [ ] Event snippet chooser, on the fly creation using model clusters.
 # [ ] Image resolver (check events or return default).
-# [ ] Tagging.
 # [ ] Twitter integration (description max_length is therefore 140).
-# [ ] Search ???
+# [ ] RSS feed
 
 
-class NewsEntryIndex(Page):
+class NewsEntryIndex(AbstractHomePage):
     @property
     def news_entries(self):
-        return NewsEntry.objects.live().descendant_of(self).order_by('-date')
+        return NewsEntry.objects.live().descendant_of(self).order_by(
+            '-first_published_at'
+        )
 
     def get_context(self, request):
         # pagination
@@ -49,40 +49,43 @@ class NewsEntryIndex(Page):
     subpage_types = ['news.NewsEntry']
 
 
-NewsEntryIndex.promote_panels = Page.promote_panels
-
-
+# NewsEntryIndex.promote_panels = Page.promote_panels
+#
+#
 class NewsEntry(Page):
-    description = models.CharField('Beskrivelse', max_length=140)
-    details = RichTextField('Detaljer', null=True, blank=True)
-    date = models.DateField('Dato', auto_now=True, blank=False)
-    feed_image = models.ForeignKey(
-        'wagtailimages.Image',
-        verbose_name='Bilde til nyhetsstrømmen',
+    description = models.CharField('Sammendrag', max_length=140)
+    details = RichTextField('Beskrivelse', null=True, blank=True)
+    event_page = models.ForeignKey(
+        'gcal.EventPage',
+        verbose_name='Google Calendar oppføring',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name='+'
     )
-    # event = models.ForeignKey(...)
+    feed_image = models.ForeignKey(
+        'wagtailimages.Image',
+        verbose_name='Bilde til nyhetsstrømmen',
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
 
     @property
     def news_index(self):
         return self.get_ancestors().type(NewsEntryIndex).last()
 
-    search_fields = Page.search_fields + (
+    search_fields = Page.search_fields + [
         index.SearchField('description'),
-        index.SearchField('details'),
-        index.FilterField('date'),
-    )
+        index.SearchField('details')
+    ]
 
     content_panels = Page.content_panels + [
         FieldPanel('description'),
         FieldPanel('details'),
-    ]
-
-    promote_panels = Page.promote_panels + [
         ImageChooserPanel('feed_image'),
+        FieldPanel('event_page')
     ]
 
     def __str__(self):

@@ -11,7 +11,7 @@
     {% endif %}
     <div class="media-body">
       <h4 class="media-heading">{{ news.title }}</h4>
-      <p><strong>{{ news.date }}</strong></p>
+      <p><strong>{{ news.last_published_at }}</strong></p>
       {% if news.search_description %}
         <p>{{ news.search_description }}</p>
       {% endif %}

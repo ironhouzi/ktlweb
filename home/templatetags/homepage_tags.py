@@ -43,7 +43,6 @@ def top_menu_children(context, parent, path=None):
     for item in menuitems_children:
         item.active = (path.url.startswith(item.url) if path else False)
 
-
     return {
         'parent': parent,
         'menuitems_children': menuitems_children,

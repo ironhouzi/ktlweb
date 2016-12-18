@@ -1,4 +1,4 @@
-{% load homepage_tags static wagtailuserbar wagtailcore_tags %}
+{% load homepage_tags static wagtailuserbar wagtailcore_tags wagtailimages_tags %}
 
 {% get_site_root as site_root %}
 
@@ -9,7 +9,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
   <meta charset="utf-8" />
-  <title>{% block title %}{% if self.seo_title %}{{ self.seo_title }}{% else %}KTLbs - {{ self.title }}{% endif %}{% endblock %}{% block title_suffix %}{% endblock %}</title>
+  <title>{% block title %}{% if self.seo_title %}{{ self.seo_title }}{% else %}KTLBS - {{ self.title }}{% endif %}{% endblock %}{% block title_suffix %}{% endblock %}</title>
   <meta name="description" content="Karma Tashi Ling buddhistsenter">
   <meta name="keywords" content="buddha buddhisme meditasjon tibetansk vajrayana mahayana lama rinpoche dharma sangha retreat tempel vipasana shamata">
   <meta name="author" content="Karma Tashi Ling buddhistsenter">
@@ -21,6 +21,13 @@
   {# Global stylesheets #}
   <link rel="stylesheet" type="text/css" href="{% static 'css/layout/styles/main.css' %}" media="all">
   <link rel="stylesheet" type="text/css" href="{% static 'css/layout/styles/mediaqueries.css' %}" media="all">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'images/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}" sizes="32x32">
+  <link rel="icon" type="image/png" href="{% static 'images/favicon-16x16.png' %}" sizes="16x16">
+  <link rel="manifest" href="{% static 'images/manifest.json"' %}>
+  <link rel="mask-icon" href="{% static 'images/safari-pinned-tab.svg' %}" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
 
   {% block extra_css %}
   {# Override this in templates to add extra stylesheets #}
@@ -141,6 +148,8 @@
   <!-- Slider -->
   <script src="{% static 'css/layout/scripts/flexslider/jquery.flexslider-min.js' %}"></script>
   <script src="{% static 'css/layout/scripts/flexslider/jquery.flexslider-setup.js' %}"></script>
+  <!-- Modernizr.inputtypes -->
+  <script src="{% static 'js/modernizr-custom.js' %}"></script>
   <!-- Custom Settings -->
   <script src="{% static 'css/layout/scripts/custom.js' %}"></script>
 

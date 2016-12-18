@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import locale
 import dj_database_url
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,8 +27,8 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 INSTALLED_APPS = [
     'home',
-    'news',
     'gcal',
+    'news',
     'search',
 
     'wagtail.wagtailforms',
@@ -54,6 +55,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'storages',
+
+    'wagtail.contrib.modeladmin'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -111,6 +114,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+locale.setlocale(locale.LC_ALL, 'nb_NO.UTF-8')
 
 
 # Static files (CSS, JavaScript, Images)

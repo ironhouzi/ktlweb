@@ -1,12 +1,36 @@
 {% extends "base.html" %}
 
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags upcoming_events wagtailimages_tags %}
 
 {% block body_class %}template-newsentry{% endblock %}
 
 {% block content %}
-  <bold>NYHET</bold>
-  <p>Beskrivelse: <br>{{ page.description }}</p>
-  <p>Detaljer: <br>{{ page.details|richtext }}</p>
+  <div class="wrapper row4">
+    <div role="main" class="container">
+      <div class="col-3-4 first">
+        {% block main %}
+          <section class="clear">
+            {% if page.feed_image %}
+              {% image page.feed_image width-1000 as theimage %}
+              <div class="boxholder push50"><img {{ theimage.attrs }}></div>
+            {% endif %}
+            <h1>{{ page.title }}</h1>
+            <p>{{ page.description }}</p>
+            <p>{{ page.details|richtext }}</p>
+          </section>
+        {% endblock main %}
+      </div>
+      <div id="sidebar_1" class="sidebar col-1-4">
+        <aside>
+          {% block sidepanel %}
+            {% if page.event_page %}
+              {% show_event_instances None page.event_page %}
+            {% endif %}
+          {% endblock sidepanel %}
+        </aside>
+      </div>
+    </div>
+    <div class="divider2"></div>
+  </div>
+  <div class="clear"></div>
 {% endblock %}
-

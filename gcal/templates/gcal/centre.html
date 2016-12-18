@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% block content %}
+
+{% block heading %}
+{% include "home/includes/streamfield_heading.html" with content=self.headingpanel %}
+{% endblock heading %}
+
+<div class="wrapper row4">
+  <div role="main" class="container">
+    <div id="homepage">
+      <div class="col-3-4 first">
+        {% block main %}
+          {% include "home/includes/streamfield_body.html" with content=self.body %}
+        {% endblock main %}
+      </div>
+      <div id="sidebar_1" class="sidebar col-1-4">
+        <aside>
+          {% block sidepanel %}
+            {% include "home/includes/streamfield_side.html" with content=self.sidepanel %}
+          {% endblock sidepanel %}
+        </aside>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <!-- Ensure That Everything Has Been Cleared -->
+      <section class="clear push80">
+        <div class="col-3-4 first">
+          <!-- ################################################################################ -->
+          <div class="map push50">
+            <div class="google-maps">
+              <iframe src="https://www.google.com/maps/embed?{{ self.map_query }}" width="600" height="200" frameborder="0" style="border:0" allowfullscreen></iframe>
+            </div>
+            <div id="map_canvas"><!-- Leave Empty --></div>
+          </div>
+          <!-- ################################################################################ -->
+        </div>
+        <div class="col-1-4">
+          <!-- ################################################################################ -->
+          <p class="font-medium bold uppercase nospace push10">Post adresse:</p>
+          <address class="block push20">
+            {% for info in self.split_address %}
+              {{ info }}{% if not info.last %},{% endif %}<br>
+            {% endfor %}
+          </address>
+          <p class="font-medium bold uppercase nospace push10">Epost</p>
+          <ul class="nospace push20">
+            <li>
+              <a href="mailto:post@ktl.no">post@ktl.no</a>
+            </li>
+          </ul>
+          {% if self.tlf %}
+          <p class="font-medium bold uppercase nospace push10">Telefon:</p>
+          <ul class="nospace push20">
+            <li>{{ self.tlf }}</li>
+          </ul>
+          {% endif %}
+          <!-- ################################################################################ -->
+        </div>
+      </section>
+    <div class="clear"></div>
+    <!-- Ensure That Everything Has Been Cleared -->
+  </div>
+  <!-- End class=container -->
+</div>
+<!-- End wrapper row4 -->
+{% endblock content %}

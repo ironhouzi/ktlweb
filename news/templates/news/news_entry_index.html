@@ -1,37 +1,75 @@
 {% extends "base.html" %}
+{% load wagtailimages_tags %}
 
 {% block body_class %}template-newsentry{% endblock %}
 
 {% block content %}
   <div class="list-group">
-      {# Uses serve method defined in models.py - allows for paging if required #}
-      {# See also standard index for creating a listing with a tag #}
-      {% for entry in news_entries %}
-          {# {% include "news/includes/news_list_item.html" %} #}
-          <a href="{{ entry.url }}">{{ entry.title }}</a>
-      {% empty %}
-        <p>Ingen nyheter funnet.</p>
-      {% endfor %}
+    <!-- CONTENT -->
+    <div class="wrapper row4">
+      <div role="main" class="container">
+        <!-- ################################################################################################ -->
+        <div id="portfolio" class="col-3-4 first">
+          <ul class="clear">
+            {% for entry in news_entries %}
+              {# {% include "news/includes/news_list_item.html" %} #}
+              <li class="col-1-2{% if not forloop.counter|divisibleby:"2" %} first{% endif %}">
+                {# Uses serve method defined in models.py - allows for paging if required #}
+                {# See also standard index for creating a listing with a tag #}
+                <article>
+                  {% if entry.feed_image %}
+                    {% image entry.feed_image fill-400x150-c100 as theimage %}
+                    <figure class="post-image"><img {{ theimage.attrs }}></figure>
+                  {% endif %}
+                  <header>
+                    <h2 class="blog-post-title"><a href="{{ entry.url }}">{{ entry.title }}</a></h2>
+                    <div class="blog-post-meta">
+                      <ul>
+                        <li class="blog-post-date">
+                          <time datetime="{{ entry.last_published_at|date:"c" }}"><strong>Publisert:</strong> {{ entry.first_published_at|date:"j" }}. {{ entry.first_published_at|date:"F" }} {{ entry.first_published_at|date:"Y" }}</time>
+                        </li>
+                        {# <li class="blog-post-cats"><a href="#">Category 1</a>, <a href="#">Category 2</a></li> #}
+                      </ul>
+                    </div>
+                  </header>
+                  <p class="block-with-text">{{ entry.description }}</p>
+                  <footer><a href="{{ entry.url }}" class="button small red">Les videre &raquo;</a></footer>
+                </article>
+              </li>
+            {% empty %}
+              <p>Ingen nyheter.</p>
+            {% endfor %}
+          </ul>
+          <!-- ####################################################################################################### -->
+        </div>
+        <div class="clear"></div>
+        <nav class="pagination">
+          <ul>
+            {% if news_entries.has_previous %}
+              <li class="prev">
+                <a href="?page={{ news_entries.previous_page_number }}">
+                  <span class="fa fa-chevron-left"></span>
+                </a>
+              </li>
+            {% endif %}
+            {% if news_entries.has_next or news_entries.has_previous %}
+            <li class="current"><strong>{{ news_entries.number }}</strong></li>
+            {% endif %}
+            {% if news_entries.has_next %}
+              <li class="next">
+                <a href="?page={{ news_entries.next_page_number }}">
+                  <span class="fa fa-chevron-right"></span>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {# Pagination - uses django.core.paginator #}
+        {# Append any other url query string variables to the next and previous links - allows tag to be passed through #}
+      </div>
+    </div>
   </div>
-
-  {# Pagination - uses django.core.paginator #}
-  {# Append any other url query string variables to the next and previous links - allows tag to be passed through #}
-  <div class="row">
-    <div class="col-sm-4 previous">
-      {% if news_entries.has_previous %}
-        <a href="?page={{ news_entries.previous_page_number }}{% for key,value in request.GET.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">Forrige</a>
-      {% endif %}
-    </div>
-    <div class="col-sm-4 pages">
-      Side {{ news_entries.number }} av {{ news_entries.paginator.num_pages }}
-    </div>
-    <div class="col-sm-4 next">
-      {% if news_entries.has_next %}
-        <a href="?page={{ news_entries.next_page_number }}{% for key,value in request.GET.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">Neste</a>
-      {% endif %}
-    </div>
-  </div>
-
+  <div class="clear"></div>
 {% endblock %}
 
 

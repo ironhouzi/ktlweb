@@ -1,4 +1,3 @@
-from django.db import models
 from django import forms
 
 from wagtail.wagtailcore.models import Page
@@ -6,8 +5,8 @@ from wagtail.wagtailcore.fields import StreamField
 from wagtail.wagtailimages.blocks import ImageChooserBlock
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from wagtail.wagtailcore.blocks import (
-    TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock, ListBlock,
-    URLBlock, PageChooserBlock
+    TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock,
+    ListBlock, URLBlock, PageChooserBlock
 )
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
@@ -37,6 +36,26 @@ class UpcomingEventCountChoiceField(FieldBlock):
     )
 
 
+class NewsFeedCountChoiceField(FieldBlock):
+    field = forms.ChoiceField(
+        choices=(
+            ('4', 'Fire nyheter'),
+        )
+    )
+
+
+class UpcomingEventCentreChoiceField(FieldBlock):
+    field = forms.ChoiceField(
+        choices=(
+            ('ALL', 'Alle kalendre'),
+            ('KTL', 'Kalender for KTL'),
+            ('KSL', 'Kalender for KSL'),
+            ('PM', 'Kalender for Paramita'),
+        ),
+        initial='ALL'
+    )
+
+
 class ImageFormatChoiceBlock(FieldBlock):
     field = forms.ChoiceField(
         choices=(
@@ -48,12 +67,24 @@ class ImageFormatChoiceBlock(FieldBlock):
     )
 
 
+class NewsFeedBlock(StructBlock):
+    count = NewsFeedCountChoiceField(label='Antall nyheter i visning')
+
+    class Meta:
+        icon = 'media'
+        template = 'news/blocks/news_feed.html'
+        help_text = (
+            'Ved å aktivere dette valget vil siste nyheter vises.'
+        )
+
+
 class EventsBlock(StructBlock):
     count = UpcomingEventCountChoiceField(label='Antall synlige aktiviteter')
+    centre_code = UpcomingEventCentreChoiceField(label='Hvilket senter?')
 
     class Meta:
         icon = 'date'
-        template='gcal/blocks/display_events.html'
+        template = 'gcal/blocks/display_events.html'
         help_text = (
             'Ved å aktivere dette valget vil kommende aktiviteter vises.'
         )
@@ -109,7 +140,7 @@ class CommonLinkBlock(StructBlock):
 class QuickLinkBlock(CommonLinkBlock):
     class Meta:
         icon = 'link'
-        template='home/blocks/quicklink.html'
+        template = 'home/blocks/quicklink.html'
 
 
 class SidepanelLinkBlock(CommonLinkBlock):
@@ -123,7 +154,7 @@ class ImageSliderBlock(StructBlock):
 
     class Meta:
         icon = 'image'
-        template='home/blocks/slider_image.html'
+        template = 'home/blocks/slider_image.html'
 
 
 class ImageBlock(StructBlock):
@@ -141,6 +172,7 @@ class HomePageStreamBlock(StreamBlock):
     pullquote = PullQuoteBlock(label='Sitat')
     aligned_image = ImageBlock(label='Justert bilde', icon='image')
     document = DocumentChooserBlock(label='dokument', icon='doc-full-inverse')
+    news_feed = NewsFeedBlock(label='Siste nyheter', icon='grip')
 
 
 class SidePanelStreamBlock(StreamBlock):
@@ -168,20 +200,27 @@ class HeadingPanelStreamBlock(StreamBlock):
     )
 
 
-class HomePage(Page):
-    body = StreamField(HomePageStreamBlock(), verbose_name='hovedinnhold')
+class AbstractHomePage(Page):
+    body = StreamField(
+        HomePageStreamBlock(),
+        verbose_name='hovedinnhold',
+        default=''
+    )
     headingpanel = StreamField(
         HeadingPanelStreamBlock(),
-        verbose_name='overpanel'
+        verbose_name='overpanel',
+        default=''
     )
-    sidepanel = StreamField(SidePanelStreamBlock(), verbose_name='sidepanel')
+    sidepanel = StreamField(
+        SidePanelStreamBlock(),
+        verbose_name='sidepanel',
+        default=''
+    )
 
     class Meta:
-        verbose_name = "hjemmeside"
+        abstract = True
 
-    search_fields = Page.search_fields + (
-        index.SearchField('body'),
-    )
+    search_fields = Page.search_fields + [index.SearchField('body')]
 
     content_panels = [
         FieldPanel('title'),
@@ -203,3 +242,9 @@ class HomePage(Page):
             classname='settings'
         ),
     ])
+
+
+class HomePage(AbstractHomePage):
+    class Meta:
+        verbose_name = 'Hjemmeside'
+        verbose_name_plural = 'Hjemmesider'

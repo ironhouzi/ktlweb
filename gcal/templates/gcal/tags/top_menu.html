@@ -13,7 +13,7 @@
             {% top_menu_children parent=menuitem path=calling_page %}
           </li>
         {% else %}
-          <li{% if menuitem.active %} class="active"{% endif %}><a href="{% pageurl menuitem %}" title="{{ menuitem.title }}">{{ menuitem.title }}</a></li>
+          <li><a href="{% pageurl menuitem %}" title="{{ menuitem.title }}">{{ menuitem.title }}</a></li>
         {% endif %}
       {% endfor %}
 
