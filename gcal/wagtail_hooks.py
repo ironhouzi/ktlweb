@@ -42,6 +42,7 @@ class EventAdmin(ModelAdmin):
     add_to_settings_menu = False
     list_display = (
         'event_name',
+        'creator',
         'centre',
         'start',
         'end',
@@ -54,6 +55,10 @@ class EventAdmin(ModelAdmin):
 
     def event_name(self, obj):
         return obj.event_page.title
+
+    def creator(self, obj):
+        email = obj.event_page.creator.get('email', 'ukjent')
+        return obj.event_page.creator.get('displayName', email)
 
 
 modeladmin_register(EventAdmin)

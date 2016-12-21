@@ -1,0 +1,3 @@
+{% load wagtailimages_tags %}
+{% image value.image fill-2048x500 as banner_image %}
+<img {{ banner_image.attrs }}>

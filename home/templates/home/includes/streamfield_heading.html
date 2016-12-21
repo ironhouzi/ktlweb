@@ -1,5 +1,4 @@
 {% load wagtailimages_tags %}
-
 {% if content %}
   {% for stream_item in content %}
     {% if stream_item.block_type == 'quicklinks' %}
@@ -15,6 +14,10 @@
             {{ stream_item }}
           </div>
         </div>
+      </div>
+    {% elif stream_item.block_type == 'bannerimage' %}
+      <div class="wrapper full_width">
+        {{ stream_item }}
       </div>
     {% endif %}
   {% endfor %}

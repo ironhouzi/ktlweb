@@ -146,7 +146,15 @@ class QuickLinkBlock(CommonLinkBlock):
 class SidepanelLinkBlock(CommonLinkBlock):
     class Meta:
         icon = 'link'
-        template='home/blocks/sidepanel_link.html'
+        template = 'home/blocks/sidepanel_link.html'
+
+
+class ImageBannerBlock(StructBlock):
+    image = ImageChooserBlock(label='Bilde')
+
+    class Meta:
+        icon = 'image'
+        template = 'home/blocks/banner_image.html'
 
 
 class ImageSliderBlock(StructBlock):
@@ -164,6 +172,11 @@ class ImageBlock(StructBlock):
 
 
 class HomePageStreamBlock(StreamBlock):
+    h2styled = CharBlock(
+        label='stilisert overskrift',
+        icon='title',
+        classname='title'
+    )
     h2 = CharBlock(label='overskrift stor', icon='title', classname='title')
     h3 = CharBlock(label='overskrift mindre', icon='title', classname='title')
     h4 = CharBlock(label='overskrift minst', icon='title', classname='title')
@@ -197,6 +210,9 @@ class HeadingPanelStreamBlock(StreamBlock):
         icon='image',
         label='Bilde- karusell',
         template='home/blocks/imageslider_list.html'
+    )
+    bannerimage = ImageBannerBlock(
+        label='Strekker seg over hele skjermen. OBS: 2048x500 piksler!'
     )
 
 

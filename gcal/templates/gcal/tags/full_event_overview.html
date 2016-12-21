@@ -1,4 +1,5 @@
 {% load wagtailcore_tags %}
+{% if result %}
 {% with overview=result %}
 <h2><span>Alle datoer</span></h2>
 {% for month, events in overview.items %}
@@ -32,3 +33,4 @@
 </div>
 {% endfor %}
 {% endwith %}
+{% endif %}
