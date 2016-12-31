@@ -212,7 +212,7 @@ class HeadingPanelStreamBlock(StreamBlock):
         template='home/blocks/imageslider_list.html'
     )
     bannerimage = ImageBannerBlock(
-        label='Strekker seg over hele skjermen. OBS: 2048x500 piksler!'
+        label='Bannerbilde.\nOBS: 2048x500 piksler!'
     )
 
 

@@ -31,7 +31,8 @@
           <!-- ################################################################################ -->
           <div class="map push50">
             <div class="google-maps">
-              <iframe src="https://www.google.com/maps/embed?{{ self.map_query }}" width="600" height="200" frameborder="0" style="border:0" allowfullscreen></iframe>
+              <div class="overlay" onClick="style.pointerEvents='none'"></div>
+              <iframe class="googlemap" src="https://www.google.com/maps/embed?{{ self.map_query }}" width="600" height="200" frameborder="0" style="border:0" allowfullscreen></iframe>
             </div>
             <div id="map_canvas"><!-- Leave Empty --></div>
           </div>

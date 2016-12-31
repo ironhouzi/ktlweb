@@ -26,18 +26,20 @@ File: Custom CSS
     padding: 10px;
 }
 
+.googlemap {
+    width: 100%;
+    height: 300px;
+}
+
 .google-maps {
     position: relative;
-    padding-bottom: 40%; // This is the aspect ratio
-    height: 0;
-    overflow: hidden;
 }
-.google-maps iframe {
+
+.overlay {
+    width:100%; /* your iframe width */
+    min-height: 300px;
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
 }
 
 .blog-post-title {
@@ -71,3 +73,6 @@ File: Custom CSS
   margin-right: -1em;
   padding-right: 1em;
 }
+
+/* Remove capitaization for menu items */
+#topnav li li { text-transform: none; }

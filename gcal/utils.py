@@ -47,8 +47,7 @@ def publish_page(page, page_parent, default_body_string, user):
     logger.debug('publishing page: {}'.format(page))
 
     paragraph = '<p>{}</p>'.format(default_body_string)
-
-    page.body.stream_data = [
+    page.body = [
         ('paragraph', RichText(paragraph))
     ]
 
@@ -296,7 +295,8 @@ def update_or_create_event_page(event_data, centre_page, user):
     publish_page(event_page, centre_page, event_description, user)
 
     logger.info(
-        '{} event page for event id {}'.format(action, master_event_id)
+        '%s event page for event %s (%s)',
+        action, event_data[0]['title'], master_event_id
     )
 
     return event_page
@@ -585,7 +585,7 @@ def handle_events(service, calendar, page_token, user, recurring_events={}):
 
         logger.info(
             'Saved into calendar "{}", sync token: "{}"'
-            .format(calendar.calendar_id, calendar.sync_token)
+            .format(calendar.centre.code, calendar.sync_token)
         )
 
     for gcal_event in events_response['items']:
@@ -631,7 +631,7 @@ def reset_gcal_summary(service, calendar, event_page, summary_changed):
         service.events().update(
             calendarId=calendar.calendar_id,
             eventId=event_instance['id'],
-            body=event_instance,
+            body=event_instance['description'],
             sendNotifications=True
         ).execute()
 

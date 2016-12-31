@@ -18,7 +18,7 @@ def news_entry(count='4'):
     }
 
     if all_entries.count() > 0:
-        result['latest_news'] = all_entries[0],
+        result['latest_news'] = all_entries[0]
         result['secondary_news'] = all_entries[1:]
 
     return result
