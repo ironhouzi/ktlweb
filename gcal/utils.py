@@ -773,7 +773,6 @@ def db_init(user_name=None):
 
     Event.objects.all().delete()
     EventPage.objects.all().delete()
-    Centre.objects.all().delete()
     Calendar.objects.all().delete()
 
     user = get_user(user_name)
