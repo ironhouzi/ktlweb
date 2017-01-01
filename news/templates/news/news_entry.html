@@ -24,13 +24,17 @@
         <aside>
           {% block sidepanel %}
             {% if page.event_page %}
-              {% show_event_instances None page.event_page %}
+              {% show_event_instances 3 page.event_page %}
             {% endif %}
           {% endblock sidepanel %}
         </aside>
       </div>
     </div>
     <div class="divider2"></div>
+  </div>
+  <div class="clear"></div>
+  <div>
+    {% full_event_overview page.event_page %}
   </div>
   <div class="clear"></div>
 {% endblock %}
