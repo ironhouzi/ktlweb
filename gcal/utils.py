@@ -576,17 +576,17 @@ def handle_events(service, calendar, page_token, user, recurring_events={}):
     events_response = poll_event_instances(service, calendar, page_token)
 
     next_page_token = events_response.get('nextPageToken')
-    sync_token = events_response.get('nextSyncToken')
+    # sync_token = events_response.get('nextSyncToken')
 
-    # Only the last paginated response contains a nextSyncToken
-    if next_page_token is None and sync_token is not None:
-        calendar.sync_token = sync_token
-        calendar.save()
+    # # Only the last paginated response contains a nextSyncToken
+    # if next_page_token is None and sync_token is not None:
+    #     calendar.sync_token = sync_token
+    #     calendar.save()
 
-        logger.info(
-            'Saved into calendar "{}", sync token: "{}"'
-            .format(calendar.centre.code, calendar.sync_token)
-        )
+    #     logger.info(
+    #         'Saved into calendar "{}", sync token: "{}"'
+    #         .format(calendar.centre.code, calendar.sync_token)
+    #     )
 
     for gcal_event in events_response['items']:
         if gcal_event.get('status') == 'cancelled':

@@ -32,6 +32,7 @@ ADMINS = (
 )
 
 SERVER_EMAIL = 'webmaster@ktl.no'
+DEFAULT_FROM_USER = SERVER_EMAIL
 
 # Search
 WAGTAILSEARCH_BACKENDS = {
