@@ -4,9 +4,9 @@
 {% if latest_news %}
   <h2><span>Siste nytt</span></h2>
   {% image latest_news.feed_image fill-400x240 as theimage %}
-  <div class="col-1-2 first"><img {{ theimage.attrs }}></div>
+  <div class="col-1-2 first"><img class="boxholder" {{ theimage.attrs }}></div>
   <div class="col-1-2">
-    <h3><a href="{{ news_entry.url }}">{{ latest_news.title }}</a></h3>
+    <h3><a href="{{ latest_news.url }}">{{ latest_news.title }}</a></h3>
     <div class="blog-post-meta">
       <ul>
         <li class="blog-post-date">
