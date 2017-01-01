@@ -167,24 +167,36 @@ def poll_event_instances(service, calendar, page_token):
     if page_token is not None:
         gcal_params['pageToken'] = page_token
 
-    if not calendar.sync_token:
-        # Create all events from scratch
+    # if not calendar.sync_token:
+    #     # Create all events from scratch
 
-        iso_time_today = datetime.datetime.utcnow().replace(
-            hour=0,
-            minute=0,
-            second=0,
-            microsecond=0
-        ).isoformat('T') + 'Z'
+    #     iso_time_today = datetime.datetime.utcnow().replace(
+    #         hour=0,
+    #         minute=0,
+    #         second=0,
+    #         microsecond=0
+    #     ).isoformat('T') + 'Z'
 
-        gcal_params.update({
-            'singleEvents': True,
-            'timeMin': iso_time_today
-        })
+    #     gcal_params.update({
+    #         'singleEvents': True,
+    #         'timeMin': iso_time_today
+    #     })
 
-    else:
-        # Request diff since last event sync token
-        gcal_params['syncToken'] = calendar.sync_token
+    # else:
+    #     # Request diff since last event sync token
+    #     gcal_params['syncToken'] = calendar.sync_token
+
+    iso_time_today = datetime.datetime.utcnow().replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    ).isoformat('T') + 'Z'
+
+    gcal_params.update({
+        'singleEvents': True,
+        'timeMin': iso_time_today
+    })
 
     logger.info('List events w/ params: {}'.format(gcal_params))
 
@@ -724,7 +736,7 @@ def sync_db_calendar_events(service, user):
                 logger.info(
                     'Sync token EXPIRED!\nRemoving sync token and event data ..'
                 )
-                calendar.sync_token = None
+                # calendar.sync_token = None
                 Event.objects.all().delete()
                 EventPage.objects.all().delete()
 
