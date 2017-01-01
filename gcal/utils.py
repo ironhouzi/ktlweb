@@ -778,6 +778,10 @@ def sync_events(user_name=None):
 
     Will update the calendars incrementally using the syncToken.
     '''
+
+    Event.objects.all().delete()
+    EventPage.objects.all().delete()
+
     user = get_user(user_name)
     service = get_calendar_service()
     sync_db_calendar_events(service, user)
