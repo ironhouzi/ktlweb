@@ -17,6 +17,10 @@ File: Custom CSS
     font-size: 2.5vmin;
     font-weight: bold;
 }
+.h2span span {
+    clear: left;
+    padding-top: 20px;
+}
 #header .fl_left p { text-transform: none; }
 .search input {
     width: 30%;
@@ -76,8 +80,3 @@ File: Custom CSS
 
 /* Remove capitaization for menu items */
 #topnav li li { text-transform: none; }
-
-.h2span span {
-    clear: left;
-    padding-top: 20px;
-}
