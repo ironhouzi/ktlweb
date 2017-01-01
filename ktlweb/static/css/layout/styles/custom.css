@@ -17,7 +17,7 @@ File: Custom CSS
     font-size: 2.5vmin;
     font-weight: bold;
 }
-.h2span span {
+.h2span h2 span {
     clear: left;
     padding-top: 20px;
 }
