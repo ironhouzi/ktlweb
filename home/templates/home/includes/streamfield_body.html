@@ -4,7 +4,7 @@
   <div class="stream-field">
     {% for child in content %}
       {% if child.block_type == 'h2styled' %}
-        <h2><span class="h2span">{{ child }}</span></h2>
+        <h2 id="h2span"><span>{{ child }}</span></h2>
       {% elif child.block_type == 'h2' %}
         <h3>{{ child }}</h3>
       {% elif child.block_type == 'h3' %}
