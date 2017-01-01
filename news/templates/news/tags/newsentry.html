@@ -6,7 +6,7 @@
   {% image latest_news.feed_image fill-400x240 as theimage %}
   <div class="col-1-2 first"><img {{ theimage.attrs }}></div>
   <div class="col-1-2">
-    <h3>{{ latest_news.title }}</h3>
+    <h3><a href="{{ news_entry.url }}">{{ latest_news.title }}</a></h3>
     <div class="blog-post-meta">
       <ul>
         <li class="blog-post-date">
@@ -27,7 +27,7 @@
   {% for news_entry in secondary_news %}
   <article class="blog-post-excerpt col-1-3">
     <div class="post-content">
-      {% image latest_news.feed_image fill-400x240 as mini_img %}
+      {% image news_entry.feed_image fill-400x240 as mini_img %}
       <div class="post-image push20"><img {{ mini_img.attrs }}></div>
       <h3 class="blog-post-title"><a href="{{ news_entry.url }}">{{ news_entry.title }}</a></h3>
       <div class="blog-post-meta">
