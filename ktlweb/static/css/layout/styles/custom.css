@@ -76,3 +76,8 @@ File: Custom CSS
 
 /* Remove capitaization for menu items */
 #topnav li li { text-transform: none; }
+
+h2 span {
+    clear: left;
+    padding-top: 20px;
+}
