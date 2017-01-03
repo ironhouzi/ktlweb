@@ -738,7 +738,6 @@ def sync_db_calendar_events(service, user):
                 )
                 # calendar.sync_token = None
                 Event.objects.all().delete()
-                EventPage.objects.all().delete()
 
                 # leave except block without breaking while loop
                 next_page_token = None
@@ -791,7 +790,6 @@ def sync_events(user_name=None):
     '''
 
     Event.objects.all().delete()
-    EventPage.objects.all().delete()
 
     user = get_user(user_name)
     service = get_calendar_service()
