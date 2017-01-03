@@ -1,5 +1,8 @@
 from django import forms
 
+from django.utils.safestring import mark_safe
+from markdown import markdown
+
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import StreamField
 from wagtail.wagtailimages.blocks import ImageChooserBlock
@@ -171,6 +174,22 @@ class ImageBlock(StructBlock):
     alignment = ImageFormatChoiceBlock(label='Justering')
 
 
+class MarkDownBlock(TextBlock):
+    class Meta:
+        icon = 'code'
+
+    def render_basic(self, value, context=None):
+        md = markdown(
+            value,
+            [
+                'markdown.extensions.fenced_code',
+                'codehilite',
+            ],
+        )
+
+        return mark_safe(md)
+
+
 class HomePageStreamBlock(StreamBlock):
     h2styled = CharBlock(
         label='stilisert overskrift',
@@ -185,6 +204,7 @@ class HomePageStreamBlock(StreamBlock):
     pullquote = PullQuoteBlock(label='Sitat')
     aligned_image = ImageBlock(label='Justert bilde', icon='image')
     document = DocumentChooserBlock(label='dokument', icon='doc-full-inverse')
+    markdown = MarkDownBlock(label='markdown')
     news_feed = NewsFeedBlock(label='Siste nyheter', icon='grip')
 
 
