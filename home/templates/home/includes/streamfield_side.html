@@ -7,6 +7,8 @@
         {{ child }}
       {% elif child.block_type == 'linkviewer' %}
         {{ child }}
+      {% elif child.block_type == 'videoembed' %}
+        {{ child }}
       {% endif %}
     {% endfor %}
   </div>

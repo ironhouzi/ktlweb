@@ -190,6 +190,15 @@ class MarkDownBlock(TextBlock):
         return mark_safe(md)
 
 
+class VideoBlock(StructBlock):
+    caption = TextBlock(label='Seksjonstittel', required=True)
+    video_id = TextBlock(label='Youtube video-id', required=True)
+
+    class Meta:
+        icon = 'media'
+        template = 'home/blocks/sidepanel_video.html'
+
+
 class HomePageStreamBlock(StreamBlock):
     h2styled = CharBlock(
         label='stilisert overskrift',
@@ -216,6 +225,7 @@ class SidePanelStreamBlock(StreamBlock):
         label='Lenke- fremviser',
         template='home/blocks/sidepanel_links.html'
     )
+    videoembed = VideoBlock(label='Youtube- video')
 
 
 class HeadingPanelStreamBlock(StreamBlock):
