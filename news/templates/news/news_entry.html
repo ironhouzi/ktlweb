@@ -30,9 +30,11 @@
         </aside>
       </div>
       <div class="clear"></div>
+      {% if page.event_page %}
       <div>
         {% full_event_overview page.event_page %}
       </div>
+      {% endif %}
       <div class="clear"></div>
     </div>
     <div class="divider2"></div>
