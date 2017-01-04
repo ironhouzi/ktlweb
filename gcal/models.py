@@ -50,6 +50,12 @@ class Centre(AbstractHomePage):
         verbose_name = 'Senter'
         verbose_name_plural = 'Sentre'
 
+    def __repr__(self):
+        return '<Centre: "{}">'.format(self.code)
+
+    def __str__(self):
+        return self.code
+
 
 class Calendar(models.Model):
     calendar_id = models.CharField(max_length=200, default='')
@@ -136,8 +142,9 @@ class EventPage(AbstractHomePage):
         if self.event_instances.count() == 0:
             return self.title
         else:
-            return '{} | Starter: {} | Antall: {}'.format(
+            return '{} ({}) | Starter: {} | Antall: {}'.format(
                 self.title,
+                self.calendar.centre,
                 self.event_instances.first().start.strftime('%d. %b %Y'),
                 self.event_instances.count()
             )
