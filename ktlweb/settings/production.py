@@ -3,9 +3,12 @@ from .base import *
 import os
 from elasticsearch import RequestsHttpConnection
 
-DEBUG = os.environ.get('DEBUG', 'False') in ('True',)
+truth = ('true', '1', 'yes')
+
+DEBUG = os.getenv('DEBUG', 'False').lower() in truth
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', 'True') in ('True',)
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').lower() in truth
+COMPRESS_ENABLED = os.getenv('COMPRESS_ENABLED', 'true').lower() in truth
 SECRET_KEY = os.environ['SECRET_KEY']
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
@@ -25,7 +28,7 @@ EMAIL_HOST_PASSWORD = os.getenv(
     os.getenv('EMAIL_HOST_PASSWORD', '')
 )
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in ('true', '1',)
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in truth
 
 ADMINS = (
     ('Robin Skahjem-Eriksen', 'robindse@gmail.com'),
