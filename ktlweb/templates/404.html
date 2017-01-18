@@ -3,18 +3,23 @@
 {% block body_class %}template-404{% endblock %}
 
 {% block content %}
-  <div id="fof" class="clear">
-    <!-- ####################################################################################################### -->
-    <h1>404</h1>
-    <h2>En feil har oppstått</h2>
-    <p class="notice">beklager, siden du ser etter finnes ikke</p>
-    <p>Gå tilbake til <a href="{{ site_root.url }}">hovedsiden</a> eller bruk søkefunksjonaliteten nedenfor for å finne det du ser etter:</p>
-    <form action="{% url 'search' %}" class="block clear" method="get">
-      <input type="text" value="" name="query" size="35"/>
-      <button class="button red" type="submit"><span class="fa fa-search"></span></button>
-    </form>
-    <!-- ####################################################################################################### -->
+  <div class="wrapper row4">
+    <div role="main" class="container">
+      <div id="fof" class="clear">
+        <!-- ####################################################################################################### -->
+        <h1>404</h1>
+        <h2>En feil har oppstått</h2>
+        <p class="notice">beklager, siden du ser etter finnes ikke</p>
+        <p>Gå tilbake til <a href="{{ site_root.url }}">hovedsiden</a> eller bruk søkefunksjonaliteten nedenfor for å finne det du ser etter:</p>
+        <form action="{% url 'search' %}" class="block clear" method="get">
+          <input type="text" value="" name="query" size="35"/>
+          <button class="button red" type="submit"><span class="fa fa-search"></span></button>
+        </form>
+        <!-- ####################################################################################################### -->
+      </div>
+      <!-- ################################################################################################ -->
+      <div class="clear"></div>
+    </div>
+    <!-- End class=container -->
   </div>
-  <!-- ################################################################################################ -->
-  <div class="clear"></div>
 {% endblock %}
