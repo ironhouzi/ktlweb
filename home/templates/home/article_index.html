@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load wagtailimages_tags %}
+
+{% block body_class %}template-newsentry{% endblock %}
+
+{% block content %}
+  <div class="list-group">
+    <!-- CONTENT -->
+    <div class="wrapper row4">
+      <div role="main" class="container">
+        <!-- ################################################################################################ -->
+        <div id="portfolio" class="col-3-4 first">
+          <ul class="clear">
+            {% for article in article_entries %}
+              {# {% include "news/includes/news_list_item.html" %} #}
+              <li class="col-1-2{% if not forloop.counter|divisibleby:"2" %} first{% endif %}">
+                {# Uses serve method defined in models.py - allows for paging if required #}
+                {# See also standard index for creating a listing with a tag #}
+                <article>
+                  {% if article.image %}
+                    {% image article.image fill-400x150-c100 as theimage %}
+                    <figure class="post-image"><a href="{{ article.url }}"><img {{ theimage.attrs }}></a></figure>
+                  {% else %}
+                  <a href="{{ article.url }}"><figure class="post-image article-index"><span class="fa fa-folder-open-o fa-4x"></span></figure></a>
+                  {% endif %}
+                  <header>
+                    <h2 class="blog-post-title"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+                    <div class="blog-post-meta">
+                      <ul>
+                        <li class="blog-post-date">
+                          <time datetime="{{ article.last_published_at|date:"c" }}"><strong>Publisert:</strong> {{ article.first_published_at|date:"j" }}. {{ article.first_published_at|date:"F" }} {{ article.first_published_at|date:"Y" }}</time>
+                        </li>
+                        {# <li class="blog-post-cats"><a href="#">Category 1</a>, <a href="#">Category 2</a></li> #}
+                      </ul>
+                    </div>
+                  </header>
+                  <p class="block-with-text">{{ article.intro }}</p>
+                  <footer><a href="{{ article.url }}" class="button small red">Les videre &raquo;</a></footer>
+                </article>
+              </li>
+            {% empty %}
+              <p>Ingen artikler.</p>
+            {% endfor %}
+          </ul>
+          <!-- ####################################################################################################### -->
+        </div>
+        <div class="clear"></div>
+        <nav class="pagination">
+          <ul>
+            {% if article_entries.has_previous %}
+              <li class="prev">
+                <a href="?page={{ article_entries.previous_page_number }}">
+                  <span class="fa fa-chevron-left"></span>
+                </a>
+              </li>
+            {% endif %}
+            {% if article_entries.has_next or article_entries.has_previous %}
+            <li class="current"><strong>{{ article_entries.number }}</strong></li>
+            {% endif %}
+            {% if article_entries.has_next %}
+              <li class="next">
+                <a href="?page={{ article_entries.next_page_number }}">
+                  <span class="fa fa-chevron-right"></span>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {# Pagination - uses django.core.paginator #}
+        {# Append any other url query string variables to the next and previous links - allows tag to be passed through #}
+      </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+{% endblock %}

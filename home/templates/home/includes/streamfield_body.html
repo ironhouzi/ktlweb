@@ -11,27 +11,39 @@
         <h3>{{ child }}</h3>
       {% elif child.block_type == 'h4' %}
         <h4>{{ child }}</h4>
+      {% elif child.block_type == 'hr' %}
+        <hr class="image-clear"/>
       {% elif child.block_type == 'intro' %}
         <div class="intro">{{ child }}</div>
       {% elif child.block_type == 'pullquote' %}
-        <blockquote>
-          {{ child.value.quote }}
-          {% if child.value.attribution %}<span>- {{ child.value.attribution }}</span>{% endif %}
-        </blockquote>
+        <div class="clear push50"></div>
+        <div class="push50">
+          <div class="testimonial clear">
+            <div class="col-1-4"></div>
+              <div class="col-3-4">
+                <blockquote>
+                  <p>{{ child.value.quote }}</p>
+                  {% if child.value.attribution %}
+                  <div class="testimonial-author">
+                    <div class="testimonial-caption"><strong> - {{ child.value.attribution }}</strong></div>
+                  </div>
+                  {% endif %}
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        </div>
       {% elif child.block_type == 'paragraph' %}
         {{ child.value|richtext }}
       {% elif child.block_type == 'aligned_image' %}
         {# Ugly! Perhaps use a tag?? #}
         <figure class="img{% if child.value.alignment == "left" %}l{% elif child.value.alignment == "right" %}r{% endif %} boxholder">
-
         {% if child.value.alignment == "left" or child.value.alignment == "right" %}
           {% image child.value.image width-300 as theimage %}
         {% else %}
           {% image child.value.image width-1280 as theimage %}
         {% endif %}
-
           <img {{ theimage.attrs }}>
-
         {% if child.value.caption %}
           <div class="caption">
             {{ child.value.caption|richtext }}

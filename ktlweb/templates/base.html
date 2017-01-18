@@ -122,11 +122,11 @@
       </div>
       <!-- BLOCK 4 -->
       <div class="col-2-5">
-        <div class="block push30"><span class="cc circle fa fa-file-text-o"></span></div>
-        <h6 class="push20">Nyhetsbrev</h6>
-        <form method="post" action="javascript:myFunction(); return false;">
-          <input type="text">
-          <input type="submit" value="Abonnér">
+        <div class="block push30"><span class="cc circle fa fa-search"></span></div>
+        <h6 class="push20">Søk</h6>
+        <form action="{% url 'search' %}" method="get">
+          <input type="text" value="" name="query" size="35"/>
+          <input type="submit" value="Søk">
         </form>
       </div>
     </footer>

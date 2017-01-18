@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags upcoming_events wagtailimages_tags %}
+
+{% block body_class %}template-newsentry{% endblock %}
+
+{% block content %}
+  <div class="wrapper row4">
+    <div role="main" class="container article-body">
+      <div class="col-3-4 first">
+        {% block main %}
+          <section class="clear">
+            <h1 class="article"><strong>{{ page.title }}</strong></h1>
+            <p class="intro">{{ page.intro }}</p>
+            {% image page.image width-1000 as theimage %}
+            <div class="boxholder push50"><img {{ theimage.attrs }}></div>
+            {% include "home/includes/streamfield_body.html" with content=self.body %}
+          </section>
+        {% endblock main %}
+      </div>
+      <div id="sidebar_1" class="sidebar col-1-4">
+      </div>
+      <div class="clear push50"></div>
+      <div class="divider2"></div>
+    </div>
+  </div>
+  <div class="clear"></div>
+{% endblock %}

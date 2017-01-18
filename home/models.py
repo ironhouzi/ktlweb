@@ -1,11 +1,14 @@
 from django import forms
-
+from django.db import models
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils.safestring import mark_safe
+
 from markdown import markdown
 
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import StreamField
 from wagtail.wagtailimages.blocks import ImageChooserBlock
+from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from wagtail.wagtailcore.blocks import (
     TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock,
@@ -15,17 +18,26 @@ from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
 )
 from wagtail.wagtailsearch import index
+from wagtail.utils.decorators import cached_classmethod
 
 
 class PullQuoteBlock(StructBlock):
-    quote = TextBlock('sitat')
-    attribution = CharBlock('tilegnelse')
+    quote = TextBlock(label='Sitat')
+    attribution = CharBlock(label='Tilegnelse', required=False)
 
     def __str__(self):
         return 'sitat'
 
     class Meta:
         icon = 'openquote'
+
+
+class HorizontalRulerBlock(StructBlock):
+    def __str__(self):
+        return 'skillestrek'
+
+    class Meta:
+        icon = 'horizontalrule'
 
 
 class UpcomingEventCountChoiceField(FieldBlock):
@@ -208,6 +220,7 @@ class HomePageStreamBlock(StreamBlock):
     h2 = CharBlock(label='overskrift stor', icon='title', classname='title')
     h3 = CharBlock(label='overskrift mindre', icon='title', classname='title')
     h4 = CharBlock(label='overskrift minst', icon='title', classname='title')
+    hr = HorizontalRulerBlock()
     intro = RichTextBlock(label='introduksjon', icon='pilcrow')
     paragraph = RichTextBlock(label='paragraf', icon='pilcrow')
     pullquote = PullQuoteBlock(label='Sitat')
@@ -268,8 +281,7 @@ class AbstractHomePage(Page):
 
     search_fields = Page.search_fields + [index.SearchField('body')]
 
-    content_panels = [
-        FieldPanel('title'),
+    content_panels = Page.content_panels + [
         StreamFieldPanel('body'),
     ]
 
@@ -278,19 +290,113 @@ class AbstractHomePage(Page):
         StreamFieldPanel('sidepanel'),
     ]
 
-    edit_handler = TabbedInterface([
-        ObjectList(content_panels, heading='Hovedinnhold'),
-        ObjectList(pagesection_panels, heading='Seksjoner'),
-        ObjectList(Page.promote_panels, heading='Promovér'),
-        ObjectList(
-            Page.settings_panels,
-            heading='Instillinger',
-            classname='settings'
-        ),
-    ])
+    @cached_classmethod
+    def get_edit_handler(cls):
+        edit_handler = TabbedInterface([
+            ObjectList(cls.content_panels, heading='Hovedinnhold'),
+            ObjectList(cls.pagesection_panels, heading='Seksjoner'),
+            ObjectList(cls.promote_panels, heading='Fremming'),
+            ObjectList(
+                cls.settings_panels,
+                heading='Instillinger',
+                classname='settings'
+            ),
+        ])
+
+        return edit_handler.bind_to_model(cls)
 
 
 class HomePage(AbstractHomePage):
     class Meta:
         verbose_name = 'Hjemmeside'
         verbose_name_plural = 'Hjemmesider'
+
+
+class ArticleIndex(AbstractHomePage):
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        verbose_name='Bilde (1200x400)',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='Bildet må være minst 1200x400 piksler og ha formatet 3x1.'
+    )
+
+    content_panels = [
+        AbstractHomePage.content_panels[0],     # title
+        ImageChooserPanel('image'),
+        AbstractHomePage.content_panels[-1]     # streamfield
+    ]
+
+    @property
+    def article_entries(self):
+        order = '-first_published_at'
+        return self.get_children().live().order_by(order).specific()
+
+    def get_context(self, request):
+        # pagination
+        paginator = Paginator(self.article_entries, 10)
+
+        try:
+            article_entries = paginator.page(request.GET.get('page'))
+        except PageNotAnInteger:
+            article_entries = paginator.page(1)
+        except EmptyPage:
+            article_entries = paginator.page(paginator.num_pages)
+
+        context = super().get_context(request)
+        context['article_entries'] = article_entries
+
+        return context
+
+    def __str__(self):
+        return 'Artikkelindeks: {}'.format(self.id)
+
+    class Meta:
+        verbose_name = 'Artikkelindeks'
+        verbose_name_plural = 'Artikkelindekser'
+
+    subpage_types = ['home.Article', 'home.ArticleIndex']
+
+
+class Article(AbstractHomePage):
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        verbose_name='Bilde (1200x400)',
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='Bildet må være minst 1200x400 piksler og ha formatet 3x1.'
+    )
+    intro = models.TextField(
+        'Ingress',
+        null=True,
+        blank=False,
+        help_text='Kortfattet introduksjon, maks 4 linjer!'
+    )
+
+    @property
+    def article_index(self):
+        return self.get_ancestors().type(ArticleIndex).last()
+
+    search_fields = AbstractHomePage.search_fields + [
+        index.SearchField('intro')
+    ]
+
+    content_panels = [
+        AbstractHomePage.content_panels[0],     # title
+        FieldPanel('intro'),
+        ImageChooserPanel('image'),
+        AbstractHomePage.content_panels[-1]     # streamfield
+    ]
+
+    def __str__(self):
+        return '<Article: {}>'.format(self.title)
+
+    class Meta:
+        verbose_name = 'Artikkel'
+        verbose_name_plural = 'Artikler'
+
+    parent_page_types = ['home.ArticleIndex']

@@ -6,6 +6,8 @@ from logging import config
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = False
+# ALLOWED_HOSTS = ['localhost']
 
 for template_engine in TEMPLATES:
     template_engine['OPTIONS']['debug'] = True
