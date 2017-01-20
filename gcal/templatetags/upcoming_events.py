@@ -25,9 +25,9 @@ def show_upcoming_events(count, centre_code, display_all):
 
         events = Event.objects.filter(end__gte=now).order_by('start')
 
-    grouped = {}
+    grouped = OrderedDict()
 
-    for event in events:
+    for event in sorted(events):
         key = event.start.strftime('%B')
 
         try:
