@@ -142,3 +142,7 @@ hr.image-clear {
 .container.article-body {
     font-size: 1.2em;
 }
+
+.accordion-wrapper.full-event.push50 {
+    margin-top: 30px;
+}

@@ -24,7 +24,8 @@
 {% endfor %}
 </ul>
 {% if display_all %}
-<div class="accordion-wrapper push50"><a href="javascript:void(0)" class="accordion-title"><span>Vis alle {{ count }} aktiviteter</span></a>
+<div class="accordion-wrapper full-event push50">
+  <a href="javascript:void(0)" class="accordion-title"><span>Vis alle {{ count }} aktiviteter</span></a>
   <div class="accordion-content">
     <ul class="list arrow">
       {% for month, month_events in full.items %}
