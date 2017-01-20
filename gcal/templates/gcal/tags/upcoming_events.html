@@ -1,7 +1,7 @@
 {% load wagtailcore_tags %}
 
 <h2><span>{{ title }}</span></h2>
-<ul class="nospace spacing push50">
+<ul class="nospace spacing">
 {% for event in events %}
   <li class="clear">
     <time datetime="{{ event.start|date:"c" }}" class="date-icon"><strong>{{ event.start|date:"b" }}</strong> <em>{{ event.start|date:"j" }}</em></time>
@@ -24,8 +24,7 @@
 {% endfor %}
 </ul>
 {% if display_all %}
-<p class="sbtitle"><span class="fa fa-calendar"></span> Full oversikt</p>
-<div class="accordion-wrapper push50"><a href="javascript:void(0)" class="accordion-title"><span>Vis alle {{ count }}</span></a>
+<div class="accordion-wrapper push50"><a href="javascript:void(0)" class="accordion-title"><span>Vis alle {{ count }} aktiviteter</span></a>
   <div class="accordion-content">
     <ul class="list arrow">
       {% for month, month_events in full.items %}
@@ -34,5 +33,4 @@
     </ul>
   </div>
 </div>
-<!-- <div class="accordion-wrapper push50"><a href="#" class="accordion-title"><span>Full oversikt</span></a> -->
 {% endif %}
