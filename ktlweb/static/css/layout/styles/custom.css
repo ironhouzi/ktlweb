@@ -65,7 +65,7 @@ h2 span {
   max-height: 2.4em;
   min-height: 2.4em;
   /* fix problem when last visible word doesn't adjoin right side  */
-  text-align: justify;
+  text-align: left;
 }
 
 /* styles for '...' */
@@ -80,7 +80,7 @@ h2 span {
   max-height: 6em;
   min-height: 6em;
   /* fix problem when last visible word doesn't adjoin right side  */
-  text-align: justify;
+  text-align: left;
   /* place for '...' */
   margin-right: -1em;
   padding-right: 1em;
@@ -137,4 +137,8 @@ hr.image-clear {
     clear: left;
     height: 1px;
     display:inline-block;
+}
+
+.container.article-body {
+    font-size: 1.2em;
 }

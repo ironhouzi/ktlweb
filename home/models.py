@@ -12,7 +12,7 @@ from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from wagtail.wagtailcore.blocks import (
     TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock,
-    ListBlock, URLBlock, PageChooserBlock
+    ListBlock, URLBlock, PageChooserBlock, BooleanBlock
 )
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
@@ -96,6 +96,7 @@ class NewsFeedBlock(StructBlock):
 class EventsBlock(StructBlock):
     count = UpcomingEventCountChoiceField(label='Antall synlige aktiviteter')
     centre_code = UpcomingEventCentreChoiceField(label='Hvilket senter?')
+    display_all = BooleanBlock(label='Langtidsvisning', required=False)
 
     class Meta:
         icon = 'date'
@@ -281,9 +282,7 @@ class AbstractHomePage(Page):
 
     search_fields = Page.search_fields + [index.SearchField('body')]
 
-    content_panels = Page.content_panels + [
-        StreamFieldPanel('body'),
-    ]
+    content_panels = Page.content_panels + [StreamFieldPanel('body')]
 
     pagesection_panels = [
         StreamFieldPanel('headingpanel'),
@@ -376,6 +375,16 @@ class Article(AbstractHomePage):
         blank=False,
         help_text='Kortfattet introduksjon, maks 4 linjer!'
     )
+    other_author = models.TextField(
+        'Annen forfatter',
+        null=True,
+        blank=True,
+        help_text='Brukes kun om forfatter er noen andre enn deg selv.'
+    )
+
+    @property
+    def author(self):
+        return self.other_author or self.owner.get_full_name()
 
     @property
     def article_index(self):
@@ -389,6 +398,7 @@ class Article(AbstractHomePage):
         AbstractHomePage.content_panels[0],     # title
         FieldPanel('intro'),
         ImageChooserPanel('image'),
+        FieldPanel('other_author'),
         AbstractHomePage.content_panels[-1]     # streamfield
     ]
 

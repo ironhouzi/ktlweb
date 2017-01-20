@@ -8,7 +8,7 @@ register = template.Library()
 
 
 @register.inclusion_tag('gcal/tags/upcoming_events.html')
-def show_upcoming_events(count, centre_code):
+def show_upcoming_events(count, centre_code, display_all):
     if count is not None:
         count = min(max(1, int(count)), 10)
 
@@ -18,17 +18,30 @@ def show_upcoming_events(count, centre_code):
         centre = Centre.objects.get(code=centre_code)
         title = 'Kommende aktiviteter på {}'.format(centre.title)
 
-        events = centre.events.filter(end__gte=now).order_by('start')[:count]
+        events = centre.events.filter(end__gte=now).order_by('start')
     except Centre.DoesNotExist:
         centre = None
         title = 'Kommende aktiviteter'
 
-        events = Event.objects.filter(end__gte=now).order_by('start')[:count]
+        events = Event.objects.filter(end__gte=now).order_by('start')
+
+    grouped = {}
+
+    for event in events:
+        key = event.start.strftime('%B')
+
+        try:
+            grouped[key].append(event)
+        except KeyError:
+            grouped[key] = []
+            grouped[key].append(event)
 
     return {
-        'events': events,
-        'centre': centre,
-        'title': title
+        'events': events[:count],
+        'count': len(events),
+        'title': title,
+        'full': grouped,
+        'display_all': display_all
     }
 
 
@@ -57,7 +70,7 @@ def full_event_overview(event_page):
 
     events = event_page.event_instances.filter(end__gte=now).order_by('start')
 
-    if events.count() < 2:
+    if events.count() <= 3:
         return {}
 
     for event in events:

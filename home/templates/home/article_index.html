@@ -30,7 +30,7 @@
                         <li class="blog-post-date">
                           <time datetime="{{ article.last_published_at|date:"c" }}"><strong>Publisert:</strong> {{ article.first_published_at|date:"j" }}. {{ article.first_published_at|date:"F" }} {{ article.first_published_at|date:"Y" }}</time>
                         </li>
-                        {# <li class="blog-post-cats"><a href="#">Category 1</a>, <a href="#">Category 2</a></li> #}
+                        <li class="blog-post-author">Av {{ article.author }}</li>
                       </ul>
                     </div>
                   </header>
