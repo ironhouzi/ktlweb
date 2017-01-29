@@ -22,7 +22,7 @@ from wagtail.utils.decorators import cached_classmethod
 
 
 class PullQuoteBlock(StructBlock):
-    quote = TextBlock(label='Sitat')
+    quote = RichTextBlock(label='Sitat')
     attribution = CharBlock(label='Tilegnelse', required=False)
 
     def __str__(self):
