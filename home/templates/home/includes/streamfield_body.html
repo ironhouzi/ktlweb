@@ -20,16 +20,15 @@
         <div class="push50">
           <div class="testimonial clear">
             <div class="col-1-4"></div>
-              <div class="col-3-4">
-                <blockquote>
-                  <p>{{ child.value.quote }}</p>
-                  {% if child.value.attribution %}
-                  <div class="testimonial-author">
-                    <div class="testimonial-caption"><strong> - {{ child.value.attribution }}</strong></div>
-                  </div>
-                  {% endif %}
-                </blockquote>
-              </div>
+            <div class="col-3-4">
+              <blockquote>
+                <p>{{ child.value.quote }}</p>
+                {% if child.value.attribution %}
+                <div class="testimonial-author">
+                  <div class="testimonial-caption"><strong> - {{ child.value.attribution }}</strong></div>
+                </div>
+                {% endif %}
+              </blockquote>
             </div>
           </div>
         </div>
