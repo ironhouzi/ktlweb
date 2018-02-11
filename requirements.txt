@@ -1,8 +1,9 @@
 arrow==0.7.0
+asn1crypto==0.24.0
 beautifulsoup4==4.5.1
 boto==2.38.0
 cffi==1.7.0
-cryptography==1.4
+cryptography==2.1.4
 dj-database-url==0.3.0
 Django==1.10.4
 django-appconf==1.0.1
@@ -22,7 +23,7 @@ idna==2.1
 Markdown==2.6.7
 oauth2client==1.5.2
 Pillow==3.4.2
-psycopg2==2.6.1
+psycopg2==2.7.4
 pyasn1==0.1.9
 pyasn1-modules==0.0.8
 pycparser==2.14
