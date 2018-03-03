@@ -7,9 +7,14 @@
 #     -e POSTGRES_PASSWORD=`gpass.sh ktlweb_db 2>&1` \
 #     -e POSTGRES_DB=ktlweb_db \
 #     -d \
-#     postgres:9.4
+#     postgres:9.6.1
 
 
+# es container created with:
+# docker run --name ktlweb_es -P -d elasticsearch:1
+
+
+export DJANGO_SETTINGS_MODULE=ktlweb.settings.dev
 export DEBUG=True
 export SECRET_KEY="$(gpass.sh ktlweb_secret_key 2>&1)"
 export DB=ktlweb_db
@@ -18,7 +23,7 @@ export ES_URL="http://localhost:$(docker port ktlweb_es | head -n1 | cut -d : -f
 unset DB
 
 if [ -e ~/store/secrets/ktlweb/envvars ]; then
-    source ~/store/secrets/ktlweb/envvars
+	while read -r line; do export "$line"; done < ~/store/secrets/ktlweb/envvars
 fi
 
 ./manage.py "$@"
