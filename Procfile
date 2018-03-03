@@ -1,1 +1,1 @@
-web: newrelic-admin run-program gunicorn ktlweb.wsgi --log-file -
+web: gunicorn ktlweb.wsgi --log-file -
