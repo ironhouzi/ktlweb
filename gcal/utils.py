@@ -6,8 +6,9 @@ import logging
 import datetime
 import warnings
 
-from pytz import timezone
 from uuid import uuid4
+
+from pytz import timezone
 
 from apiclient import discovery
 from apiclient.errors import HttpError
@@ -15,6 +16,7 @@ from oauth2client.client import SignedJwtAssertionCredentials
 
 
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.utils.text import slugify as django_slugify
 from django.utils.timezone import (
@@ -27,7 +29,7 @@ from wagtail.wagtailcore.rich_text import RichText
 from .models import Calendar, Centre, Event, EventPage
 from home.models import HomePage
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('ktlweb')
 
 SCOPES = os.environ.get(
     'GCAL_SCOPES',
@@ -166,25 +168,6 @@ def poll_event_instances(service, calendar, page_token):
 
     if page_token is not None:
         gcal_params['pageToken'] = page_token
-
-    # if not calendar.sync_token:
-    #     # Create all events from scratch
-
-    #     iso_time_today = datetime.datetime.utcnow().replace(
-    #         hour=0,
-    #         minute=0,
-    #         second=0,
-    #         microsecond=0
-    #     ).isoformat('T') + 'Z'
-
-    #     gcal_params.update({
-    #         'singleEvents': True,
-    #         'timeMin': iso_time_today
-    #     })
-
-    # else:
-    #     # Request diff since last event sync token
-    #     gcal_params['syncToken'] = calendar.sync_token
 
     iso_time_today = datetime.datetime.utcnow().replace(
         hour=0,
@@ -567,7 +550,7 @@ def sync_event_page(calendar, user, master_gcal_event):
     return event_page
 
 
-def handle_events(service, calendar, page_token, user, recurring_events={}):
+def handle_events(service, calendar, page_token, user, recurring_events):
     '''
     Create calendar events in the database.
 
@@ -586,7 +569,6 @@ def handle_events(service, calendar, page_token, user, recurring_events={}):
     '''
 
     events_response = poll_event_instances(service, calendar, page_token)
-
     next_page_token = events_response.get('nextPageToken')
     # sync_token = events_response.get('nextSyncToken')
 
@@ -652,6 +634,27 @@ def reset_gcal_summary(service, calendar, event_page, summary_changed):
         )
 
 
+def error_mail(calendar, failed_event):
+    mailto = failed_event['creator']['email']
+    mail_from = 'webmaster@ktl.no'
+    send_mail(
+        'Unexpected error in Google Calendar event for ktl.no',
+        (
+            'Unfortunately, an error in Google Calendar has prohibited '
+            'ktl.no to store the event:\n\n'
+            f'{failed_event["summary"]} in calendar: {calendar}\n\n'
+            'To rectify the problem, please remove the event from Google '
+            'Calendar and recreate the event and synchronize at ktl.no\n\n'
+            'If you have any questions, please send a mail to:\n'
+            'webmaster@ktl.no.\n\n'
+            'Sorry for the inconvenience and have a nice day.'
+        ),
+        mail_from,
+        [mailto, mail_from],
+        fail_silently=False
+    )
+
+
 def sync_recurring_events(service, calendar, recurring_events, user):
     '''
     Iterates key-values in recurring_events dictionary. From the key, creating
@@ -660,11 +663,30 @@ def sync_recurring_events(service, calendar, recurring_events, user):
     Event entries in the database.
     '''
 
+    logger.info('--- Syncing recurring events ---')
+
     for master_event_id, event_list in recurring_events.items():
-        master_event = service.events().get(
-            calendarId=calendar.calendar_id,
-            eventId=master_event_id,
-        ).execute()
+        logger.info(f'master_event_id: {master_event_id}')
+        logger.debug(
+            'event_list: '
+            f'{json.dumps(event_list, indent=2, ensure_ascii=False)}'
+        )
+
+        try:
+            master_event = service.events().get(
+                calendarId=calendar.calendar_id,
+                eventId=master_event_id,
+            ).execute()
+        except HttpError as e:
+            if e.resp.status == 404:
+                failed_event, *_ = event_list
+                logger.error(
+                    f'Master Event not found! ({master_event_id}) '
+                    f'{failed_event["summary"]}. Skipping recurring event sync'
+                )
+                error_mail(calendar, failed_event)
+                continue
+            raise
 
         if master_event['status'] == 'cancelled':
             handle_cancellation(service, calendar, master_event)
@@ -674,11 +696,11 @@ def sync_recurring_events(service, calendar, recurring_events, user):
         # will already be present in the event_list, and must be removed to
         # avoid duplicate event instances.
         master_event_time = json_time_to_utc(master_event)
-        clean_event_list = [
+        normalized_events = [
             e for e in event_list if json_time_to_utc(e) != master_event_time
         ]
 
-        if len(clean_event_list) == 0:
+        if len(normalized_events) == 0:
             warnings.warn(
                 (
                     'Creating EventPage ({}) with ZERO events!!!'
@@ -695,14 +717,21 @@ def sync_recurring_events(service, calendar, recurring_events, user):
 
         logger.info(
             'Creating {} event instances for Page: {}'.format(
-                len(clean_event_list),
+                len(normalized_events),
                 event_page.title
+            )
+        )
+
+        logger.debug(
+            'event instances for Page {}: {}'.format(
+                event_page.title,
+                normalized_events
             )
         )
 
         changed = False
 
-        for event_instance in clean_event_list:
+        for event_instance in normalized_events:
             changed = sync_event_instance_entry(event_instance, event_page)
 
         if changed:

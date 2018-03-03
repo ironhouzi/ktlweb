@@ -1,14 +1,13 @@
-from .base import *
+from .base import TRUTH
+from .base import *     # noqa
 
 import os
 from elasticsearch import RequestsHttpConnection
 
-truth = ('true', '1', 'yes')
-
-DEBUG = os.getenv('DEBUG', 'False').lower() in truth
+DEBUG = os.getenv('WAGTAIL_DEBUG', 'False').lower() in TRUTH
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').lower() in truth
-COMPRESS_ENABLED = os.getenv('COMPRESS_ENABLED', 'true').lower() in truth
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').lower() in TRUTH
+COMPRESS_ENABLED = os.getenv('COMPRESS_ENABLED', 'true').lower() in TRUTH
 SECRET_KEY = os.environ['SECRET_KEY']
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
@@ -28,7 +27,7 @@ EMAIL_HOST_PASSWORD = os.getenv(
     os.getenv('EMAIL_HOST_PASSWORD', '')
 )
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in truth
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in TRUTH
 
 ADMINS = (
     ('Robin Skahjem-Eriksen', 'robindse@gmail.com'),
@@ -50,8 +49,3 @@ WAGTAILSEARCH_BACKENDS = {
         }
     }
 }
-
-try:
-    from .local import *
-except ImportError:
-    pass
