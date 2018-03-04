@@ -50,7 +50,7 @@
         {% endif %}
         </figure>
       {% elif child.block_type == 'news_feed' %}
-        {{ child.value }}
+        {{ child.value.render_as_block }}
       {% else %}
         {{ child }}
       {% endif %}

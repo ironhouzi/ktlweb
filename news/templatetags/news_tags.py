@@ -8,9 +8,8 @@ register = template.Library()
 @register.inclusion_tag('news/tags/newsentry.html')
 def news_entry(count='4'):
     count = int(count)
-    all_entries = NewsEntry.objects.filter(live=True
-                                           ).order_by('-first_published_at'
-                                                      )[:count]
+    all_entries = NewsEntry.objects.filter(live=True)\
+        .order_by('-first_published_at')[:count]
 
     result = {
         'latest_news': None,
