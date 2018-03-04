@@ -29,16 +29,12 @@ from wagtail.wagtailcore.rich_text import RichText
 from .models import Calendar, Centre, Event, EventPage
 from home.models import HomePage
 
-logger = logging.getLogger('ktlweb')
+logger = logging.getLogger(__name__)
 
 SCOPES = os.environ.get(
     'GCAL_SCOPES',
     'https://www.googleapis.com/auth/calendar.readonly'
 )
-
-
-class ExpiredGoogleCalendarSyncToken(Exception):
-    pass
 
 
 def publish_page(page, page_parent, default_body_string, user):

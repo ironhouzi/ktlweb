@@ -13,12 +13,16 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import locale
+import sys
+import logging
+
 import dj_database_url
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 TRUTH = ('true', '1', 'yes', 'on')
+DEBUG = os.getenv('WAGTAIL_DEBUG', 'False').lower() in TRUTH
 
 
 # Quick-start development settings - unsuitable for production
@@ -150,3 +154,26 @@ WAGTAIL_SITE_NAME = 'Karma Tashi Ling buddhistsamfunn'
 WAGTAIL_USAGE_COUNT_ENABLED = True
 
 DATABASES['default'] = dj_database_url.config()
+
+KTLWEB_LOGGER = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'detailed': {
+            'format': '[%(levelname)s] - (%(pathname)s:%(lineno)d) %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'detailed'
+        }
+    },
+    'loggers': {
+        'gcal': {
+            'handlers': ['console'],
+            'level': logging.DEBUG if DEBUG else logging.INFO
+        }
+    }
+}

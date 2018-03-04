@@ -1,10 +1,12 @@
-from .base import TRUTH
 from .base import *     # noqa
+from .base import TRUTH, KTLWEB_LOGGER
 
 import os
+
+from logging import config
+
 from elasticsearch import RequestsHttpConnection
 
-DEBUG = os.getenv('WAGTAIL_DEBUG', 'False').lower() in TRUTH
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').lower() in TRUTH
 COMPRESS_ENABLED = os.getenv('COMPRESS_ENABLED', 'true').lower() in TRUTH
@@ -49,3 +51,9 @@ WAGTAILSEARCH_BACKENDS = {
         }
     }
 }
+
+KTLWEB_LOGGER['formatters']['detailed']['format'] = (   # type: ignore
+    '%(asctime)s - [%(levelname)s] - (%(pathname)s:%(lineno)d) %(message)s'
+)
+
+config.dictConfig(KTLWEB_LOGGER)

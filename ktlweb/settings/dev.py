@@ -1,16 +1,9 @@
-from .base import TEMPLATES, BASE_DIR, TRUTH
 from .base import *     # noqa
+from .base import TEMPLATES, BASE_DIR, KTLWEB_LOGGER
 
 import os
-import sys
-import logging
 
 from logging import config
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('WAGTAIL_DEBUG', 'False').lower() in TRUTH
-# DEBUG = False
-# ALLOWED_HOSTS = ['localhost']
 
 for template_engine in TEMPLATES:
     template_engine['OPTIONS']['debug'] = True  # type: ignore
@@ -32,26 +25,6 @@ WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.wagtailsearch.backends.elasticsearch',
         'URLS': [os.getenv('ES_URL', 'http://localhost:9200')],
-    }
-}
-
-KTLWEB_LOGGER = {
-    'version': 1,
-    'formatters': {
-        'detailed': {
-            'format': '%(levelname)s - (%(pathname)s:%(lineno)d) %(message)s'
-        }
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'stream': sys.stdout,
-            'formatter': 'detailed'
-        }
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': logging.DEBUG
     }
 }
 
