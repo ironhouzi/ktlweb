@@ -28,4 +28,7 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
+gcal_logger = KTLWEB_LOGGER['loggers']['gcal']  # type: ignore
+KTLWEB_LOGGER['root'] = gcal_logger  # type: ignore
+
 config.dictConfig(KTLWEB_LOGGER)
