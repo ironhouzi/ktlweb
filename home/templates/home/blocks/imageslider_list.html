@@ -1,6 +1,7 @@
         <ul class="flex-slides">
           {% for slider_item in self %}
           <li>
+            {# Tech debt! (https://github.com/wagtail/wagtail/issues/3995#issuecomment-353684172) #}
             {{ slider_item.render_as_block }}
           </li>
           {% endfor %}
