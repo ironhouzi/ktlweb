@@ -5,8 +5,6 @@ import os
 
 from logging import config
 
-from elasticsearch import RequestsHttpConnection
-
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').lower() in TRUTH
 COMPRESS_ENABLED = os.getenv('COMPRESS_ENABLED', 'true').lower() in TRUTH
@@ -37,20 +35,6 @@ ADMINS = (
 
 SERVER_EMAIL = 'webmaster@ktl.no'
 DEFAULT_FROM_USER = SERVER_EMAIL
-
-# Search
-WAGTAILSEARCH_BACKENDS = {
-    'default': {
-        'BACKEND': os.environ['WAGTAIL_SEARCH_BACKEND'],
-        'URLS': [os.environ['BONSAI_URL']],
-        'INDEX': 'wagtail',
-        'OPTIONS': {
-            'connection_class': RequestsHttpConnection,
-            'use_ssl': True,
-            'verify_certs': False
-        }
-    }
-}
 
 KTLWEB_LOGGER['formatters']['detailed']['format'] = (   # type: ignore
     '%(asctime)s - [%(levelname)s] - (%(pathname)s:%(lineno)d) %(message)s'

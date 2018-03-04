@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c46fb9f3a5bc8912a8d605feb1a1f6a2fb044ea519ac1d178171c753cb4d9195"
+            "sha256": "81c5525398f496718a83cc4a0760f4bb43f6b6276d362581485192e7281f56a1"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -190,13 +190,6 @@
                 "sha256:de8ac68b3cf6dd41b98e01dcc92dc0022a5958f096eafc181a17fa975d18ca42"
             ],
             "version": "==3.6.4"
-        },
-        "elasticsearch": {
-            "hashes": [
-                "sha256:bb8f9a365ba6650d599428538c8aed42033264661d8f7d353da59d5892305f72",
-                "sha256:fead47ebfcaabd1c53dbfc21403eb99ac207eef76de8002fe11a1c8ec9589ce2"
-            ],
-            "version": "==2.4.1"
         },
         "google-api-python-client": {
             "hashes": [

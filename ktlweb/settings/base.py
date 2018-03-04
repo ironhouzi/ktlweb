@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'wagtail.wagtailsearch',
     'wagtail.wagtailadmin',
     'wagtail.wagtailcore',
+    'wagtail.contrib.postgres_search',
 
     'modelcluster',
     'compressor',
@@ -175,5 +176,13 @@ KTLWEB_LOGGER = {
             'handlers': ['console'],
             'level': logging.DEBUG if DEBUG else logging.INFO
         }
+    }
+}
+
+# Search
+
+WAGTAILSEARCH_BACKENDS = {
+    'default': {
+        'BACKEND': 'wagtail.contrib.postgres_search.backend'
     }
 }
