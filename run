@@ -15,11 +15,11 @@
 
 
 export DJANGO_SETTINGS_MODULE=ktlweb.settings.dev
-export DEBUG=True
+export WAGTAIL_DEBUG=True
 export SECRET_KEY="$(gpass.sh ktlweb_secret_key 2>&1)"
 export DB=ktlweb_db
 export DATABASE_URL="postgres://postgres:$(gpass.sh ktlweb_db 2>&1)@localhost:$(docker port $DB | cut -d : -f2)/$DB"
-export ES_URL="http://localhost:$(docker port ktlweb_es | head -n1 | cut -d : -f2)"
+export ES_URL="http://localhost:$(docker port ktlweb_es | grep 9200 | cut -d : -f2)"
 unset DB
 
 if [ -e ~/store/secrets/ktlweb/envvars ]; then
