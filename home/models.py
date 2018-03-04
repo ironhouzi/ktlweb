@@ -262,19 +262,22 @@ class HeadingPanelStreamBlock(StreamBlock):
 
 class AbstractHomePage(Page):
     body = StreamField(
-        HomePageStreamBlock(),
+        HomePageStreamBlock(required=False),
         verbose_name='hovedinnhold',
-        default=''
+        default='',
+        blank=True
     )
     headingpanel = StreamField(
-        HeadingPanelStreamBlock(),
+        HeadingPanelStreamBlock(required=False),
         verbose_name='overpanel',
-        default=''
+        default='',
+        blank=True
     )
     sidepanel = StreamField(
-        SidePanelStreamBlock(),
+        SidePanelStreamBlock(required=False),
         verbose_name='sidepanel',
-        default=''
+        default='',
+        blank=True
     )
 
     class Meta:
