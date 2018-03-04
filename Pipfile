@@ -7,7 +7,7 @@ name = "pypi"
 
 [packages]
 
-wagtail = "==1.12"
+wagtail = "<2.0"
 gunicorn = "*"
 elasticsearch = ">=2.0.0,<3.0.0"
 "psycopg2" = "*"

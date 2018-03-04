@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "951a5780dbd847abb9b98a2c8e1252db8e582f04da8166757ce2c20c220f2940"
+            "sha256": "c46fb9f3a5bc8912a8d605feb1a1f6a2fb044ea519ac1d178171c753cb4d9195"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -186,10 +186,10 @@
         },
         "djangorestframework": {
             "hashes": [
-                "sha256:1f6baf40ed456ed2af6bd1a4ff8bbc3503cebea16509993aea2b7085bc097766",
-                "sha256:9f9e94e8d22b100ed3a43cee8c47a7ff7b185e778a1f2da9ec5c73fc4e081b87"
+                "sha256:0f9bfbac702f3376dfb2db4971ad8af4e066bfa35393b1b85e085f7e8b91189a",
+                "sha256:de8ac68b3cf6dd41b98e01dcc92dc0022a5958f096eafc181a17fa975d18ca42"
             ],
-            "version": "==3.7.7"
+            "version": "==3.6.4"
         },
         "elasticsearch": {
             "hashes": [
@@ -448,10 +448,10 @@
         },
         "wagtail": {
             "hashes": [
-                "sha256:6778057c0a3adb498bdbe37454de523953280e0eef28dd78c3516e7ab39ebb0d",
-                "sha256:ecd266f54b830d043f795504fba6dc05a0c88bb8cd5555001ff530a2ac45035f"
+                "sha256:c741ef3f85f62f27621ae98c9e4a7116be06aae9595927c9865f1151cf51ecab",
+                "sha256:9c69b1fdc22e68315d86dfd7a7fc82d9efdeda4e37155dd042fc13d7ba2b6194"
             ],
-            "version": "==1.12"
+            "version": "==1.13.1"
         },
         "webencodings": {
             "hashes": [
@@ -462,10 +462,10 @@
         },
         "willow": {
             "hashes": [
-                "sha256:b86334bc1939bf6b3c33bbfe141d61600ed4e6880ac86408431400cd7cc7ba3f",
-                "sha256:48f0903ff1110e67a3a167811d229cd7998acb85b6343d3271166d0af1f5d028"
+                "sha256:0a2e1665a24cded9d74b3d2254fb17e63bdde922d231610cdf0ced880a241845",
+                "sha256:dba768a03591973254b5a0242d11ebae00f1cb971e6f3a2ee592ff8e230b6090"
             ],
-            "version": "==0.4"
+            "version": "==1.0"
         }
     },
     "develop": {}
