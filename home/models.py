@@ -134,8 +134,8 @@ class CommonLinkBlock(StructBlock):
         max_length=50
     )
 
-    def get_context(self, value):
-        context = super().get_context(value)
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
         link = value['link']
 
         if link['external_url']:
@@ -336,7 +336,7 @@ class ArticleIndex(AbstractHomePage):
         order = '-first_published_at'
         return self.get_children().live().order_by(order).specific()
 
-    def get_context(self, request):
+    def get_context(self, request, parent_context=None):
         # pagination
         paginator = Paginator(self.article_entries, 10)
 
@@ -347,7 +347,7 @@ class ArticleIndex(AbstractHomePage):
         except EmptyPage:
             article_entries = paginator.page(paginator.num_pages)
 
-        context = super().get_context(request)
+        context = super().get_context(request, parent_context=parent_context)
         context['article_entries'] = article_entries
 
         return context

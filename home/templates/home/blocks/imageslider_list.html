@@ -1,7 +1,7 @@
         <ul class="flex-slides">
           {% for slider_item in self %}
           <li>
-            {{ slider_item }}
+            {{ slider_item.render_as_block }}
           </li>
           {% endfor %}
         </ul>

@@ -23,7 +23,7 @@ class NewsEntryIndex(AbstractHomePage):
             '-first_published_at'
         )
 
-    def get_context(self, request):
+    def get_context(self, request, parent_context=None):
         # pagination
         paginator = Paginator(self.news_entries, 10)
 
@@ -34,7 +34,7 @@ class NewsEntryIndex(AbstractHomePage):
         except EmptyPage:
             news_entries = paginator.page(paginator.num_pages)
 
-        context = super().get_context(request)
+        context = super().get_context(request, parent_context=parent_context)
         context['news_entries'] = news_entries
 
         return context
