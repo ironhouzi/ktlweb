@@ -23,8 +23,8 @@ from django.utils.timezone import (
     get_default_timezone_name, utc, localtime, make_aware, is_naive, now
 )
 
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.rich_text import RichText
+from wagtail.core.models import Page
+from wagtail.core.rich_text import RichText
 
 from .models import Calendar, Centre, Event, EventPage
 from home.models import HomePage

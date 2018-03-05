@@ -1,5 +1,5 @@
 from datetime import datetime
-from wagtail.wagtailadmin import messages
+from wagtail.admin import messages
 from django.shortcuts import redirect, render
 
 from gcal.utils import sync_events

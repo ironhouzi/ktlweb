@@ -5,19 +5,19 @@ from django.utils.safestring import mark_safe
 
 from markdown import markdown
 
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.fields import StreamField
-from wagtail.wagtailimages.blocks import ImageChooserBlock
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-from wagtail.wagtaildocs.blocks import DocumentChooserBlock
-from wagtail.wagtailcore.blocks import (
+from wagtail.core.models import Page
+from wagtail.core.fields import StreamField
+from wagtail.images.blocks import ImageChooserBlock
+from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.core.blocks import (
     TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock,
     ListBlock, URLBlock, PageChooserBlock, BooleanBlock
 )
-from wagtail.wagtailadmin.edit_handlers import (
+from wagtail.admin.edit_handlers import (
     FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
 )
-from wagtail.wagtailsearch import index
+from wagtail.search import index
 from wagtail.utils.decorators import cached_classmethod
 
 

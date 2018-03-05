@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField, ArrayField
 
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailadmin.edit_handlers import FieldPanel
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-# from wagtail.wagtailsearch import index
+from wagtail.core.models import Page
+from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
+# from wagtail.search import index
 
 from home.models import AbstractHomePage
 

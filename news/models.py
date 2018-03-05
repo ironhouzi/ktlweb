@@ -1,13 +1,13 @@
 from django.db import models
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.fields import RichTextField
+from wagtail.core.models import Page
+from wagtail.core.fields import RichTextField
 
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-from wagtail.wagtailadmin.edit_handlers import FieldPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.admin.edit_handlers import FieldPanel
 
-from wagtail.wagtailsearch import index
+from wagtail.search import index
 from home.models import AbstractHomePage
 
 # TODO:
