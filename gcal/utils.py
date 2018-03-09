@@ -819,3 +819,4 @@ def sync_events(user_name=None):
     user = get_user(user_name)
     service = get_calendar_service()
     sync_db_calendar_events(service, user)
+    EventPage.objects.filter(event_instances=None).all().delete()
