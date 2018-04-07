@@ -38,6 +38,10 @@ h2 span {
     padding: 10px;
 }
 
+.center-info {
+    padding-top: 80px;
+}
+
 .googlemap {
     width: 100%;
     height: 300px;
