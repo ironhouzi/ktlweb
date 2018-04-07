@@ -55,3 +55,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Python3 typing
+.mypy_cache/
