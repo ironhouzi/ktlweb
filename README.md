@@ -23,6 +23,19 @@ docker run \
     postgres:9.6.1
 ```
 
+### Config
+
+`JWT_JSON_PATH`: Google oauth2 service account JSON JWT config.
+`AWS_MEDIA`: AWS S3 bucket name for Django media files
+`AWS_STATIC`: AWS S3 bucket name for Django static files
+`AWS_ACCESS_KEY_ID`
+`AWS_SECRET_ACCESS_KEY`
+`STATIC_URL`: Bucket URL
+`MEDIA_URL`: Bucket URL
+`ALLOWED_HOSTS`: `localhost` for development
+`GCAL_CLIENT_MAIL`: Service account credential
+`GCAL_PRIVATE_KEY`: Service account key
+
 ### Run
 
 1. `pipenv shell`
@@ -30,5 +43,6 @@ docker run \
 3. Build database:
     - `./run makemigrations`
     - `./run migrate`
-4. Create super user: `./run createsuperuser`
+4. Create super user (name & password: `d`): `echo "from django.contrib.auth.models import User; User.objects.create_superuser('d', '', 'd')" | ./run shell`
+5. Initialize calendar entries from Google Calendar (optional): `echo "from gcal.utils import db_init; db_init('d')" | ./run shell`
 5. Run server: `./run runserver`
