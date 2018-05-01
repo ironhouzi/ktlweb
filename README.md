@@ -25,18 +25,18 @@ docker run \
 
 ### Config
 
-`JWT_JSON_PATH`: Google oauth2 service account JSON JWT config.
-`AWS_MEDIA`: AWS S3 bucket name for Django media files
-`AWS_STATIC`: AWS S3 bucket name for Django static files
-`AWS_ACCESS_KEY_ID`
-`AWS_SECRET_ACCESS_KEY`
-`STATIC_URL`: Bucket URL
-`MEDIA_URL`: Bucket URL
-`COMPRESS_STORAGE`: `ktlweb.settings.s3storage.AWSStatic` (Production only)
-`COMPRESS_URL`: Same as `STATIC_URL` (Production only)
-`ALLOWED_HOSTS`: `localhost` for development
-`GCAL_CLIENT_MAIL`: Service account credential
-`GCAL_PRIVATE_KEY`: Service account key
+- `JWT_JSON_PATH`: Google oauth2 service account JSON JWT config.
+- `AWS_MEDIA`: AWS S3 bucket name for Django media files
+- `AWS_STATIC`: AWS S3 bucket name for Django static files
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `STATIC_URL`: Bucket URL
+- `MEDIA_URL`: Bucket URL
+- `COMPRESS_STORAGE`: `ktlweb.settings.s3storage.AWSStatic` (Production only)
+- `COMPRESS_URL`: Same as `STATIC_URL` (Production only)
+- `ALLOWED_HOSTS`: `localhost` for development
+- `GCAL_CLIENT_MAIL`: Service account credential
+- `GCAL_PRIVATE_KEY`: Service account key
 
 ### Run
 
