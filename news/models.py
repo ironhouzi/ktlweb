@@ -16,7 +16,7 @@ from home.models import AbstractHomePage
 # [ ] RSS feed
 
 
-class NewsEntryIndex(AbstractHomePage):
+class NewsEntryIndex(AbstractHomePage, Page):
     @property
     def news_entries(self):
         return NewsEntry.objects.live().descendant_of(self).order_by(

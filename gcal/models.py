@@ -9,7 +9,7 @@ from wagtail.images.edit_handlers import ImageChooserPanel
 from home.models import AbstractHomePage
 
 
-class Centre(AbstractHomePage):
+class Centre(AbstractHomePage, Page):
     code = models.CharField('Kode', max_length=3)
     address = models.TextField('Addresse', blank=False)
     google_location = models.CharField(
@@ -36,7 +36,7 @@ class Centre(AbstractHomePage):
         related_name='+'
     )
 
-    content_panels = Page.content_panels + [
+    content_panels = AbstractHomePage.content_panels + [
         FieldPanel('code'),
         FieldPanel('address'),
         FieldPanel('tlf'),
@@ -112,7 +112,7 @@ class Event(models.Model):
         verbose_name_plural = 'Aktiviteter'
 
 
-class EventPage(AbstractHomePage):
+class EventPage(AbstractHomePage, Page):
     master_event_id = models.CharField(max_length=1024, unique=True)
     creator = JSONField(null=True, blank=True)
     recurrence = ArrayField(
@@ -131,7 +131,7 @@ class EventPage(AbstractHomePage):
     )
 
     # TODO: create inline panel for recurrence
-    content_panels = Page.content_panels + [
+    content_panels = AbstractHomePage.content_panels + [
         FieldPanel('calendar'),
     ]
 

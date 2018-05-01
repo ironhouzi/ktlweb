@@ -260,7 +260,7 @@ class HeadingPanelStreamBlock(StreamBlock):
     )
 
 
-class AbstractHomePage(Page):
+class AbstractHomePage(models.Model):
     body = StreamField(
         HomePageStreamBlock(required=False),
         verbose_name='hovedinnhold',
@@ -308,13 +308,13 @@ class AbstractHomePage(Page):
         return edit_handler.bind_to_model(cls)
 
 
-class HomePage(AbstractHomePage):
+class HomePage(AbstractHomePage, Page):
     class Meta:
         verbose_name = 'Hjemmeside'
         verbose_name_plural = 'Hjemmesider'
 
 
-class ArticleIndex(AbstractHomePage):
+class ArticleIndex(AbstractHomePage, Page):
     image = models.ForeignKey(
         'wagtailimages.Image',
         verbose_name='Bilde (1200x400)',
@@ -362,7 +362,7 @@ class ArticleIndex(AbstractHomePage):
     subpage_types = ['home.Article', 'home.ArticleIndex']
 
 
-class Article(AbstractHomePage):
+class Article(AbstractHomePage, Page):
     image = models.ForeignKey(
         'wagtailimages.Image',
         verbose_name='Bilde (1200x400)',
