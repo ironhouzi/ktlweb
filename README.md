@@ -32,6 +32,8 @@ docker run \
 `AWS_SECRET_ACCESS_KEY`
 `STATIC_URL`: Bucket URL
 `MEDIA_URL`: Bucket URL
+`COMPRESS_STORAGE`: `ktlweb.settings.s3storage.AWSStatic` (Production only)
+`COMPRESS_URL`: Same as `STATIC_URL` (Production only)
 `ALLOWED_HOSTS`: `localhost` for development
 `GCAL_CLIENT_MAIL`: Service account credential
 `GCAL_PRIVATE_KEY`: Service account key
