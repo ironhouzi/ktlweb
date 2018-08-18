@@ -3,13 +3,13 @@ from gcal import views
 # from wagtail.contrib.modeladmin.helpers import ButtonHelper, PermissionHelper
 from wagtail.contrib.modeladmin.helpers import ButtonHelper
 from wagtail.contrib.modeladmin.options import (
-    ModelAdmin, modeladmin_register
+    ModelAdmin, ModelAdminGroup, modeladmin_register
 )
 
 from django.urls import reverse
 
 # from .models import Centre, Calendar, Event
-from .models import Event
+from .models import Event, Centre
 
 
 class ModifiedButtons(ButtonHelper):
@@ -36,9 +36,8 @@ class ModifiedButtons(ButtonHelper):
 
 class EventAdmin(ModelAdmin):
     model = Event
-    menu_label = 'Kalender'
+    menu_label = 'Aktiviteter'
     menu_icon = 'date'
-    menu_order = 200
     add_to_settings_menu = False
     list_display = (
         'event_name',
@@ -61,4 +60,18 @@ class EventAdmin(ModelAdmin):
         return obj.event_page.creator.get('displayName', email)
 
 
-modeladmin_register(EventAdmin)
+class CentreAdmin(ModelAdmin):
+    model = Centre
+    menu_label = 'Sentre'
+    menu_icon = 'home'
+    add_to_settings_menu = False
+
+
+class KalenderGroupAdmin(ModelAdminGroup):
+    menu_label = 'Kalender'
+    menu_icon = 'date'
+    menu_order = 200
+    items = (EventAdmin, CentreAdmin)
+
+
+modeladmin_register(KalenderGroupAdmin)

@@ -39,6 +39,7 @@ class Centre(AbstractHomePage, Page):
     content_panels = AbstractHomePage.content_panels + [
         FieldPanel('code'),
         FieldPanel('address'),
+        FieldPanel('map_query'),
         FieldPanel('tlf'),
         ImageChooserPanel('image'),
     ]

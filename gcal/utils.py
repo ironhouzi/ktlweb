@@ -113,7 +113,8 @@ def get_remote_calendars(service, items='id,summary,description,accessRole'):
     '''
 
     return service.calendarList().list(
-        fields='items({})'.format(items)).execute().get('items', [])
+        fields=f'items({items})',
+        minAccessRole='owner').execute().get('items', [])
 
 
 def sync_event_instance_entry(gcal_event, event_page):
@@ -225,12 +226,9 @@ def create_db_calendars(service):
     calendars = get_remote_calendars(service)
 
     for cal in calendars:
-        if cal['accessRole'] != 'owner':
-            continue
-
         # Assumes the pertinent calendar names are formed as:
         # "<Centre code> - Program"
-        center_code = cal['summary'].split('-')[0].rstrip()
+        center_code = cal['summary'].split('-')[0].strip()
         fk = Centre.objects.get(code=center_code)
         Calendar(
             calendar_id=cal['id'],
