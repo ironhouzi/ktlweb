@@ -48,3 +48,9 @@ docker run \
 4. Create super user (name & password: `d`): `echo "from django.contrib.auth.models import User; User.objects.create_superuser('d', '', 'd')" | ./run shell`
 5. Initialize calendar entries from Google Calendar (optional): `echo "from gcal.utils import db_init; db_init('d')" | ./run shell`
 5. Run server: `./run runserver`
+
+## Technical debt
+
+- [ ] Move Event streamfield objects to gcal app.
+- [ ] UpcomingEventCentreChoiceField populates from Centre table.
+- [ ] Centre has 1to1 key with calendar id.

@@ -65,7 +65,7 @@ class UpcomingEventCentreChoiceField(FieldBlock):
             ('ALL', 'Alle kalendre'),
             ('KTL', 'Kalender for KTL'),
             ('KSL', 'Kalender for KSL'),
-            ('PM', 'Kalender for Paramita'),
+            ('FHT', 'Kalender for Frivillighetshuset'),
         ),
         initial='ALL'
     )
