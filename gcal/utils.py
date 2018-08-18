@@ -318,10 +318,6 @@ def register_centers(user):
                 slug='ktl',
                 title='Karma Tashi Ling',
                 address='Bjørnåsveien 124, 1272 Oslo',
-                google_location=(
-                    'Karma Tashi Ling buddhistsamfunn,'
-                    ' Bjørnåsveien 124, 1272 Oslo, Norway'
-                ),
                 map_query=(
                     'pb=!1m18!1m12!1m3!1d64085.02466250845!2d10.719858097203817'
                     '!3d59.8714410155457!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.'
@@ -335,33 +331,25 @@ def register_centers(user):
         ),
         (
             dict(
-                code='PM',
-                slug='pm',
-                title='Paramita meditasjonssenter',
-                address='Storgata 13, 0155 Oslo - 3 etasje (Strøget)',
-                google_location=(
-                    'Karma Tashi Ling Buddhistsamfunn, Storgata, Oslo, Norway'
-                ),
+                code='FHT',
+                slug='fht',
+                title='Frivillighetshuset på Tøyen',
+                address='Kolstadgata 1, 0652 Oslo',
                 map_query=(
-                    'pb=!1m18!1m12!1m3!1d2000.1299898965638!2d10.74686031609596'
-                    '!3d59.91338998186699!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13'
-                    '.1!3m3!1m2!1s0x46416e626ad1d849%3A0xaeac36ad2c3a0f59'
-                    '!2sParamita+meditasjonssenter!5e0!3m2!1sen!2sus'
-                    '!4v1474499544190'
+                    'pb=!1m18!1m12!1m3!1d2000.0856673436404!2d10.77091361609599'
+                    '6!3d59.91412558186725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f1'
+                    '3.1!3m3!1m2!1s0x46416e5915e50f7b%3A0x12d9aee63709e24b!2sKo'
+                    'lstadgata+1%2C+0652+Oslo!5e0!3m2!1sen!2sno!4v1534593270861'
                 ),
-                tlf='22 00 89 98'
+                tlf='22 61 28 84'
             ),
-            'Vårt bysenter i gangavstand fra Oslo Sentralstasjon.'
+            'Vårt bysenter på Tøyen'
         ),
         (
             dict(
                 code='KSL',
                 slug='ksl',
                 title='Karma Shedrup Ling retreatsenter',
-                google_location=(
-                    'Karma Shedrup Ling retreatsenter,'
-                    ' Siggerudveien, Ski, Norway'
-                ),
                 map_query=(
                     'pb=!1m18!1m12!1m3!1d2009.7581754898429!2d10'
                     '.927372341251292!3d59.75346552497313!2m3!1f0!2f0!3f0!3m2'

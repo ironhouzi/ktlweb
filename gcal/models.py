@@ -12,11 +12,6 @@ from home.models import AbstractHomePage
 class Centre(AbstractHomePage, Page):
     code = models.CharField('Kode', max_length=3)
     address = models.TextField('Addresse', blank=False)
-    google_location = models.CharField(
-        'Google-lokasjon',
-        max_length=255,
-        blank=False
-    )
     map_query = models.CharField(
         'GoogleMaps-lokasjon',
         max_length=1024,
