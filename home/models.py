@@ -194,7 +194,7 @@ class MarkDownBlock(TextBlock):
     def render_basic(self, value, context=None):
         md = markdown(
             value,
-            [
+            extensions=[
                 'markdown.extensions.fenced_code',
                 'codehilite',
             ],
