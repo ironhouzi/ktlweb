@@ -335,9 +335,6 @@ def register_centers(user):
                 slug='rzs',
                 title='Rinzai Zen Center',
                 address='Grønlandsleiret 31, 0190 Oslo',
-                google_location=(
-                    'Rinzai Zen Senter Grønlandsleiret, Oslo, Norway'
-                ),
                 map_query=(
                     'pb=!1m18!1m12!1m3!1d2000.2561350426204!2d10.76453441642817'
                     '3!3d59.9112963818663!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13'
