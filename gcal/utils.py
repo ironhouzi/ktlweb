@@ -331,19 +331,23 @@ def register_centers(user):
         ),
         (
             dict(
-                code='FHT',
-                slug='fht',
-                title='Frivillighetshuset på Tøyen',
-                address='Kolstadgata 1, 0652 Oslo',
-                map_query=(
-                    'pb=!1m18!1m12!1m3!1d2000.0856673436404!2d10.77091361609599'
-                    '6!3d59.91412558186725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f1'
-                    '3.1!3m3!1m2!1s0x46416e5915e50f7b%3A0x12d9aee63709e24b!2sKo'
-                    'lstadgata+1%2C+0652+Oslo!5e0!3m2!1sen!2sno!4v1534593270861'
+                code='RZS',
+                slug='rzs',
+                title='Rinzai Zen Center',
+                address='Grønlandsleiret 31, 0190 Oslo',
+                google_location=(
+                    'Rinzai Zen Senter Grønlandsleiret, Oslo, Norway'
                 ),
-                tlf='22 61 28 84'
+                map_query=(
+                    'pb=!1m18!1m12!1m3!1d2000.2561350426204!2d10.76453441642817'
+                    '3!3d59.9112963818663!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13'
+                    '.1!3m3!1m2!1s0x46416e5f5dc234eb%3A0x73571e2cd774d684!2sRin'
+                    'zai+Zen+Center!5e0!3m2!1sen!2sno!4v1566137504814!5m2!1sen!'
+                    '2sno'
+                ),
+                tlf=None
             ),
-            'Vårt bysenter på Tøyen'
+            'Bysenter.'
         ),
         (
             dict(
