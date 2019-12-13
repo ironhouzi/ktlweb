@@ -305,7 +305,7 @@ class AbstractHomePage(models.Model):
             ),
         ])
 
-        return edit_handler.bind_to_model(cls)
+        return edit_handler.bind_to(model=cls)
 
 
 class HomePage(AbstractHomePage, Page):
