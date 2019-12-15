@@ -16,6 +16,8 @@ MEDIA_URL = os.environ['MEDIA_URL']
 STATICFILES_STORAGE = 'ktlweb.settings.s3storage.AWSStatic'
 DEFAULT_FILE_STORAGE = 'ktlweb.settings.s3storage.AWSMedia'
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
+WAGTAILADMIN_STATIC_FILE_VERSION_STRINGS = os.getenv(
+    'WAGTAILADMIN_STATIC_FILE_VERSION_STRINGS', 'False').lower() in TRUTH
 
 EMAIL_HOST = os.getenv('EMAIL_HOST', '')
 EMAIL_HOST_USER = os.getenv(
