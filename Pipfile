@@ -1,12 +1,9 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 wagtail = "*"
 gunicorn = "*"
 "psycopg2" = "*"
@@ -19,7 +16,6 @@ markdown = "*"
 django-storages = "*"
 django-compressor = "*"
 pyopenssl = "*"
-
+boto3 = "*"
 
 [dev-packages]
-
