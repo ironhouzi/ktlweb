@@ -1,6 +1,4 @@
-{% load homepage_tags static wagtailuserbar wagtailcore_tags wagtailimages_tags %}
-
-{% get_site_root as site_root %}
+{% load homepage_tags static wagtailuserbar wagtailcore_tags wagtailimages_tags wagtail_site as current_site%}
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -72,7 +70,7 @@
   <div class="wrapper row1">
     <header role="banner" id="header" class="clear">
       <div class="fl_left">
-        <h1><a href="{% pageurl site_root %}">Karma Tashi Ling buddhistsamfunn</a></h1>
+        <h1><a href="{% pageurl current_site %}">Karma Tashi Ling buddhistsamfunn</a></h1>
         <p class="times">Norges eldste buddhistsamfunn for tibetansk buddhisme</p>
       </div>
       <div class="fl_right right">
@@ -85,8 +83,7 @@
   </div>
 
   {% block menu %}
-    {% get_site_root as site_root %}
-    {% top_menu parent=site_root calling_page=self %}
+    {% top_menu parent=current_site calling_page=self %}
   {% endblock %}
 
   {% block content %}{% endblock %}

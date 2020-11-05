@@ -3,11 +3,6 @@ from django import template
 register = template.Library()
 
 
-@register.simple_tag(takes_context=True)
-def get_site_root(context):
-    return context['request'].site.root_page
-
-
 def has_menu_children(page):
     return page.get_children().live().in_menu().exists()
 
