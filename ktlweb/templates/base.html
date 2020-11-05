@@ -71,7 +71,7 @@
   <div class="wrapper row1">
     <header role="banner" id="header" class="clear">
       <div class="fl_left">
-        <h1><a href="{% pageurl current_site %}">Karma Tashi Ling buddhistsamfunn</a></h1>
+        <h1><a href="{% pageurl current_site.root_page %}">Karma Tashi Ling buddhistsamfunn</a></h1>
         <p class="times">Norges eldste buddhistsamfunn for tibetansk buddhisme</p>
       </div>
       <div class="fl_right right">
@@ -84,7 +84,7 @@
   </div>
 
   {% block menu %}
-    {% top_menu parent=current_site calling_page=self %}
+    {% top_menu parent=current_site.root_page calling_page=self %}
   {% endblock %}
 
   {% block content %}{% endblock %}
