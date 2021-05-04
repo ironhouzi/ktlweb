@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-wagtail = "*"
+wagtail = "==2.10.2"
 gunicorn = "*"
 "psycopg2" = "*"
 dj-database-url = "*"
