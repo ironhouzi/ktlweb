@@ -318,6 +318,7 @@ def register_centers(user):
                 slug='ktl',
                 title='Karma Tashi Ling',
                 address='Bjørnåsveien 124, 1272 Oslo',
+                # get from map embed URI
                 map_query=(
                     'pb=!1m18!1m12!1m3!1d64085.02466250845!2d10.719858097203817'
                     '!3d59.8714410155457!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.'
@@ -331,16 +332,17 @@ def register_centers(user):
         ),
         (
             dict(
-                code='RZS',
-                slug='rzs',
-                title='Rinzai Zen Center',
-                address='Grønlandsleiret 31, 0190 Oslo',
+                code='OB',
+                slug='ob',
+                title='Oslo Buddhistsenter',
+                address='Helgesensgate 10, 0553 Oslo',
+                # get from map embed URI
                 map_query=(
-                    'pb=!1m18!1m12!1m3!1d2000.2561350426204!2d10.76453441642817'
-                    '3!3d59.9112963818663!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13'
-                    '.1!3m3!1m2!1s0x46416e5f5dc234eb%3A0x73571e2cd774d684!2sRin'
-                    'zai+Zen+Center!5e0!3m2!1sen!2sno!4v1566137504814!5m2!1sen!'
-                    '2sno'
+                    'pb=!1m18!1m12!1m3!1d1999.449835712254!2d10.755166416239534'
+                    '!3d59.92467757018657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13'
+                    '.1!3m3!1m2!1s0x46416e62150dc545%3A0x1a4ccc594f09125a!2sOsl'
+                    'o%20Buddhist%20Center!5e0!3m2!1sen!2sno!4v1657655861752!5m'
+                    '2!1sen!2sno'
                 ),
                 tlf=None
             ),
@@ -351,6 +353,7 @@ def register_centers(user):
                 code='KSL',
                 slug='ksl',
                 title='Karma Shedrup Ling retreatsenter',
+                # get from map embed URI
                 map_query=(
                     'pb=!1m18!1m12!1m3!1d2009.7581754898429!2d10'
                     '.927372341251292!3d59.75346552497313!2m3!1f0!2f0!3f0!3m2'
