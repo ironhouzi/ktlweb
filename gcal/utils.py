@@ -36,6 +36,63 @@ SCOPES = os.environ.get(
     'https://www.googleapis.com/auth/calendar.readonly'
 )
 
+CENTRES = (
+    (
+        dict(
+            code='KTL',
+            slug='ktl',
+            title='Karma Tashi Ling',
+            address='Bjørnåsveien 124, 1272 Oslo',
+            # get from map embed URI
+            map_query=(
+                'pb=!1m18!1m12!1m3!1d64085.02466250845!2d10.719858097203817'
+                '!3d59.8714410155457!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.'
+                '1!3m3!1m2!1s0x4641689e9e629ca3%3A0x659a4f081752df6d!2s'
+                'Karma+Tashi+Ling+buddhistsamfunn!5e0!3m2!1sen!2sus'
+                '!4v1474500703908'
+            ),
+            tlf='22 61 28 84'
+        ),
+        'Vårt hovedsenter med tempelbygg og fredsstupa.'
+    ),
+    (
+        dict(
+            code='OB',
+            slug='ob',
+            title='Oslo Buddhistsenter',
+            address='Helgesensgate 10, 0553 Oslo',
+            # get from map embed URI
+            map_query=(
+                'pb=!1m18!1m12!1m3!1d1999.449835712254!2d10.755166416239534'
+                '!3d59.92467757018657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13'
+                '.1!3m3!1m2!1s0x46416e62150dc545%3A0x1a4ccc594f09125a!2sOsl'
+                'o%20Buddhist%20Center!5e0!3m2!1sen!2sno!4v1657655861752!5m'
+                '2!1sen!2sno'
+            ),
+            tlf=None
+        ),
+        'Bysenter.'
+    ),
+    (
+        dict(
+            code='KSL',
+            slug='ksl',
+            title='Karma Shedrup Ling retreatsenter',
+            # get from map embed URI
+            map_query=(
+                'pb=!1m18!1m12!1m3!1d2009.7581754898429!2d10'
+                '.927372341251292!3d59.75346552497313!2m3!1f0!2f0!3f0!3m2'
+                '!1i1024!2i768!4f13.1!3m3!1m2!1s0x46415df5da495a43'
+                '%3A0xd9ab4ea8e930b13d!2sKarma+Shedrup+Ling+retreatsenter'
+                '!5e0!3m2!1sen!2sus!4v1474500473508'
+            ),
+            address='Siggerudveien 734, 1400 Ski',
+            tlf=None
+        ),
+        'Retreatsenter i Sørmarka.'
+    )
+)
+
 
 def publish_page(page, page_parent, default_body_string, user):
     '''
@@ -224,11 +281,14 @@ def create_db_calendars(service):
     '''
 
     calendars = get_remote_calendars(service)
+    pertinent_codes = {d['code'] for d, _ in CENTRES}
 
     for cal in calendars:
         # Assumes the pertinent calendar names are formed as:
         # "<Centre code> - Program"
         center_code = cal['summary'].split('-')[0].strip()
+        if center_code not in pertinent_codes:
+            continue
         fk = Centre.objects.get(code=center_code)
         Calendar(
             calendar_id=cal['id'],
@@ -311,64 +371,7 @@ def register_centers(user):
         main_page = site_root_page.get_children()[0]
         main_page.add_child(instance=centre_parent_page)
 
-    centres = (
-        (
-            dict(
-                code='KTL',
-                slug='ktl',
-                title='Karma Tashi Ling',
-                address='Bjørnåsveien 124, 1272 Oslo',
-                # get from map embed URI
-                map_query=(
-                    'pb=!1m18!1m12!1m3!1d64085.02466250845!2d10.719858097203817'
-                    '!3d59.8714410155457!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.'
-                    '1!3m3!1m2!1s0x4641689e9e629ca3%3A0x659a4f081752df6d!2s'
-                    'Karma+Tashi+Ling+buddhistsamfunn!5e0!3m2!1sen!2sus'
-                    '!4v1474500703908'
-                ),
-                tlf='22 61 28 84'
-            ),
-            'Vårt hovedsenter med tempelbygg og fredsstupa.'
-        ),
-        (
-            dict(
-                code='OB',
-                slug='ob',
-                title='Oslo Buddhistsenter',
-                address='Helgesensgate 10, 0553 Oslo',
-                # get from map embed URI
-                map_query=(
-                    'pb=!1m18!1m12!1m3!1d1999.449835712254!2d10.755166416239534'
-                    '!3d59.92467757018657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13'
-                    '.1!3m3!1m2!1s0x46416e62150dc545%3A0x1a4ccc594f09125a!2sOsl'
-                    'o%20Buddhist%20Center!5e0!3m2!1sen!2sno!4v1657655861752!5m'
-                    '2!1sen!2sno'
-                ),
-                tlf=None
-            ),
-            'Bysenter.'
-        ),
-        (
-            dict(
-                code='KSL',
-                slug='ksl',
-                title='Karma Shedrup Ling retreatsenter',
-                # get from map embed URI
-                map_query=(
-                    'pb=!1m18!1m12!1m3!1d2009.7581754898429!2d10'
-                    '.927372341251292!3d59.75346552497313!2m3!1f0!2f0!3f0!3m2'
-                    '!1i1024!2i768!4f13.1!3m3!1m2!1s0x46415df5da495a43'
-                    '%3A0xd9ab4ea8e930b13d!2sKarma+Shedrup+Ling+retreatsenter'
-                    '!5e0!3m2!1sen!2sus!4v1474500473508'
-                ),
-                address='Siggerudveien 734, 1400 Ski',
-                tlf=None
-            ),
-            'Retreatsenter i Sørmarka.'
-        )
-    )
-
-    for centre_data in centres:
+    for centre_data in CENTRES:
         create_center(centre_data, centre_parent_page, user)
         logger.info('registerred centre: "{}"'.format(centre_data[0]['title']))
 
