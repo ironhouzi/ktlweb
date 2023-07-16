@@ -8,3 +8,4 @@ class AWSMedia(S3Boto3Storage):
 
 class AWSStatic(S3Boto3Storage):
     bucket_name = os.environ['AWS_STATIC']
+    default_acl = 'public-read'
