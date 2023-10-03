@@ -95,7 +95,7 @@ oauth2client==1.5.2
     # via ktlweb (pyproject.toml)
 openpyxl==3.1.2
     # via tablib
-pillow==7.2.0
+pillow==10.0.1
     # via wagtail
 protobuf==4.23.4
     # via
