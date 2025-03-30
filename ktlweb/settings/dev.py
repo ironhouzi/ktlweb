@@ -1,5 +1,5 @@
 from .base import *     # noqa
-from .base import TEMPLATES, BASE_DIR, KTLWEB_LOGGER
+from .base import TEMPLATES, KTLWEB_LOGGER
 
 import os
 
@@ -10,6 +10,7 @@ for template_engine in TEMPLATES:
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '4q0bwaw+!93b2m-_a)4j%+l5kqi71n!$*1hy(u)_a-08jzea0r'
+BASE_DIR = '/opt'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ktlweb"
+version = "0.1.0"
+dependencies = [
+    "wagtail == 2.10.2",
+    "gunicorn",
+    "psycopg2-binary == 2.9.6",
+    "dj-database-url",
+    "boto",
+    "arrow",
+    "oauth2client < 2.0",
+    "google-api-python-client",
+    "markdown",
+    "django-storages",
+    "django-compressor",
+    "pyopenssl",
+    "boto3",
+]
