@@ -90,7 +90,25 @@ CENTRES = (
             tlf=None
         ),
         'Retreatsenter i Sørmarka.'
-    )
+    ),
+    (
+        dict(
+            code='NLT',
+            slug='nlt',
+            title='Nordlystempelet',
+            # get from map embed URI
+            map_query=(
+                'pb=!1m18!1m12!1m3!1d310979.3974995069!2d15.250105274612977'
+                '!3d68.35229158430016!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13'
+                '.1!3m3!1m2!1s0x45dc3cb51265895f%3A0xa2c4ac9f784353c1!'
+                '2sForrnesvegen%20116%2C%208412%20Vestbygd!5e0!3m2!'
+                '1sno!2sno!4v1765309464222!5m2!1sno!2sno'
+            ),
+            address='Forrnesvegen 116, 8412 Vestbygd',
+            tlf=None
+        ),
+        'Lavvo-tempel ved den øde Øksfjorden i Lødingen kommune.'
+    ),
 )
 
 
