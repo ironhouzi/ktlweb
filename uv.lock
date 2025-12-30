@@ -307,16 +307,16 @@ wheels = [
 
 [[package]]
 name = "django"
-version = "3.1.14"
+version = "4.0.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
-    { name = "pytz" },
     { name = "sqlparse" },
+    { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7a/59/b774fbaf743e675e9a808406a39814effb723c7c0b1d4a5b3b2e794ce077/Django-3.1.14.tar.gz", hash = "sha256:72a4a5a136a214c39cf016ccdd6b69e2aa08c7479c66d93f3a9b5e4bb9d8a347", size = 9659386 }
+sdist = { url = "https://files.pythonhosted.org/packages/44/92/b0ceee230f9252460abf8c0a3bcc003a914af85ad63006596c3fb3669fbf/Django-4.0.10.tar.gz", hash = "sha256:2c2f73c16b11cb272c6d5e3b063f0d1be06f378d8dc6005fbe8542565db659cc", size = 10430363 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6b/2e/b031dc0789840ebc108d4654c134e86a9f6593ce9c58ce39328c142b24b8/Django-3.1.14-py3-none-any.whl", hash = "sha256:0fabc786489af16ad87a8c170ba9d42bfd23f7b699bd5ef05675864e8d012859", size = 7835424 },
+    { url = "https://files.pythonhosted.org/packages/60/f0/b7322879f851bcf939c97310e4e42f223105a7cb0f123c62553a05f132c4/Django-4.0.10-py3-none-any.whl", hash = "sha256:4496eb4f65071578b703fdc6e6f29302553c7440e3f77baf4cefa4a4e091fc3d", size = 8042923 },
 ]
 
 [[package]]
@@ -383,14 +383,14 @@ wheels = [
 
 [[package]]
 name = "django-taggit"
-version = "1.5.1"
+version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ec/2c/0f73f06a880836bab5f5d4de726e1062e5362ce6b18580c6cc5b994cdde7/django-taggit-1.5.1.tar.gz", hash = "sha256:e5bb62891f458d55332e36a32e19c08d20142c43f74bc5656c803f8af25c084a", size = 52766 }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/ba/70e6a6ca96c347fa91c7676f0f574c08cc1d5e40daa7c3ae5a824fc70360/django-taggit-2.1.0.tar.gz", hash = "sha256:a9f41e4ad58efe4b28d86f274728ee87eb98eeae90c9eb4b4efad39e5068184e", size = 55659 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6f/ce/ad830d2410d5930025b11ec9f0b40cadbf42cb78335c4d5ba9bf246d0c07/django_taggit-1.5.1-py3-none-any.whl", hash = "sha256:dfe9e9c10b5929132041de0c00093ef0072c73c2a97d0f74a818ae50fa77149a", size = 53055 },
+    { url = "https://files.pythonhosted.org/packages/8f/64/6ca8b92c6cebe43956d27b9c5b7f27cd7e2f04a9407a488f05cd39bf96c7/django_taggit-2.1.0-py3-none-any.whl", hash = "sha256:61547a23fc99967c9304107414a09e662b459f4163dbbae32e60b8ba40c34d05", size = 59129 },
 ]
 
 [[package]]
@@ -593,7 +593,7 @@ requires-dist = [
     { name = "markdown" },
     { name = "psycopg2-binary", specifier = "==2.9.11" },
     { name = "pyopenssl" },
-    { name = "wagtail", specifier = "==2.15.6" },
+    { name = "wagtail", specifier = "==2.16.3" },
 ]
 
 [[package]]
@@ -966,7 +966,7 @@ wheels = [
 
 [[package]]
 name = "wagtail"
-version = "2.15.6"
+version = "2.16.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyascii" },
@@ -987,9 +987,9 @@ dependencies = [
     { name = "willow" },
     { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/76/e4/92c342fef741a3ca634273a129ea2414f3d65a509dfac631d10efa8c9756/wagtail-2.15.6.tar.gz", hash = "sha256:bf334b5aa521beca230b3d426f5abc19e7f8df88492b07c1e2ca90e267c6e28f", size = 10747038 }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/07/82d78731e5551a6b2ceab8af8cb731bc027b0bb9c53923457f5d6e3ba8de/wagtail-2.16.3.tar.gz", hash = "sha256:a1f04513f06c760208698578367f03b3af5400f05d36b94e4a8ce07ee30d42fc", size = 8507571 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/b8/7a58b13e1b7b0fca15ed5dbbaa36a2e5a4ef5b65a500a8efa216143fd573/wagtail-2.15.6-py3-none-any.whl", hash = "sha256:7334197ff04f9bfe1eeae2038365ea957a691644cd3464ab07b117c81bc83a1e", size = 13293225 },
+    { url = "https://files.pythonhosted.org/packages/0a/ee/1ef8fc0e3021d3323b16590537b9ffefd6ce8034299e715317bdc386aef3/wagtail-2.16.3-py3-none-any.whl", hash = "sha256:3b52f0e1a4bcad66e57eaa341025e90a6dcd40170f7adb132e9e9df9efa978c9", size = 11077946 },
 ]
 
 [[package]]

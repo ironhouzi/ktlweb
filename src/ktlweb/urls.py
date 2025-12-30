@@ -1,4 +1,4 @@
-from django.conf.urls import include, url
+from django.urls import include, re_path
 from django.conf import settings
 from django.contrib import admin
 
@@ -12,15 +12,12 @@ from gcal import urls as gcal_urls
 
 
 urlpatterns = [
-    url(r'^django-admin/', admin.site.urls),
-
-    url(r'^admin/', include(wagtailadmin_urls)),
-    url(r'^documents/', include(wagtaildocs_urls)),
-
-    url(r'^search/$', search_views.search, name='search'),
-    url(r'^calendar/', include(gcal_urls)),
-
-    url(r'', include(wagtail_urls)),
+    re_path(r'^django-admin/', admin.site.urls),
+    re_path(r'^admin/', include(wagtailadmin_urls)),
+    re_path(r'^documents/', include(wagtaildocs_urls)),
+    re_path(r'^search/$', search_views.search, name='search'),
+    re_path(r'^calendar/', include(gcal_urls)),
+    re_path(r'', include(wagtail_urls)),
 ]
 
 
