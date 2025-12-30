@@ -593,7 +593,7 @@ requires-dist = [
     { name = "markdown" },
     { name = "psycopg2-binary", specifier = "==2.9.11" },
     { name = "pyopenssl" },
-    { name = "wagtail", specifier = "==2.12.6" },
+    { name = "wagtail", specifier = "==2.13.5" },
 ]
 
 [[package]]
@@ -904,6 +904,15 @@ xlsx = [
 ]
 
 [[package]]
+name = "telepath"
+version = "0.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/65/58/5de8765687d6f9dfcbb72c89251036c3b901126404f872b936b13377a3fe/telepath-0.3.1.tar.gz", hash = "sha256:925c0609e0a8a6488ec4a55b19d485882cf72223b2b19fe2359a50fddd813c9c", size = 11622 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5f/50/0f246d316f223b14ba5a88fbe2ff0b480d4a6064b866d48008dd57fd5930/telepath-0.3.1-py38-none-any.whl", hash = "sha256:c280aa8e77ad71ce80e96500a4e4d4a32f35b7e0b52e896bb5fde9a5bcf0699a", size = 10926 },
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -941,7 +950,7 @@ wheels = [
 
 [[package]]
 name = "wagtail"
-version = "2.12.6"
+version = "2.13.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyascii" },
@@ -958,12 +967,13 @@ dependencies = [
     { name = "pillow" },
     { name = "requests" },
     { name = "tablib", extra = ["xls", "xlsx"] },
+    { name = "telepath" },
     { name = "willow" },
     { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/22/91/43ee674d92587b1f9db7cdf880db051b7fc2f0abd30f67b23d01760d9ef6/wagtail-2.12.6.tar.gz", hash = "sha256:aa577f78f0cdbbabbd837b4d90986f6c6357d1b0172bcb79fd1c83fcee3681ba", size = 8895188 }
+sdist = { url = "https://files.pythonhosted.org/packages/4b/ef/3f488f21f4b8cfc4a27f7ef733edc26b8399168f5e261eb162367e78aa13/wagtail-2.13.5.tar.gz", hash = "sha256:9f006c09cdb0f3e388518b6a7cf856697513048a07295a127ee2c255e38775f0", size = 9276806 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d1/48/6b19ca7a01704b52f30bc1a33fbb31b95b4677300c8afb4a15de3efd4bda/wagtail-2.12.6-py3-none-any.whl", hash = "sha256:f39b2ca9d106567a74aad34fc3c63b8acf4a07ff0737c6e1e071334885dc7252", size = 11194162 },
+    { url = "https://files.pythonhosted.org/packages/fd/91/419fcf7d5d35c46f3a4302903c96b26da3a3ab61e1a6bc706dc480779895/wagtail-2.13.5-py3-none-any.whl", hash = "sha256:549ee14af34f0803956907769a7d8470310498689670f63b5085b094320f9fd5", size = 11776404 },
 ]
 
 [[package]]
