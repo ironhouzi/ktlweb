@@ -1,4 +1,3 @@
-import httplib2
 import os
 import arrow
 import json
@@ -12,7 +11,7 @@ from pytz import timezone
 
 from apiclient import discovery
 from apiclient.errors import HttpError
-from oauth2client.client import SignedJwtAssertionCredentials
+from google.oauth2.service_account import Credentials
 
 
 from django.core.exceptions import ValidationError
@@ -30,11 +29,6 @@ from .models import Calendar, Centre, Event, EventPage
 from home.models import HomePage
 
 logger = logging.getLogger(__name__)
-
-SCOPES = os.environ.get(
-    'GCAL_SCOPES',
-    'https://www.googleapis.com/auth/calendar.readonly'
-)
 
 CENTRES = (
     (
@@ -165,21 +159,29 @@ def get_credentials():
     '''
 
     json_path = os.environ.get('JWT_JSON_PATH')
+    scopes = ('https://www.googleapis.com/auth/calendar.readonly',)
+
+    credentials = None
 
     if json_path:
-        with open(json_path) as f:
-            secrets = json.loads(f.read())
+        credentials = Credentials.from_service_account_file(
+            json_path,
+            scopes=scopes,
+        )
     else:
-        secrets = {
-            'client_email': os.environ['GCAL_CLIENT_MAIL'],
-            'private_key': os.environ['GCAL_PRIVATE_KEY'].replace('\\n', '\n')
-        }
+        private_key = os.environ['GCAL_PRIVATE_KEY'].replace('\\n', '\n')
+        credentials = Credentials.from_service_account_info(
+            {
+                'type': 'service_account',
+                'client_email': os.environ['GCAL_CLIENT_MAIL'],
+                'private_key': private_key,
+                'token_uri': 'https://accounts.google.com/o/oauth2/token',
+            },
+            scopes=scopes,
+        )
 
-    return SignedJwtAssertionCredentials(
-        secrets['client_email'],
-        secrets['private_key'],
-        SCOPES
-    )
+    assert credentials is not None
+    return credentials
 
 
 def get_remote_calendars(service, items='id,summary,description,accessRole'):
@@ -279,17 +281,6 @@ def poll_event_instances(service, calendar, page_token):
     )
 
     return response
-
-
-def get_calendar_service():
-    '''
-    Helper function that returns a service object for the Google calendar API.
-    '''
-
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-
-    return discovery.build('calendar', 'v3', http=http)
 
 
 def create_db_calendars(service):
@@ -812,7 +803,11 @@ def db_init(user_name=None):
 
     user = get_user(user_name)
 
-    service = get_calendar_service()
+    service = discovery.build(
+        "calendar",
+        "v3",
+        credentials=get_credentials(),
+    )
     register_centers(user)
     create_db_calendars(service)
     sync_db_calendar_events(service, user)
@@ -828,6 +823,10 @@ def sync_events(user_name=None):
     Event.objects.all().delete()
 
     user = get_user(user_name)
-    service = get_calendar_service()
+    service = discovery.build(
+        "calendar",
+        "v3",
+        credentials=get_credentials(),
+    )
     sync_db_calendar_events(service, user)
     EventPage.objects.filter(event_instances=None).all().delete()

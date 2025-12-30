@@ -9,11 +9,10 @@ requires-python = ">=3.11"
 dependencies = [
     "wagtail == 2.11.9",
     "gunicorn",
-    "psycopg2-binary == 2.9.6",
+    "psycopg2-binary == 2.9.11",
     "dj-database-url",
     "boto",
     "arrow",
-    "oauth2client < 2.0",
     "google-api-python-client",
     "markdown",
     "django-storages",
