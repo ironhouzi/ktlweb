@@ -7,7 +7,7 @@ name = "ktlweb"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "wagtail == 2.13.5",
+    "wagtail == 2.14.2",
     "gunicorn",
     "psycopg2-binary == 2.9.11",
     "dj-database-url",
