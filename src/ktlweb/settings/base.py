@@ -47,9 +47,7 @@ INSTALLED_APPS = [
     'wagtail.images',
     'wagtail.search',
     'wagtail.admin',
-    'wagtail.core',
-    'wagtail.contrib.postgres_search',
-
+    'wagtail',
     'modelcluster',
     'compressor',
     'taggit',

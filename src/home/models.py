@@ -5,12 +5,12 @@ from django.utils.safestring import mark_safe
 
 from markdown import markdown
 
-from wagtail.core.models import Page
-from wagtail.core.fields import StreamField
+from wagtail.models import Page
+from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.documents.blocks import DocumentChooserBlock
-from wagtail.core.blocks import (
+from wagtail.blocks import (
     TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock,
     ListBlock, URLBlock, PageChooserBlock, BooleanBlock
 )
@@ -292,20 +292,18 @@ class AbstractHomePage(models.Model):
         StreamFieldPanel('sidepanel'),
     ]
 
-    @cached_classmethod
-    def get_edit_handler(cls):
-        edit_handler = TabbedInterface([
-            ObjectList(cls.content_panels, heading='Hovedinnhold'),
-            ObjectList(cls.pagesection_panels, heading='Seksjoner'),
-            ObjectList(cls.promote_panels, heading='Fremming'),
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Hovedinnhold'),
+            ObjectList(pagesection_panels, heading='Seksjoner'),
+            ObjectList(Page.promote_panels, heading='Fremming'),
             ObjectList(
-                cls.settings_panels,
+                Page.settings_panels,
                 heading='Instillinger',
-                classname='settings'
+                classname='settings',
             ),
-        ])
-
-        return edit_handler.bind_to(model=cls)
+        ]
+    )
 
 
 class HomePage(AbstractHomePage, Page):

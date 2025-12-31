@@ -359,14 +359,27 @@ wheels = [
 
 [[package]]
 name = "django-modelcluster"
-version = "5.3"
+version = "6.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "django" },
     { name = "pytz" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7a/03/e6ef8103bc9b0706074f8e963ec89634e016117913eb0eb3ac5598c1324e/django-modelcluster-5.3.tar.gz", hash = "sha256:0347cdcacb19a1078ee56cc3e6d5413ba27b8a5900710c53bb92b5d8ff3819cd", size = 25870 }
+sdist = { url = "https://files.pythonhosted.org/packages/3d/dd/db1ab2e256f9fda6796ac312686561cbe2740d960c920f74410559ef7739/django-modelcluster-6.3.tar.gz", hash = "sha256:0caed8a0e889f3abb92f144670878a466ef954ffa6c4c7b9c80e6426b720a49d", size = 28903 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/1c/eea2ab6f42a97a223bc52bec2bcac6cd05b718e45092746a1383ea06a90d/django_modelcluster-5.3-py2.py3-none-any.whl", hash = "sha256:f9f4250e706ee5e57503a30fbf37058b73e9fdc3190d75031338b81913cc9b4e", size = 26036 },
+    { url = "https://files.pythonhosted.org/packages/ee/6d/8deb2dfde2e1177412b759a1c32713be19b1d3af1da686e44e64c165e8c0/django_modelcluster-6.3-py2.py3-none-any.whl", hash = "sha256:a8783d6565a0663f41cd6003ea361c3a5711e8a2a326160f1ec1eceb3e973d4f", size = 29039 },
+]
+
+[[package]]
+name = "django-permissionedforms"
+version = "0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/94/4b/364fe61a161ead607dc6af311901ba8e62f537f8fdab94b5252cb6efe6d7/django-permissionedforms-0.1.tar.gz", hash = "sha256:4340bb20c4477fffb13b4cc5cccf9f1b1010b64f79956c291c72d2ad2ed243f8", size = 5856 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e6/5b/216157ff053f955b15b9dcdc13bfb6e406666445164fee9e332e141be96d/django_permissionedforms-0.1-py2.py3-none-any.whl", hash = "sha256:d341a961a27cc77fde8cc42141c6ab55cc1f0cb886963cc2d6967b9674fa47d6", size = 5744 },
 ]
 
 [[package]]
@@ -593,7 +606,7 @@ requires-dist = [
     { name = "markdown" },
     { name = "psycopg2-binary", specifier = "==2.9.11" },
     { name = "pyopenssl" },
-    { name = "wagtail", specifier = "==2.16.3" },
+    { name = "wagtail", specifier = "==3.0.3" },
 ]
 
 [[package]]
@@ -966,7 +979,7 @@ wheels = [
 
 [[package]]
 name = "wagtail"
-version = "2.16.3"
+version = "3.0.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyascii" },
@@ -974,6 +987,7 @@ dependencies = [
     { name = "django" },
     { name = "django-filter" },
     { name = "django-modelcluster" },
+    { name = "django-permissionedforms" },
     { name = "django-taggit" },
     { name = "django-treebeard" },
     { name = "djangorestframework" },
@@ -987,9 +1001,9 @@ dependencies = [
     { name = "willow" },
     { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0e/07/82d78731e5551a6b2ceab8af8cb731bc027b0bb9c53923457f5d6e3ba8de/wagtail-2.16.3.tar.gz", hash = "sha256:a1f04513f06c760208698578367f03b3af5400f05d36b94e4a8ce07ee30d42fc", size = 8507571 }
+sdist = { url = "https://files.pythonhosted.org/packages/fb/e8/24dc5bd409869b393d2492ff95cb02f6f7ab635f43309a0a9201ff3fd566/wagtail-3.0.3.tar.gz", hash = "sha256:23b3e541401355ea183372582050ea52b049c956dd5b506197f957bb68423ab3", size = 5593557 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0a/ee/1ef8fc0e3021d3323b16590537b9ffefd6ce8034299e715317bdc386aef3/wagtail-2.16.3-py3-none-any.whl", hash = "sha256:3b52f0e1a4bcad66e57eaa341025e90a6dcd40170f7adb132e9e9df9efa978c9", size = 11077946 },
+    { url = "https://files.pythonhosted.org/packages/f6/63/26120d529b869b639142bad73f19d0cf340e57e13969558cfdb5f4fdd870/wagtail-3.0.3-py3-none-any.whl", hash = "sha256:111ed9a0a6ff26d5d881d52deb4bf52b627d79a53c43829611752dbb68a9192f", size = 8116539 },
 ]
 
 [[package]]

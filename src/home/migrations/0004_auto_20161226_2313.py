@@ -3,8 +3,8 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
-import wagtail.core.blocks
-import wagtail.core.fields
+import wagtail.blocks
+import wagtail.fields
 import wagtail.documents.blocks
 import wagtail.images.blocks
 
@@ -19,6 +19,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='homepage',
             name='headingpanel',
-            field=wagtail.core.fields.StreamField((('quicklinks', wagtail.core.blocks.ListBlock(wagtail.core.blocks.StructBlock((('link', wagtail.core.blocks.StructBlock((('external_url', wagtail.core.blocks.URLBlock(label='Ekstern lenke', required=False)), ('page_link', wagtail.core.blocks.PageChooserBlock(label='Intern lenke', required=False)), ('document', wagtail.documents.blocks.DocumentChooserBlock(label='Dokument- lenke', required=False))), label='lenke', required=True)), ('caption', wagtail.core.blocks.CharBlock(help_text='Vær kortfattet, slik at teksten vises riktig.', label='Overskrift', max_length=50)), ('subcaption', wagtail.core.blocks.CharBlock(help_text='Vær kortfattet, slik at teksten vises riktig.', label='Undertittel', max_length=50)), ('icon', wagtail.core.blocks.CharBlock(help_text='Velg ikonnavn fra http://fontawesome.io/cheatsheet/', label='Ikon', max_length=50)))), icon='link', label='Snarveis- panel', template='home/blocks/quicklink_list.html')), ('imageslider', wagtail.core.blocks.ListBlock(wagtail.core.blocks.StructBlock((('image', wagtail.images.blocks.ImageChooserBlock(label='Bilde')),)), icon='image', label='Bilde- karusell', template='home/blocks/imageslider_list.html')), ('bannerimage', wagtail.core.blocks.StructBlock((('image', wagtail.images.blocks.ImageChooserBlock(label='Bilde')),), label='Bannerbilde.\nOBS: 2048x500 piksler!'))), default='', verbose_name='overpanel'),
+            field=wagtail.fields.StreamField((('quicklinks', wagtail.blocks.ListBlock(wagtail.blocks.StructBlock((('link', wagtail.blocks.StructBlock((('external_url', wagtail.blocks.URLBlock(label='Ekstern lenke', required=False)), ('page_link', wagtail.blocks.PageChooserBlock(label='Intern lenke', required=False)), ('document', wagtail.documents.blocks.DocumentChooserBlock(label='Dokument- lenke', required=False))), label='lenke', required=True)), ('caption', wagtail.blocks.CharBlock(help_text='Vær kortfattet, slik at teksten vises riktig.', label='Overskrift', max_length=50)), ('subcaption', wagtail.blocks.CharBlock(help_text='Vær kortfattet, slik at teksten vises riktig.', label='Undertittel', max_length=50)), ('icon', wagtail.blocks.CharBlock(help_text='Velg ikonnavn fra http://fontawesome.io/cheatsheet/', label='Ikon', max_length=50)))), icon='link', label='Snarveis- panel', template='home/blocks/quicklink_list.html')), ('imageslider', wagtail.blocks.ListBlock(wagtail.blocks.StructBlock((('image', wagtail.images.blocks.ImageChooserBlock(label='Bilde')),)), icon='image', label='Bilde- karusell', template='home/blocks/imageslider_list.html')), ('bannerimage', wagtail.blocks.StructBlock((('image', wagtail.images.blocks.ImageChooserBlock(label='Bilde')),), label='Bannerbilde.\nOBS: 2048x500 piksler!'))), default='', verbose_name='overpanel'),
         ),
     ]

@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 import home.models
-import wagtail.core.blocks
-import wagtail.core.fields
+import wagtail.blocks
+import wagtail.fields
 import wagtail.documents.blocks
 
 
@@ -19,6 +19,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='newsentryindex',
             name='sidepanel',
-            field=wagtail.core.fields.StreamField((('eventviewer', wagtail.core.blocks.StructBlock((('count', home.models.UpcomingEventCountChoiceField(label='Antall synlige aktiviteter')), ('centre_code', home.models.UpcomingEventCentreChoiceField(label='Hvilket senter?')), ('display_all', wagtail.core.blocks.BooleanBlock(label='Langtidsvisning', required=False))), label='Vis kommende aktiviteter')), ('linkviewer', wagtail.core.blocks.ListBlock(wagtail.core.blocks.StructBlock((('link', wagtail.core.blocks.StructBlock((('external_url', wagtail.core.blocks.URLBlock(label='Ekstern lenke', required=False)), ('page_link', wagtail.core.blocks.PageChooserBlock(label='Intern lenke', required=False)), ('document', wagtail.documents.blocks.DocumentChooserBlock(label='Dokument- lenke', required=False))), label='lenke', required=True)), ('caption', wagtail.core.blocks.CharBlock(help_text='Vær kortfattet, slik at teksten vises riktig.', label='Overskrift', max_length=50)), ('subcaption', wagtail.core.blocks.CharBlock(help_text='Vær kortfattet, slik at teksten vises riktig.', label='Undertittel', max_length=50)), ('icon', wagtail.core.blocks.CharBlock(help_text='Velg ikonnavn fra http://fontawesome.io/cheatsheet/', label='Ikon', max_length=50)))), icon='link', label='Lenke- fremviser', template='home/blocks/sidepanel_links.html')), ('videoembed', wagtail.core.blocks.StructBlock((('caption', wagtail.core.blocks.TextBlock(label='Seksjonstittel', required=True)), ('video_id', wagtail.core.blocks.TextBlock(label='Youtube video-id', required=True))), label='Youtube- video'))), default='', verbose_name='sidepanel'),
+            field=wagtail.fields.StreamField((('eventviewer', wagtail.blocks.StructBlock((('count', home.models.UpcomingEventCountChoiceField(label='Antall synlige aktiviteter')), ('centre_code', home.models.UpcomingEventCentreChoiceField(label='Hvilket senter?')), ('display_all', wagtail.blocks.BooleanBlock(label='Langtidsvisning', required=False))), label='Vis kommende aktiviteter')), ('linkviewer', wagtail.blocks.ListBlock(wagtail.blocks.StructBlock((('link', wagtail.blocks.StructBlock((('external_url', wagtail.blocks.URLBlock(label='Ekstern lenke', required=False)), ('page_link', wagtail.blocks.PageChooserBlock(label='Intern lenke', required=False)), ('document', wagtail.documents.blocks.DocumentChooserBlock(label='Dokument- lenke', required=False))), label='lenke', required=True)), ('caption', wagtail.blocks.CharBlock(help_text='Vær kortfattet, slik at teksten vises riktig.', label='Overskrift', max_length=50)), ('subcaption', wagtail.blocks.CharBlock(help_text='Vær kortfattet, slik at teksten vises riktig.', label='Undertittel', max_length=50)), ('icon', wagtail.blocks.CharBlock(help_text='Velg ikonnavn fra http://fontawesome.io/cheatsheet/', label='Ikon', max_length=50)))), icon='link', label='Lenke- fremviser', template='home/blocks/sidepanel_links.html')), ('videoembed', wagtail.blocks.StructBlock((('caption', wagtail.blocks.TextBlock(label='Seksjonstittel', required=True)), ('video_id', wagtail.blocks.TextBlock(label='Youtube video-id', required=True))), label='Youtube- video'))), default='', verbose_name='sidepanel'),
         ),
     ]
