@@ -606,7 +606,7 @@ requires-dist = [
     { name = "markdown" },
     { name = "psycopg2-binary", specifier = "==2.9.11" },
     { name = "pyopenssl" },
-    { name = "wagtail", specifier = "==4.0.4" },
+    { name = "wagtail", specifier = "==4.1.9" },
 ]
 
 [[package]]
@@ -915,24 +915,6 @@ wheels = [
 ]
 
 [[package]]
-name = "tablib"
-version = "3.9.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/11/00/416d2ba54d7d58a7f7c61bf62dfeb48fd553cf49614daf83312f2d2c156e/tablib-3.9.0.tar.gz", hash = "sha256:1b6abd8edb0f35601e04c6161d79660fdcde4abb4a54f66cc9f9054bd55d5fe2", size = 125565 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/66/6b/32e51d847148b299088fc42d3d896845fd09c5247190133ea69dbe71ba51/tablib-3.9.0-py3-none-any.whl", hash = "sha256:eda17cd0d4dda614efc0e710227654c60ddbeb1ca92cdcfc5c3bd1fc5f5a6e4a", size = 49580 },
-]
-
-[package.optional-dependencies]
-xls = [
-    { name = "xlrd" },
-    { name = "xlwt" },
-]
-xlsx = [
-    { name = "openpyxl" },
-]
-
-[[package]]
 name = "telepath"
 version = "0.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -979,7 +961,7 @@ wheels = [
 
 [[package]]
 name = "wagtail"
-version = "4.0.4"
+version = "4.1.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyascii" },
@@ -994,16 +976,15 @@ dependencies = [
     { name = "draftjs-exporter" },
     { name = "html5lib" },
     { name = "l18n" },
+    { name = "openpyxl" },
     { name = "pillow" },
     { name = "requests" },
-    { name = "tablib", extra = ["xls", "xlsx"] },
     { name = "telepath" },
     { name = "willow" },
-    { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/33/be/d4e303ff1ea412748605d97d18331677b3caacb4328bbe4f26a7eb95c8a3/wagtail-4.0.4.tar.gz", hash = "sha256:8799c7550cc033c8e85aeeaf6f91b5343d7dee72fecd5d4093499af9d3aeaa1d", size = 5759139 }
+sdist = { url = "https://files.pythonhosted.org/packages/94/b3/8b2cf44376cc07acc51be1a3c81df6873e3f8cdbe5b6af7fffcd2f2a5d18/wagtail-4.1.9.tar.gz", hash = "sha256:60dd18907c4fb2402a2a7d59dc9d0987a3c954a8327927acd32990bb55b0227c", size = 5819850 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/af/f65e453a89ce949a5990c66ad70afa8f50a7451bc5c682e291af91748ff7/wagtail-4.0.4-py3-none-any.whl", hash = "sha256:43b35e8e29bcc83a3ddf60f08e8c22fea1e819f338bcba73a4b290771233809a", size = 8316101 },
+    { url = "https://files.pythonhosted.org/packages/a4/41/a4494fa05b56cf9f877340965ea1dba3952ef8767e23427b1047103ce9f0/wagtail-4.1.9-py3-none-any.whl", hash = "sha256:1394d78d01b7c33dbf7b2412f959196402639c21716ba0da1fe182673d2f15cd", size = 8382024 },
 ]
 
 [[package]]
@@ -1022,31 +1003,4 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ba/45/b43a39989548ce99b34cda59268969addaef8a133e72879524d04ab54a4b/Willow-1.4.1.tar.gz", hash = "sha256:0df8ff528531e00b48d40bf72ed81beac1dc82f2d42e5bbed4aff0218bef8c0d", size = 103868 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b5/bb/e654a03c8224b06f9e12381cd0c67028f460e625df55711f7ded30afcaf1/Willow-1.4.1-py2.py3-none-any.whl", hash = "sha256:fc4042696d090e75aef922fa1ed26d483c764f005b36cf523cf7c34e69d5dd7a", size = 106917 },
-]
-
-[[package]]
-name = "xlrd"
-version = "2.0.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/07/5a/377161c2d3538d1990d7af382c79f3b2372e880b65de21b01b1a2b78691e/xlrd-2.0.2.tar.gz", hash = "sha256:08b5e25de58f21ce71dc7db3b3b8106c1fa776f3024c54e45b45b374e89234c9", size = 100167 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1a/62/c8d562e7766786ba6587d09c5a8ba9f718ed3fa8af7f4553e8f91c36f302/xlrd-2.0.2-py2.py3-none-any.whl", hash = "sha256:ea762c3d29f4cca48d82df517b6d89fbce4db3107f9d78713e48cd321d5c9aa9", size = 96555 },
-]
-
-[[package]]
-name = "xlsxwriter"
-version = "1.4.5"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/15/72/75b6c904ebabb3fc22965dd78e080252d5950af652a34cd3e0ed538ab1ff/XlsxWriter-1.4.5.tar.gz", hash = "sha256:0956747859567ec01907e561a7d8413de18a7aae36860f979f9da52b9d58bc19", size = 270337 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/96/34/c0f14cd35304bd1ffeaf9bdb88d1a8b3d7153714dd2540a5f6341acf25ff/XlsxWriter-1.4.5-py2.py3-none-any.whl", hash = "sha256:f9335f1736e2c4fd80e940fe1b6d92d967bf454a1e5d639b0b7a4459ade790cc", size = 149747 },
-]
-
-[[package]]
-name = "xlwt"
-version = "1.3.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/06/97/56a6f56ce44578a69343449aa5a0d98eefe04085d69da539f3034e2cd5c1/xlwt-1.3.0.tar.gz", hash = "sha256:c59912717a9b28f1a3c2a98fd60741014b06b043936dcecbc113eaaada156c88", size = 153929 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/48/def306413b25c3d01753603b1a222a011b8621aed27cd7f89cbc27e6b0f4/xlwt-1.3.0-py2.py3-none-any.whl", hash = "sha256:a082260524678ba48a297d922cc385f58278b8aa68741596a87de01a9c628b2e", size = 99981 },
 ]
