@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
+    'wagtail.contrib.search_promotions',
     'wagtail.embeds',
     'wagtail.sites',
     'wagtail.users',
@@ -60,8 +61,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'storages',
-
-    'wagtail.contrib.modeladmin'
 ]
 
 MIDDLEWARE = [

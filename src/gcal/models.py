@@ -134,15 +134,22 @@ class EventPage(AbstractHomePage, Page):
         return '<EventPage: "{}" ({})>'.format(self.title, self.master_event_id)
 
     def __str__(self):
-        if self.event_instances.count() == 0:
-            return self.title
-        else:
-            return '{} ({}) | Starter: {} | Antall: {}'.format(
+        try:
+            event_instance_count = self.event_instances.count()
+        except Exception:
+            event_instance_count = -1
+
+        if event_instance_count > 0:
+            s = '{} ({}) | Starter: {} | Antall: {}'.format(
                 self.title,
                 self.calendar.centre,
                 self.event_instances.first().start.strftime('%d. %b %Y'),
                 self.event_instances.count()
             )
+        else:
+            s = self.title
+
+        return s
 
     class Meta:
         verbose_name = 'Aktivitetside'

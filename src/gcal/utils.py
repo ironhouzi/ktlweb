@@ -134,10 +134,7 @@ def publish_page(page, page_parent, default_body_string, user):
             logger.debug('page slug set to: {}'.format(page.slug))
             page_parent.add_child(instance=page)
 
-    revision = page.save_revision(
-        user=user,
-        submitted_for_moderation=False,
-    )
+    revision = page.save_revision(user=user)
 
     revision.publish()
     page.save()
@@ -501,7 +498,7 @@ def get_event_parent_page(calendar, user):
 def sync_event_page(calendar, user, master_gcal_event):
     logger.debug('syncing master_gcal_event: %s', master_gcal_event)
 
-    title = master_gcal_event.get('summary', 'Navnløs')
+    title = master_gcal_event.get('summary', 'Ingen oppsummering')
 
     try:
         EventPage.objects.get(slug=slugify(title))

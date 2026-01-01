@@ -4,7 +4,7 @@ POSTGRES_DB=ktlweb_db
 DB_CONTAINER_STATUS=$(docker inspect $POSTGRES_DB --format '{{ .State.Status }}' 2>/dev/null)
 
 if [[ $? -eq 1 ]]; then
-	echo 'No postgres container running! Execute `./run` first!'
+	echo 'No postgres container running! Execute `./ensure-postgres.sh` first!'
 fi
 
 set -eu -o pipefail

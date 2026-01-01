@@ -2,12 +2,10 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from wagtail.models import Page
-from wagtail.search.models import Query
-
-# from wagtail.contrib.search_promotions.models import SearchPromotion
 
 
 def search(request):
+    from wagtail.contrib.search_promotions import Query
     # Search
     search_query = request.GET.get('query', None)
     if search_query:
