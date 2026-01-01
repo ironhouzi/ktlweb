@@ -2,12 +2,12 @@ import os
 import arrow
 import json
 import logging
-import datetime
 import warnings
 
+from datetime import date, datetime, timezone
 from uuid import uuid4
 
-from pytz import timezone
+from pytz import timezone as pytz_tz
 
 from apiclient import discovery
 from apiclient.errors import HttpError
@@ -19,7 +19,10 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.utils.text import slugify as django_slugify
 from django.utils.timezone import (
-    get_default_timezone_name, utc, localtime, make_aware, is_naive, now
+    get_default_timezone_name,
+    localtime,
+    make_aware,
+    is_naive,
 )
 
 from wagtail.models import Page
@@ -243,16 +246,9 @@ def poll_event_instances(service, calendar, page_token):
     if page_token is not None:
         gcal_params['pageToken'] = page_token
 
-    iso_time_today = datetime.datetime.utcnow().replace(
-        hour=0,
-        minute=0,
-        second=0,
-        microsecond=0
-    ).isoformat('T') + 'Z'
-
     gcal_params.update({
         'singleEvents': True,
-        'timeMin': iso_time_today
+        'timeMin': date.today().isoformat() + 'T00:00:00Z'
     })
 
     logger.info('List events w/ params: {}'.format(gcal_params))
@@ -405,7 +401,7 @@ def json_time_to_utc(gcal_event):
         if is_naive(time):
             time = make_aware(time, timezone=tz)
 
-        return localtime(time, utc)
+        return localtime(time, timezone.utc)
 
     timerange = (gcal_event['start'], gcal_event['end'],)
 
@@ -413,7 +409,7 @@ def json_time_to_utc(gcal_event):
     full_day = all(time.get('date') for time in timerange) and not (
                any(time.get('dateTime') for time in timerange))
 
-    local_tz = timezone(timerange[0].get(
+    local_tz = pytz_tz(timerange[0].get(
         'timeZone',
         timerange[1].get(
             'timeZone',
@@ -535,7 +531,7 @@ def sync_event_page(calendar, user, master_gcal_event):
     )
 
     start, end, _ = json_time_to_utc(master_gcal_event)
-    current_time = now()
+    current_time = datetime.now(timezone.utc)
 
     if current_time < end:
         sync_event_instance_entry(master_gcal_event, event_page)
