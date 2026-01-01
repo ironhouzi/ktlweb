@@ -606,7 +606,7 @@ requires-dist = [
     { name = "markdown" },
     { name = "psycopg2-binary", specifier = "==2.9.11" },
     { name = "pyopenssl" },
-    { name = "wagtail", specifier = "==4.1.9" },
+    { name = "wagtail", specifier = "==4.2.4" },
 ]
 
 [[package]]
@@ -961,7 +961,7 @@ wheels = [
 
 [[package]]
 name = "wagtail"
-version = "4.1.9"
+version = "4.2.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyascii" },
@@ -982,9 +982,9 @@ dependencies = [
     { name = "telepath" },
     { name = "willow" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/94/b3/8b2cf44376cc07acc51be1a3c81df6873e3f8cdbe5b6af7fffcd2f2a5d18/wagtail-4.1.9.tar.gz", hash = "sha256:60dd18907c4fb2402a2a7d59dc9d0987a3c954a8327927acd32990bb55b0227c", size = 5819850 }
+sdist = { url = "https://files.pythonhosted.org/packages/57/7c/df75a8e04873a40b0dc0d4c58c6f3beac6351a9680ce634e7a956c893ec9/wagtail-4.2.4.tar.gz", hash = "sha256:4bf146194e1725cd4305bf1998f507d46f587e207d609bc2ec73a6c5cce04410", size = 6097317 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a4/41/a4494fa05b56cf9f877340965ea1dba3952ef8767e23427b1047103ce9f0/wagtail-4.1.9-py3-none-any.whl", hash = "sha256:1394d78d01b7c33dbf7b2412f959196402639c21716ba0da1fe182673d2f15cd", size = 8382024 },
+    { url = "https://files.pythonhosted.org/packages/37/3b/1186b2c8c1822af5c408d89dbb1d84b29dddd3d044d018c88a426bdbca0f/wagtail-4.2.4-py3-none-any.whl", hash = "sha256:93e8d39a14a44099ca620e46613a3a2319b1d10c622dc7f0ff8658807b18190c", size = 8741418 },
 ]
 
 [[package]]
