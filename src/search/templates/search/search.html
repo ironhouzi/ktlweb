@@ -1,6 +1,7 @@
 {% extends "home/home_page.html" %}
 
 {% load wagtailcore_tags %}
+{% wagtail_site as current_site %}
 
 {% block title %}KTL - Søk{% endblock %}
 
@@ -58,7 +59,7 @@
       {% else %}
       <div id="fof" class="clear">
         <p class="notice">Beklager, ingen treff funnet.</p>
-        <p>Gå tilbake til <a href="{% pageurl site_root %}">forsiden</a> eller gjør et nytt søk for å prøve å finne det du ser etter:</p>
+        <p>Gå tilbake til <a href="{{ current_site.root_url }}">forsiden</a> eller gjør et nytt søk for å prøve å finne det du ser etter:</p>
         <form action="{% url 'search' %}" class="block clear" method="get">
           <input type="text" name="query" size="35"/>
           <button class="button red" type="submit"><span class="fa fa-search"></span></button>
