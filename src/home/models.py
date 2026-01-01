@@ -8,17 +8,17 @@ from markdown import markdown
 from wagtail.models import Page
 from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.blocks import (
     TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock,
     ListBlock, URLBlock, PageChooserBlock, BooleanBlock
 )
-from wagtail.admin.edit_handlers import (
-    FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
+from wagtail.admin.panels import (
+    FieldPanel,
+    TabbedInterface,
+    ObjectList,
 )
 from wagtail.search import index
-from wagtail.utils.decorators import cached_classmethod
 
 
 class PullQuoteBlock(StructBlock):
@@ -265,19 +265,22 @@ class AbstractHomePage(models.Model):
         HomePageStreamBlock(required=False),
         verbose_name='hovedinnhold',
         default='',
-        blank=True
+        blank=True,
+        use_json_field=True,
     )
     headingpanel = StreamField(
         HeadingPanelStreamBlock(required=False),
         verbose_name='overpanel',
         default='',
-        blank=True
+        blank=True,
+        use_json_field=True,
     )
     sidepanel = StreamField(
         SidePanelStreamBlock(required=False),
         verbose_name='sidepanel',
         default='',
-        blank=True
+        blank=True,
+        use_json_field=True,
     )
 
     class Meta:
@@ -285,11 +288,11 @@ class AbstractHomePage(models.Model):
 
     search_fields = Page.search_fields + [index.SearchField('body')]
 
-    content_panels = Page.content_panels + [StreamFieldPanel('body')]
+    content_panels = Page.content_panels + [FieldPanel('body')]
 
     pagesection_panels = [
-        StreamFieldPanel('headingpanel'),
-        StreamFieldPanel('sidepanel'),
+        FieldPanel('headingpanel'),
+        FieldPanel('sidepanel'),
     ]
 
     edit_handler = TabbedInterface(
@@ -325,7 +328,7 @@ class ArticleIndex(AbstractHomePage, Page):
 
     content_panels = [
         AbstractHomePage.content_panels[0],     # title
-        ImageChooserPanel('image'),
+        FieldPanel('image'),
         AbstractHomePage.content_panels[-1]     # streamfield
     ]
 
@@ -398,7 +401,7 @@ class Article(AbstractHomePage, Page):
     content_panels = [
         AbstractHomePage.content_panels[0],     # title
         FieldPanel('intro'),
-        ImageChooserPanel('image'),
+        FieldPanel('image'),
         FieldPanel('other_author'),
         AbstractHomePage.content_panels[-1]     # streamfield
     ]

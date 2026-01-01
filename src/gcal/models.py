@@ -4,8 +4,6 @@ from django.db.models import JSONField
 
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
-from wagtail.images.edit_handlers import ImageChooserPanel
-# from wagtail.search import index
 
 from home.models import AbstractHomePage
 
@@ -37,7 +35,7 @@ class Centre(AbstractHomePage, Page):
         FieldPanel('address'),
         FieldPanel('map_query'),
         FieldPanel('tlf'),
-        ImageChooserPanel('image'),
+        FieldPanel('image'),
     ]
 
     def split_address(self):

@@ -4,7 +4,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from wagtail.models import Page
 from wagtail.fields import RichTextField
 
-from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.admin.panels import FieldPanel
 
 from wagtail.search import index
@@ -84,8 +83,8 @@ class NewsEntry(Page):
     content_panels = Page.content_panels + [
         FieldPanel('description'),
         FieldPanel('details'),
-        ImageChooserPanel('feed_image'),
-        FieldPanel('event_page')
+        FieldPanel('feed_image'),
+        FieldPanel('event_page'),
     ]
 
     def __str__(self):
