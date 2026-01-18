@@ -103,6 +103,14 @@ WSGI_APPLICATION = 'ktlweb.wsgi.application'
 
 DATABASES = {}
 
+STORAGES = {
+    "default": {
+        "BACKEND": "ktlweb.settings.s3storage.AWSMedia",
+    },
+    "staticfiles": {
+        "BACKEND": "ktlweb.settings.s3storage.AWSStatic",
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

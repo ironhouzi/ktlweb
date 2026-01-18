@@ -1,5 +1,5 @@
 from .base import *     # noqa
-from .base import TEMPLATES, KTLWEB_LOGGER
+from .base import KTLWEB_LOGGER, TEMPLATES, TRUTH
 
 import os
 
@@ -18,17 +18,22 @@ BASE_DIR = '/opt'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_URL = '/media/'
 
-ALLOWED_HOSTS = ['www.ktl.no', 'localhost', '127.0.0.1', '[::1]']
+# if os.path.isfile('.env'):
+#     with open('.env') as f:
+#         for line in f.readlines():
+#             k, v = line.strip().split('=')
+#             os.environ[k] = v
+
 COMPRESS_ENABLED = os.getenv('COMPRESS_ENABLED', 'true').lower() in TRUTH
+AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'eu-north-1')
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 AWS_S3_SIGNATURE_VERSION = os.getenv('AWS_S3_SIGNATURE_VERSION', 's3v4')
 AWS_DEFAULT_ACL = None
-AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'eu-north-1')
+AWS_S3_FILE_OVERWRITE = False  # required by wagtail docs
 STATIC_URL = os.environ['STATIC_URL']
 MEDIA_URL = os.environ['MEDIA_URL']
-STATICFILES_STORAGE = 'ktlweb.settings.s3storage.AWSStatic'
-DEFAULT_FILE_STORAGE = 'ktlweb.settings.s3storage.AWSMedia'
+ALLOWED_HOSTS = ['www.ktl.no', 'localhost', '127.0.0.1', '[::1]']
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
