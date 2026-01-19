@@ -153,6 +153,8 @@ COMPRESS_ENABLED = False
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = 'Karma Tashi Ling buddhistsamfunn'
+WAGTAILADMIN_BASE_URL = 'https://ktl.no'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Usage stats from images and documents
 WAGTAIL_USAGE_COUNT_ENABLED = True
