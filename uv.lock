@@ -37,15 +37,6 @@ wheels = [
 ]
 
 [[package]]
-name = "boto"
-version = "2.49.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c8/af/54a920ff4255664f5d238b5aebd8eedf7a07c7a5e71e27afcfe840b82f51/boto-2.49.0.tar.gz", hash = "sha256:ea0d3b40a2d852767be77ca343b58a9e3a4b00d9db440efb8da74b4e58025e5a", size = 1478498 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/23/10/c0b78c27298029e4454a472a1919bde20cb182dab1662cec7f2ca1dcc523/boto-2.49.0-py2.py3-none-any.whl", hash = "sha256:147758d41ae7240dc989f0039f27da8ca0d53734be0eb869ef16e3adcfa462e8", size = 1359202 },
-]
-
-[[package]]
 name = "boto3"
 version = "1.42.63"
 source = { registry = "https://pypi.org/simple" }
@@ -631,7 +622,6 @@ name = "ktlweb"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "boto" },
     { name = "boto3" },
     { name = "dj-database-url" },
     { name = "django-compressor" },
@@ -646,7 +636,6 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "boto" },
     { name = "boto3" },
     { name = "dj-database-url" },
     { name = "django-compressor", specifier = ">=4.5" },
