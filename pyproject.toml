@@ -7,13 +7,12 @@ name = "ktlweb"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "wagtail == 6.3.5",
+    "wagtail == 6.4.2",
     "django >= 5.0,<5.2",
     "gunicorn",
     "psycopg2-binary == 2.9.11",
     "dj-database-url",
     "boto",
-    "arrow",
     "google-api-python-client",
     "markdown",
     "django-storages",

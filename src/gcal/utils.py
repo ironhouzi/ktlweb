@@ -1,13 +1,10 @@
 import os
-import arrow
 import json
 import logging
 import warnings
 
 from datetime import date, datetime, timezone
 from uuid import uuid4
-
-from pytz import timezone as pytz_tz
 
 from apiclient import discovery
 from apiclient.errors import HttpError
@@ -18,12 +15,6 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.utils.text import slugify as django_slugify
-from django.utils.timezone import (
-    get_default_timezone_name,
-    localtime,
-    make_aware,
-    is_naive,
-)
 
 from wagtail.models import Page
 from wagtail.rich_text import RichText
@@ -384,40 +375,18 @@ def json_time_to_utc(gcal_event):
     a UTC datetime object and full-day boolean status.
     '''
 
-    def to_utc(json_time, key, tz):
-        '''
-        json_time from google calendar API (RFC3339).
-        key: 'date'/'dateTime'
-        tz: timezone
-
-        returns: UTC datetime objects
-        '''
-        time = arrow.get(json_time.get(key))
-
-        # TODO: verify necessity of this check
-        if is_naive(time):
-            time = make_aware(time, timezone=tz)
-
-        return localtime(time, timezone.utc)
-
     timerange = (gcal_event['start'], gcal_event['end'],)
 
     # TODO: verify that google calendar has sanity checked date/dateTime fields
     full_day = all(time.get('date') for time in timerange) and not (
-               any(time.get('dateTime') for time in timerange))
-
-    local_tz = pytz_tz(timerange[0].get(
-        'timeZone',
-        timerange[1].get(
-            'timeZone',
-            get_default_timezone_name())
-        )
-    )
+        any(time.get('dateTime') for time in timerange))
 
     key = 'date' if full_day else 'dateTime'
-    start, end = (to_utc(time, key, local_tz) for time in timerange)
+    start, end = (
+        datetime.fromisoformat(time.get(key)).astimezone(timezone.utc)
+        for time in timerange
+    )
 
-    # assert is_naive(start) and is_naive(end)
     return start, end, full_day
 
 

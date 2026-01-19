@@ -157,6 +157,9 @@ WAGTAIL_SITE_NAME = 'Karma Tashi Ling buddhistsamfunn'
 # Usage stats from images and documents
 WAGTAIL_USAGE_COUNT_ENABLED = True
 
+# Recommended by wagtail docs
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
+
 DATABASES['default'] = dj_database_url.config()
 
 KTLWEB_LOGGER = {
