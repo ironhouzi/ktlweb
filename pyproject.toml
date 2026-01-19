@@ -13,8 +13,7 @@ dependencies = [
     "dj-database-url",
     "google-api-python-client",
     "markdown",
-    "django-storages",
+    "django-storages[s3]",
     "django-compressor >= 4.5",
     "pyopenssl",
-    "boto3",
 ]
