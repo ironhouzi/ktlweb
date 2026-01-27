@@ -205,7 +205,12 @@ class MarkDownBlock(TextBlock):
 
 class VideoBlock(StructBlock):
     caption = TextBlock(label='Seksjonstittel', required=True)
-    video_id = TextBlock(label='Youtube video-id', required=True)
+    video_id = TextBlock(
+        label='Youtube embed video-id',
+        help_text=('I Youtube, velg "share" -> "embed". '
+                   'Bruk koden mellom "embed/" og " (dubbelfnutt)'),
+        required=True,
+    )
 
     class Meta:
         icon = 'media'
