@@ -206,11 +206,22 @@ class MarkDownBlock(TextBlock):
 class VideoBlock(StructBlock):
     caption = TextBlock(label='Seksjonstittel', required=True)
     video_id = TextBlock(
-        label='Youtube embed video-id',
-        help_text=('I Youtube, velg "share" -> "embed". '
-                   'Bruk koden mellom "embed/" og " (dubbelfnutt)'),
+        label='Youtube embed-kode (video-id)',
+        help_text=('I Youtube, velg "share" -> "embed" -> "copy". '
+                   'Lim inn teksten her.'),
         required=True,
     )
+
+    def get_prep_value(self, video_block):
+        """Transform value before saving to database."""
+        if video_block:
+            # extract embed id from iframe code, e.g <ID> in:
+            # `<...> src="https://www.youtube.com/embed/<ID>" <...>`
+            needle = 'src="https://www.youtube.com/embed/'
+            video_id = video_block['video_id']
+            id_start = video_id[video_id.find(needle)+len(needle):]
+            video_block['video_id'] = id_start[:id_start.find('"')]
+        return super().get_prep_value(video_block)
 
     class Meta:
         icon = 'media'
