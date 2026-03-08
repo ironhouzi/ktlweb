@@ -1,5 +1,8 @@
-venv/
 .git/
+.venv/
+jwt/
+venv/
 .env
 tags
 docker-compose.yml
+uv.lock

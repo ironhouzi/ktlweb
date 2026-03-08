@@ -71,10 +71,12 @@ GCAL_PRIVATE_KEY=<SECRET>
 #### Docker
 
 ```sh
-DOCKER_BUILDKIT=1 docker build -t ktlweb:dev .
+heroku git:remote --app ktlweb-prod2
+PY_VERSION=$(awk -F'[""]' '/requires-python/ {{ split($2, a, "="); print a[2]}}' pyproject.toml) DOCKER_BUILDKIT=1 docker build -t ktlweb:$PY_VERSION -f docker/Dockerfile-$PY_VERSION .
 ./ensure-postgres.sh
 ./import-heroku-db.sh
 ./develop.sh
+docker exec -ti ktlweb uv run manage.py makemigrations
 ```
 
 Page is served at http://localhost:8000

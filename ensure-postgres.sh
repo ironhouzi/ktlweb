@@ -15,7 +15,7 @@ set -eu -o pipefail
 case $DB_CONTAINER_STATUS in 
 "null")
 	echo -n 'Fetching Heroku Postgres version ..'
-	export PG_VERSION=$(heroku pg:info \
+	PG_VERSION=$(heroku pg:info \
 		| grep 'PG Version:' \
 		| awk '{ split($0, a, ":"); print a[2] }' \
 		| tr -d '[:space:]')
@@ -25,10 +25,10 @@ case $DB_CONTAINER_STATUS in
 	docker run \
 	    --name $POSTGRES_DB \
 	    -P \
-	    -e POSTGRES_PASSWORD=$(bw get password ktlweb_db) \
+	    -e POSTGRES_PASSWORD="$(bw get password ktlweb_db)" \
 	    -d \
 	    --network ktlweb \
-	    postgres:$PG_VERSION
+	    "postgres:$PG_VERSION"
 	;;
 "running")
 	echo postgres container running

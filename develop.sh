@@ -8,12 +8,54 @@ fi
 
 set -eu -o pipefail
 
-case $CONTAINER_STATUS in 
+PY_VERSION=$(awk -F'[""]' '/requires-python/ {{ split($2, a, "="); print a[2]}}' pyproject.toml)
+
+run_docker() {
+	docker run \
+		-ti \
+		-d \
+		--env-file .env \
+		--name ktlweb \
+		-e POSTGRES_DB="$POSTGRES_DB" \
+		-e SECRET_KEY="$SECRET_KEY" \
+		-e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+		-e DATABASE_URL="$DATABASE_URL" \
+		-e DJANGO_SETTINGS_MODULE=ktlweb.settings.dev \
+		-e WAGTAIL_DEBUG=True \
+		-p 8000:8000 \
+		-v "$(pwd)/src:/opt/ktlweb/src" \
+		-v "$(pwd)/jwt/gcal-jwt.json:/opt/ktlweb/jwt/gcal-jwt.json:ro" \
+		--network ktlweb \
+		"ktlweb:$PY_VERSION" \
+		runserver 0.0.0.0:8000
+}
+
+dev_docker() {
+	docker run \
+		-ti \
+		--env-file .env \
+		--name ktlweb \
+		-e POSTGRES_DB="$POSTGRES_DB" \
+		-e SECRET_KEY="$SECRET_KEY" \
+		-e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+		-e DATABASE_URL="$DATABASE_URL" \
+		-e DJANGO_SETTINGS_MODULE=ktlweb.settings.dev \
+		-e WAGTAIL_DEBUG=True \
+		-p 8000:8000 \
+		-v "$(pwd)/pyproject.toml:/opt/ktlweb/pyproject.toml" \
+		-v "$(pwd)/src:/opt/ktlweb/src" \
+		-v "$(pwd)/jwt/gcal-jwt.json:/opt/ktlweb/jwt/gcal-jwt.json:ro" \
+		--network ktlweb \
+		--entrypoint bash \
+		"ktlweb:$PY_VERSION"
+}
+
+case $CONTAINER_STATUS in
 "null")
-	export POSTGRES_DB=ktlweb_db
-	export SECRET_KEY="$(bw get password ktlweb_secret_key)"
-	export POSTGRES_PASSWORD=$(bw get password ktlweb_db)
-	export DATABASE_URL="postgres://postgres:$POSTGRES_PASSWORD@ktlweb_db/$POSTGRES_DB"
+	POSTGRES_DB=ktlweb_db
+	SECRET_KEY="$(bw get password ktlweb_secret_key)"
+	POSTGRES_PASSWORD=$(bw get password ktlweb_db)
+	DATABASE_URL="postgres://postgres:$POSTGRES_PASSWORD@ktlweb_db/$POSTGRES_DB"
 
 	set +e
 	mkdir jwt 2>/dev/null
@@ -21,23 +63,7 @@ case $CONTAINER_STATUS in
 
 	bw get notes ktlweb-dev-gcal-jwt-json > jwt/gcal-jwt.json
 
-	docker run \
-		-ti \
-		-d \
-		--env-file .env \
-		--name ktlweb \
-		-e POSTGRES_DB=$POSTGRES_DB \
-		-e SECRET_KEY=$SECRET_KEY \
-		-e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
-		-e DATABASE_URL=$DATABASE_URL \
-		-e DJANGO_SETTINGS_MODULE=ktlweb.settings.dev \
-		-e WAGTAIL_DEBUG=True \
-		-p 8000:8000 \
-		-v $(pwd):/opt/ktlweb \
-		-v $(pwd)/jwt/gcal-jwt.json:/data/gcal-jwt.json:ro \
-		--network ktlweb \
-		ktlweb:dev \
-		runserver 0.0.0.0:8000
+	run_docker
 	;;
 "running")
 	echo ktlweb container running
