@@ -9,6 +9,7 @@ fi
 set -eu -o pipefail
 
 PY_VERSION=$(awk -F'[""]' '/requires-python/ {{ split($2, a, "="); print a[2]}}' pyproject.toml)
+KTL_DEV=${KTL_DEV:-false}
 
 run_docker() {
 	docker run \
@@ -57,13 +58,15 @@ case $CONTAINER_STATUS in
 	POSTGRES_PASSWORD=$(bw get password ktlweb_db)
 	DATABASE_URL="postgres://postgres:$POSTGRES_PASSWORD@ktlweb_db/$POSTGRES_DB"
 
-	set +e
-	mkdir jwt 2>/dev/null
-	set -e
+	mkdir jwt 2>/dev/null || true
 
 	bw get notes ktlweb-dev-gcal-jwt-json > jwt/gcal-jwt.json
 
-	run_docker
+	if [[ $KTL_DEV == "true" ]]; then
+		dev_docker
+	else
+		run_docker
+	fi
 	;;
 "running")
 	echo ktlweb container running

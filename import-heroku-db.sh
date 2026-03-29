@@ -25,9 +25,9 @@ export HEROKU_DB=$(heroku pg:info \
 	| tr -d '[:space:]')
 echo ": $HEROKU_DB"
 
-PG_PORT=$(docker port $POSTGRES_DB | grep '0.0.0.0' | cut -d : -f2)
+PG_PORT=$(docker port "$POSTGRES_DB" | grep '0.0.0.0' | cut -d : -f2)
 PGUSER=postgres \
-PGPASSWORD=$(bw get password $POSTGRES_DB) \
+PGPASSWORD=$(bw get password "$POSTGRES_DB") \
 PGHOST=127.0.0.1 \
 PGPORT=$PG_PORT \
-	heroku pg:pull $HEROKU_DB $POSTGRES_DB
+	heroku pg:pull "$HEROKU_DB" "$POSTGRES_DB"
