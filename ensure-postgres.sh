@@ -14,7 +14,7 @@ set -eu -o pipefail
 
 docker_run() {
 	echo -n 'Fetching Heroku Postgres version ..'
-	PG_VERSION=$(heroku pg:info \
+	PG_VERSION=$(heroku pg:info --app ktlweb-prod2 \
 		| grep 'PG Version:' \
 		| awk '{ split($0, a, ":"); print a[2] }' \
 		| tr -d '[:space:]')

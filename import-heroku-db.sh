@@ -19,7 +19,7 @@ case $DB_CONTAINER_STATUS in
 esac
 
 echo -n 'Fetching Heroku Postgres instance ..'
-export HEROKU_DB=$(heroku pg:info \
+export HEROKU_DB=$(heroku pg:info --app ktlweb-prod2 \
 	| grep 'Add-on' \
 	| awk '{ split($0, a, ":"); print a[2] }' \
 	| tr -d '[:space:]')
@@ -30,4 +30,4 @@ PGUSER=postgres \
 PGPASSWORD=$(bw get password "$POSTGRES_DB") \
 PGHOST=127.0.0.1 \
 PGPORT=$PG_PORT \
-	heroku pg:pull "$HEROKU_DB" "$POSTGRES_DB"
+	heroku pg:pull "$HEROKU_DB" "$POSTGRES_DB" --app ktlweb-prod2
