@@ -10,7 +10,7 @@ Built on `Django` and `Wagtail`.
 - `git`
 - `docker`
 - `heroku`
-- `bw` (DEV: fetching secrets in `./run` script)
+- `rbw` (DEV: fetching secrets in `./run` script)
 - `psql` (DEV: dumping production db with `./import-heroku-db.sh`)
 
 ### Config

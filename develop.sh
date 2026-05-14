@@ -54,13 +54,13 @@ dev_docker() {
 case $CONTAINER_STATUS in
 "null")
 	POSTGRES_DB=ktlweb_db
-	SECRET_KEY="$(bw get password ktlweb_secret_key)"
-	POSTGRES_PASSWORD=$(bw get password ktlweb_db)
+	SECRET_KEY="$(rbw get ktlweb_secret_key)"
+	POSTGRES_PASSWORD=$(rbw get ktlweb_db)
 	DATABASE_URL="postgres://postgres:$POSTGRES_PASSWORD@ktlweb_db/$POSTGRES_DB"
 
 	mkdir jwt 2>/dev/null || true
 
-	bw get notes ktlweb-dev-gcal-jwt-json > jwt/gcal-jwt.json
+	rbw get ktlweb-dev-gcal-jwt-json > jwt/gcal-jwt.json
 
 	if [[ $KTL_DEV == "true" ]]; then
 		dev_docker

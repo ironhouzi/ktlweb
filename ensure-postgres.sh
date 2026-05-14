@@ -24,7 +24,7 @@ docker_run() {
 	docker run \
 	    --name "$POSTGRES_DB" \
 	    -P \
-	    -e POSTGRES_PASSWORD="$(bw get password ktlweb_db)" \
+	    -e POSTGRES_PASSWORD="$(rbw get ktlweb_db)" \
 	    -d \
 	    --network ktlweb \
 	    "postgres:$PG_VERSION"
