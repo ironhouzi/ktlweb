@@ -10,6 +10,7 @@ set -eu -o pipefail
 
 PY_VERSION=$(awk -F'[""]' '/requires-python/ {{ split($2, a, "="); print a[2]}}' pyproject.toml)
 KTL_DEV=${KTL_DEV:-false}
+WAGTAIL_DEBUG_DATE_SKEW=${WAGTAIL_DEBUG_DATE_SKEW:-0}
 
 run_docker() {
 	docker run \
@@ -23,7 +24,8 @@ run_docker() {
 		-e DATABASE_URL="$DATABASE_URL" \
 		-e DJANGO_SETTINGS_MODULE=ktlweb.settings.dev \
 		-e WAGTAIL_DEBUG=True \
-		-p 8000:8000 \
+		-e WAGTAIL_DEBUG_DATE_SKEW="$WAGTAIL_DEBUG_DATE_SKEW" \
+		-p '8000:8000' \
 		-v "$(pwd)/src:/opt/ktlweb/src" \
 		-v "$(pwd)/jwt/gcal-jwt.json:/opt/ktlweb/jwt/gcal-jwt.json:ro" \
 		--network ktlweb \
@@ -42,7 +44,8 @@ dev_docker() {
 		-e DATABASE_URL="$DATABASE_URL" \
 		-e DJANGO_SETTINGS_MODULE=ktlweb.settings.dev \
 		-e WAGTAIL_DEBUG=True \
-		-p 8000:8000 \
+		-e WAGTAIL_DEBUG_DATE_SKEW="$WAGTAIL_DEBUG_DATE_SKEW" \
+		-p '8000:8000' \
 		-v "$(pwd)/pyproject.toml:/opt/ktlweb/pyproject.toml" \
 		-v "$(pwd)/src:/opt/ktlweb/src" \
 		-v "$(pwd)/jwt/gcal-jwt.json:/opt/ktlweb/jwt/gcal-jwt.json:ro" \

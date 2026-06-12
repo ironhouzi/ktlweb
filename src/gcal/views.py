@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime as dt
 from wagtail.admin import messages
 from django.shortcuts import redirect, render
 
@@ -14,7 +14,7 @@ def sync_google_calendar(request):
 
 
 def display(request, month):
-    month_number = datetime.strptime(month, '%B').month
+    month_number = dt.datetime.strptime(month, '%B').month
     return render(
         request,
         'gcal/display_month.html',

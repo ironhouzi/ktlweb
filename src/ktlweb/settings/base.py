@@ -24,6 +24,9 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 TRUTH = ('true', '1', 'yes', 'on')
 DEBUG = os.getenv('WAGTAIL_DEBUG', 'False').lower() in TRUTH
 
+# Turn the date back N days
+DEBUG_DATE_SKEW = int(os.getenv('WAGTAIL_DEBUG_DATE_SKEW', '0'))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
