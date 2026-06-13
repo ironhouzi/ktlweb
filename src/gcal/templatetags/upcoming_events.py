@@ -1,8 +1,11 @@
+import datetime as dt
+
 from collections import OrderedDict
 from django import template
 from django.utils.timezone import now as django_now
 from gcal.models import Event, Centre
 
+from ktlweb.settings.base import DEBUG_DATE_SKEW
 
 register = template.Library()
 
@@ -12,7 +15,7 @@ def show_upcoming_events(count, centre_code, display_all):
     if count is not None:
         count = min(max(1, int(count)), 10)
 
-    now = django_now()
+    now = django_now() - dt.timedelta(days=DEBUG_DATE_SKEW)
 
     try:
         centre = Centre.objects.get(code=centre_code)
@@ -50,7 +53,7 @@ def show_event_instances(count, event_page):
     if count is not None:
         count = min(max(1, int(count)), 10)
 
-    now = django_now()
+    now = django_now() - dt.timedelta(days=DEBUG_DATE_SKEW)
 
     events = event_page.event_instances.filter(
         end__gte=now
@@ -66,7 +69,7 @@ def show_event_instances(count, event_page):
 @register.inclusion_tag('gcal/tags/full_event_overview.html')
 def full_event_overview(event_page):
     overview = OrderedDict()
-    now = django_now()
+    now = django_now() - dt.timedelta(days=DEBUG_DATE_SKEW)
 
     events = event_page.event_instances.filter(end__gte=now).order_by('start')
 

@@ -1,10 +1,10 @@
+import datetime as dt
 import os
 import json
 import logging
 import string
 import warnings
 
-from datetime import date, datetime, timezone
 from uuid import uuid4
 
 from apiclient import discovery
@@ -20,6 +20,7 @@ from wagtail.rich_text import RichText
 
 from .models import Calendar, Centre, Event, EventPage
 from home.models import HomePage
+from ktlweb.settings.base import DEBUG_DATE_SKEW
 
 logger = logging.getLogger(__name__)
 
@@ -199,22 +200,16 @@ def sync_event_instance_entry(gcal_event, event_page):
     )
 
     event_instance_object.save()
-    summary = gcal_event.get('summary')
-    invalid_title = (
-        summary is not None
-        and summary != ''
-        and not all(c in string.whitespace for c in summary)
-    )
-
-    if invalid_title:
-        logger.error(
-            'sync_event_page FAILED! '
-            f'Invalid calendar event summary: `{summary}`'
-        )
+    summary = get_valid_event_str_attr(gcal_event, 'summary')
 
     if summary != event_page.title:
         logger.info('Summary changed from %s to %s', event_page.title, summary)
         return gcal_event
+
+
+def todays_iso_date():
+    skewed_date = dt.date.today() - dt.timedelta(days=DEBUG_DATE_SKEW)
+    return skewed_date.isoformat() + 'T00:00:00Z'
 
 
 def request_events(service, calendar_id, page_token):
@@ -225,7 +220,7 @@ def request_events(service, calendar_id, page_token):
     gcal_params = {
         'calendarId': calendar_id,
         'singleEvents': True,
-        'timeMin': date.today().isoformat() + 'T00:00:00Z'
+        'timeMin': todays_iso_date()
     }
 
     if page_token is not None:
@@ -345,7 +340,7 @@ def json_time_to_utc(gcal_event):
 
     key = 'date' if full_day else 'dateTime'
     start, end = (
-        datetime.fromisoformat(time.get(key)).astimezone(timezone.utc)
+        dt.datetime.fromisoformat(time.get(key)).astimezone(dt.timezone.utc)
         for time in timerange
     )
 
@@ -416,23 +411,26 @@ def handle_cancellation(service, calendar, event):
         handle_cancelled_multi_event(service, calendar, event)
 
 
+def get_valid_event_str_attr(event, attr_name):
+    attr = event.get(attr_name)
+    invalid_attr = (
+        attr is None
+        or attr == ''
+        or all(c in string.whitespace for c in attr)
+    )
+
+    if invalid_attr:
+        logger.error(f'Invalid calendar event ({event}) '
+                     f'`{attr_name}` value: `{attr}`')
+        return None
+    else:
+        return attr
+
+
 def sync_event_page(calendar, user, master_gcal_event):
     logger.debug('syncing master_gcal_event: %s', master_gcal_event)
 
-    # TODO: Ensure no Event is created if summary is empty!
-    title = master_gcal_event.get('summary')
-    invalid_title = (
-        title is not None
-        and title != ''
-        and not all(c in string.whitespace for c in title)
-    )
-
-    if invalid_title:
-        logger.error(
-            'sync_event_page FAILED! '
-            f'Invalid calendar event title: `{title}`'
-        )
-
+    title = get_valid_event_str_attr(master_gcal_event, 'summary')
     description = master_gcal_event.get('description', '')
 
     try:
@@ -468,9 +466,9 @@ def sync_event_page(calendar, user, master_gcal_event):
     )
 
     start, end, _ = json_time_to_utc(master_gcal_event)
-    current_time = datetime.now(timezone.utc)
+    current_time = dt.datetime.now(dt.timezone.utc)
 
-    if current_time < end:
+    if current_time - dt.timedelta(days=DEBUG_DATE_SKEW) < end:
         sync_event_instance_entry(master_gcal_event, event_page)
 
     logger.info(
