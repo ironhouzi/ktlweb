@@ -39,5 +39,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 gcal_logger = KTLWEB_LOGGER['loggers']['gcal']  # type: ignore
 KTLWEB_LOGGER['root'] = gcal_logger  # type: ignore
+del KTLWEB_LOGGER['loggers']['gcal']
 
 config.dictConfig(KTLWEB_LOGGER)

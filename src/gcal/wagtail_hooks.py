@@ -1,9 +1,7 @@
-import logging
-
 from gcal import views
 
 from django.core.exceptions import PermissionDenied
-from django.urls import reverse, path
+from django.urls import reverse
 
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
@@ -17,7 +15,7 @@ from wagtail.snippets.views.snippets import (
     SnippetViewSetGroup,
 )
 
-from .models import Event, Centre
+from .models import Event
 
 
 class ForbiddenView:
