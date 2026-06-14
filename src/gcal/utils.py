@@ -39,6 +39,7 @@ CENTRES = (
                 'Karma+Tashi+Ling+buddhistsamfunn!5e0!3m2!1sen!2sus'
                 '!4v1474500703908'
             ),
+            calendar_id='tibetanskbuddhisme@gmail.com',
             tlf='22 61 28 84'
         ),
         'Vårt hovedsenter med tempelbygg og fredsstupa.'
@@ -57,6 +58,7 @@ CENTRES = (
                 'o%20Buddhist%20Center!5e0!3m2!1sen!2sno!4v1657655861752!5m'
                 '2!1sen!2sno'
             ),
+            calendar_id='kpt4a7leikgdvntrrc1j7m41i8@group.calendar.google.com',
             tlf=None
         ),
         'Bysenter.'
@@ -75,6 +77,7 @@ CENTRES = (
                 '!5e0!3m2!1sen!2sus!4v1474500473508'
             ),
             address='Siggerudveien 734, 1400 Ski',
+            calendar_id='7s7ft1vn24h4rr6pt0ce1v6lgg@group.calendar.google.com',
             tlf=None
         ),
         'Retreatsenter i Sørmarka.'
@@ -93,6 +96,10 @@ CENTRES = (
                 '1sno!2sno!4v1765309464222!5m2!1sno!2sno'
             ),
             address='Forrnesvegen 116, 8412 Vestbygd',
+            calendar_id=(
+                'da9a49de7dbdc7730bfd809b00727ba0e67b8d78a76b04975cc8be972533b'
+                '888@group.calendar.google.com'
+            ),
             tlf=None
         ),
         'Lavvo-tempel ved den øde Øksfjorden i Lødingen kommune.'
@@ -241,32 +248,31 @@ def request_events(service, calendar_id, page_token):
     return response
 
 
-def create_db_calendars(service):
+def ensure_db_calendars(service):
     '''
     Utility function for storing calendars from Google Calendar API to the
     local database.
     '''
 
-    calendars = get_remote_calendars(service)
-    pertinent_codes = {d['code'] for d, _ in CENTRES}
+    for cal_id in (d['calendar_id'] for d, _ in CENTRES):
+        try:
+            Calendar.objects.get(calendar_id=cal_id)
+        except Calendar.DoesNotExist:
+            cal = service.calendars().get(calendarId=cal_id).execute()
+            # Assumes the pertinent calendar names are formed as:
+            # "<Centre code> - Program"
+            center_code = cal['summary'].split('-')[0].strip()
 
-    for cal in calendars:
-        # Assumes the pertinent calendar names are formed as:
-        # "<Centre code> - Program"
-        center_code = cal['summary'].split('-')[0].strip()
-        if center_code not in pertinent_codes:
-            continue
+            fk = Centre.objects.get(code=center_code)
+            Calendar(
+                calendar_id=cal['id'],
+                summary=cal['summary'],
+                description=cal['description'],
+                public=cal['summary'].endswith('program'),
+                centre=fk
+            ).save()
 
-        fk = Centre.objects.get(code=center_code)
-        Calendar(
-            calendar_id=cal['id'],
-            summary=cal['summary'],
-            description=cal['description'],
-            public=cal['summary'].endswith('program'),
-            centre=fk
-        ).save()
-
-        logger.info('Created calendar for: "{}"'.format(center_code))
+            logger.info('Created calendar for: "{}"'.format(center_code))
 
 
 def ensure_center(centre_data, centre_parent_page, user):
@@ -283,6 +289,7 @@ def ensure_center(centre_data, centre_parent_page, user):
     except Centre.DoesNotExist:
         centre = Centre(show_in_menus=True, **centre_entry_data)
         publish_page(centre, centre_parent_page, description, user)
+        logger.info('registerred centre: "{}"'.format(centre_data[0]['title']))
 
 
 def create_event_page(event_data, centre_page, user):
@@ -323,7 +330,6 @@ def register_centers(user):
 
     for centre_data in CENTRES:
         ensure_center(centre_data, centre_parent_page, user)
-        logger.info('registerred centre: "{}"'.format(centre_data[0]['title']))
 
 
 def json_time_to_utc(gcal_event):
@@ -628,6 +634,7 @@ def sync_db_calendar_events(service, user):
     unregistered_centre = should_exist - exists != set()
 
     if unregistered_centre:
+        ensure_db_calendars(service)
         register_centers(user)
 
     for calendar in Calendar.objects.filter(public=True):
@@ -696,7 +703,7 @@ def db_init(user_name=None):
         credentials=get_credentials(),
     )
     register_centers(user)
-    create_db_calendars(service)
+    ensure_db_calendars(service)
     sync_db_calendar_events(service, user)
 
 
